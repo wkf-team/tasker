@@ -32,7 +32,7 @@
  */
 class Ticket extends CActiveRecord
 {
-	public static $orderString = "status_id DESC, due_date, priority_id DESC";
+	public static $orderString = "status_id DESC, if(due_date is null, CURDATE() + 365, due_date), priority_id DESC";
 	/*
 	public static $orderString = "if(due_date < CURDATE(),
 							1000 + 10*(CURDATE() - due_date) + priority_id,
