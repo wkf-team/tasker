@@ -256,8 +256,10 @@ class TicketController extends Controller
 			$worked_time = (int)$_POST['Ticket']['worked_time'];
 			$model->makeWorkflowAction($action, $resolution, $worked_time);
 		} else $model->makeWorkflowAction($action);
-		if($model->save())
+		if($model->save()) {
+			Sendmail::mailChangeTicket($model);
 			$this->redirect(array('view','id'=>$model->id));
+		}
 
 	}
 
