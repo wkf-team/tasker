@@ -40,6 +40,10 @@ $this->widget('zii.widgets.CDetailView', array(
 	'attributes'=>array(
 		'ownerUser.name:text:'.CHtml::activeLabel($model, "owner_user_id"),
 		array(
+			'label' => CHtml::activeLabel($model, "estimate_start_date"),
+			'value' => $model->encodeDate($model->estimate_start_date)
+		),
+		array(
 			'label' => CHtml::activeLabel($model, "due_date"),
 			'value' => $model->encodeDate($model->due_date)
 		),
@@ -53,6 +57,8 @@ $this->widget('zii.widgets.CDetailView', array(
 		'estimate_time',
 		'worked_time',
 		'authorUser.name:text:'.CHtml::activeLabel($model, "author_user_id"),
+		'testerUser.name:text:'.CHtml::activeLabel($model, "tester_user_id"),
+		'responsibleUser.name:text:'.CHtml::activeLabel($model, "responsible_user_id"),
 		array(
 			'label' => CHtml::activeLabel($model, "create_date"),
 			'value' => $model->encodeDate($model->create_date)

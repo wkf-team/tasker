@@ -13,8 +13,12 @@
  * @property integer $notification_enabled
  *
  * The followings are the available model relations:
+ * @property Attachement[] $attachements
+ * @property Comment[] $comments
  * @property Ticket[] $tickets
  * @property Ticket[] $tickets1
+ * @property Ticket[] $tickets2
+ * @property Ticket[] $tickets3
  * @property Usergroup $usergroup
  */
 class User extends CActiveRecord
@@ -28,7 +32,7 @@ class User extends CActiveRecord
 	{
 		return parent::model($className);
 	}
-	
+
 	public static function CheckLevel($level)
 	{
 		if ($level == 0) return true;
@@ -70,8 +74,12 @@ class User extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'attachements' => array(self::HAS_MANY, 'Attachement', 'author_id'),
+			'comments' => array(self::HAS_MANY, 'Comment', 'author_id'),
 			'tickets' => array(self::HAS_MANY, 'Ticket', 'author_user_id'),
 			'tickets1' => array(self::HAS_MANY, 'Ticket', 'owner_user_id'),
+			'tickets2' => array(self::HAS_MANY, 'Ticket', 'tester_user_id'),
+			'tickets3' => array(self::HAS_MANY, 'Ticket', 'responsible_user_id'),
 			'usergroup' => array(self::BELONGS_TO, 'Usergroup', 'usergroup_id'),
 		);
 	}

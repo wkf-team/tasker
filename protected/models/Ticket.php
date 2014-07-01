@@ -8,6 +8,7 @@
  * @property string $subject
  * @property string $description
  * @property string $create_date
+ * @property string $estimate_start_date
  * @property string $due_date
  * @property string $end_date
  * @property integer $estimate_time
@@ -18,9 +19,15 @@
  * @property integer $ticket_type_id
  * @property integer $author_user_id
  * @property integer $owner_user_id
+ * @property integer $tester_user_id
+ * @property integer $responsible_user_id
  * @property integer $parent_ticket_id
  *
  * The followings are the available model relations:
+ * @property Attachement[] $attachements
+ * @property Comment[] $comments
+ * @property Relation[] $relations
+ * @property Relation[] $relations1
  * @property Priority $priority
  * @property Status $status
  * @property Resolution $resolution
@@ -29,6 +36,8 @@
  * @property User $ownerUser
  * @property Ticket $parentTicket
  * @property Ticket[] $tickets
+ * @property User $testerUser
+ * @property User $responsibleUser
  */
 class Ticket extends CActiveRecord
 {
@@ -68,7 +77,9 @@ class Ticket extends CActiveRecord
 		$ticket->author_user_id = Yii::app()->user->id;
 		// default is coordinator
 		$user = User::model()->findByAttributes(array('usergroup_id'=>3));
-		$ticket->owner_user_id = $user ? $user->id : $ticket->author_user_id;
+		$user = $user ? $user->id : $ticket->author_user_id;
+		$ticket->owner_user_id = $user;
+		$ticket->responsible_user_id = $user;
 		return $ticket;
 	}
 	
@@ -157,15 +168,15 @@ class Ticket extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('subject, priority_id, status_id, resolution_id, ticket_type_id, owner_user_id', 'required'),
-			array('estimate_time, worked_time, priority_id, status_id, resolution_id, ticket_type_id, owner_user_id, parent_ticket_id', 'numerical', 'integerOnly'=>true),
+			array('subject, priority_id, status_id, resolution_id, ticket_type_id, owner_user_id, responsible_user_id', 'required'),
+			array('estimate_time, worked_time, priority_id, status_id, resolution_id, ticket_type_id, author_user_id, owner_user_id, tester_user_id, responsible_user_id, parent_ticket_id', 'numerical', 'integerOnly'=>true),
 			array('subject', 'length', 'max'=>255),
 			array('description', 'length', 'max'=>10000),
-			array('due_date, end_date', 'safe'),
+			array('estimate_start_date, due_date, end_date', 'safe'),
 			array('id', 'safe', 'on' => 'plan'),
 			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, subject, description, create_date, due_date, end_date, estimate_time, worked_time, priority_id, status_id, resolution_id, ticket_type_id, author_user_id, owner_user_id, parent_ticket_id', 'safe', 'on'=>'search'),
+			// @todo Please remove those attributes that should not be searched.
+			array('id, subject, description, create_date, estimate_start_date, due_date, end_date, estimate_time, worked_time, priority_id, status_id, resolution_id, ticket_type_id, author_user_id, owner_user_id, tester_user_id, responsible_user_id, parent_ticket_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -177,6 +188,10 @@ class Ticket extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'attachements' => array(self::HAS_MANY, 'Attachement', 'ticket_id'),
+			'comments' => array(self::HAS_MANY, 'Comment', 'ticket_id'),
+			'relations' => array(self::HAS_MANY, 'Relation', 'ticket_from_id'),
+			'relations1' => array(self::HAS_MANY, 'Relation', 'ticket_to_id1'),
 			'priority' => array(self::BELONGS_TO, 'Priority', 'priority_id'),
 			'status' => array(self::BELONGS_TO, 'Status', 'status_id'),
 			'resolution' => array(self::BELONGS_TO, 'Resolution', 'resolution_id'),
@@ -185,6 +200,8 @@ class Ticket extends CActiveRecord
 			'ownerUser' => array(self::BELONGS_TO, 'User', 'owner_user_id'),
 			'parentTicket' => array(self::BELONGS_TO, 'Ticket', 'parent_ticket_id'),
 			'tickets' => array(self::HAS_MANY, 'Ticket', 'parent_ticket_id'),
+			'testerUser' => array(self::BELONGS_TO, 'User', 'tester_user_id'),
+			'responsibleUser' => array(self::BELONGS_TO, 'User', 'responsible_user_id'),
 		);
 	}
 
@@ -198,6 +215,7 @@ class Ticket extends CActiveRecord
 			'subject' => 'Тема',
 			'description' => 'Описание',
 			'create_date' => 'Дата создания',
+			'estimate_start_date' => 'Estimate Start Date',
 			'due_date' => 'Срок',
 			'end_date' => 'Дата закрытия',
 			'estimate_time' => 'Оценка времени (ч)',
@@ -208,6 +226,8 @@ class Ticket extends CActiveRecord
 			'ticket_type_id' => 'Тип',
 			'author_user_id' => 'Автор',
 			'owner_user_id' => 'Владелец',
+			'tester_user_id' => 'Tester User',
+			'responsible_user_id' => 'Responsible User',
 			'parent_ticket_id' => 'Родительская задача',
 		);
 	}
@@ -227,6 +247,7 @@ class Ticket extends CActiveRecord
 		$criteria->compare('subject',$this->subject,true);
 		$criteria->compare('description',$this->description,true);
 		$criteria->compare('create_date',$this->create_date,true);
+		$criteria->compare('estimate_start_date',$this->estimate_start_date,true);
 		$criteria->compare('due_date',$this->due_date,true);
 		$criteria->compare('end_date',$this->end_date,true);
 		$criteria->compare('estimate_time',$this->estimate_time);
@@ -237,6 +258,8 @@ class Ticket extends CActiveRecord
 		$criteria->compare('ticket_type_id',$this->ticket_type_id);
 		$criteria->compare('author_user_id',$this->author_user_id);
 		$criteria->compare('owner_user_id',$this->owner_user_id);
+		$criteria->compare('tester_user_id',$this->tester_user_id);
+		$criteria->compare('responsible_user_id',$this->responsible_user_id);
 		$criteria->compare('parent_ticket_id',$this->parent_ticket_id);
 
 		return new CActiveDataProvider($this, array(

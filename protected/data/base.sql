@@ -273,16 +273,6 @@ COMMIT;
 
 
 -- -----------------------------------------------------
--- Data for table `wkf_task`.`user`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `wkf_task`;
-INSERT INTO `wkf_task`.`user` (`id`, `name`, `mail`, `password`, `work_time_per_week`, `usergroup_id`, `notification_enabled`) VALUES (1, 'test', NULL, NULL, NULL, 4, NULL);
-
-COMMIT;
-
-
--- -----------------------------------------------------
 -- Data for table `wkf_task`.`priority`
 -- -----------------------------------------------------
 START TRANSACTION;

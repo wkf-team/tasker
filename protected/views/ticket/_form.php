@@ -42,6 +42,12 @@
 		<?php echo $form->textArea($model,'description',array('maxlength'=>1023)); ?>
 		<?php echo $form->error($model,'description'); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'estimate_start_date'); ?>
+		<?php echo $form->dateField($model,'estimate_start_date'); ?>
+		<?php echo $form->error($model,'estimate_start_date'); ?>
+	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'due_date'); ?>
@@ -86,6 +92,18 @@
 		<?php echo $form->labelEx($model,'owner_user_id'); ?>
 		<?php echo $form->dropDownList($model,'owner_user_id', CHTML::listData(User::model()->findAll(), 'id', 'name')); ?>
 		<?php echo $form->error($model,'owner_user_id'); ?>
+	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'tester_user_id'); ?>
+		<?php echo $form->dropDownList($model,'tester_user_id', CHTML::listData(User::model()->findAll(), 'id', 'name'), array('empty' => '-- Не выбрано --')); ?>
+		<?php echo $form->error($model,'tester_user_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'responsible_user_id'); ?>
+		<?php echo $form->dropDownList($model,'responsible_user_id', CHTML::listData(User::model()->findAll(), 'id', 'name')); ?>
+		<?php echo $form->error($model,'responsible_user_id'); ?>
 	</div>
 
 	<div class="row">

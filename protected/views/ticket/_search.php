@@ -38,6 +38,12 @@ div.wide a:hover {
 		<?php echo $form->textField($model,'create_date'); ?>
 		<a class="today_link" href="#">Сегодня</a>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->label($model,'estimate_start_date'); ?>
+		<?php echo $form->textField($model,'estimate_start_date'); ?>
+		<a class="today_link" href="#">Сегодня</a>
+	</div>
 
 	<div class="row">
 		<?php echo $form->label($model,'due_date'); ?>
@@ -89,6 +95,16 @@ div.wide a:hover {
 	<div class="row">
 		<?php echo $form->label($model,'owner_user_id'); ?>
 		<?php echo $form->dropDownList($model,'owner_user_id', CHTML::listData(User::model()->findAll(), 'id', 'name'), array('empty' => '-- Выберите для поиска --')); ?>
+	</div>
+	
+	<div class="row">
+		<?php echo $form->label($model,'tester_user_id'); ?>
+		<?php echo $form->dropDownList($model,'tester_user_id', CHTML::listData(User::model()->findAll(), 'id', 'name'), array('empty' => '-- Выберите для поиска --')); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'responsible_user_id'); ?>
+		<?php echo $form->dropDownList($model,'responsible_user_id', CHTML::listData(User::model()->findAll(), 'id', 'name'), array('empty' => '-- Выберите для поиска --')); ?>
 	</div>
 
 	<div class="row">
