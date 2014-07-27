@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /* @var $this TicketController */
 /* @var $model Ticket */
 

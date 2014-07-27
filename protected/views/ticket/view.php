@@ -97,6 +97,40 @@ $this->widget('zii.widgets.CDetailView', array(
 </div><!-- form -->
 
 <?php
+	if ($relationsListProvider->totalItemCount > 0) {
+?>
+<br/>
+<h2>Связи</h2>
+
+<?php
+$this->widget('zii.widgets.grid.CGridView', array(
+	'cssFile' => 'css/gridView.css',
+    'dataProvider'=>$relationsListProvider,
+	'columns'=>array(
+		array(
+			'name' => 'ticket_from_id',
+			'value' => '"#".$data->ticketFrom->id.". ".$data->ticketFrom->subject',
+			//'filter'=>CHTML::listData(User::model()->findAll(), 'id', 'name'),
+			'type' => 'text'
+		),
+		array(
+			'name' => 'relation_type_id',
+			'value' => '$data->relationType->direct_name',
+			//'filter'=>CHTML::listData(User::model()->findAll(), 'id', 'name'),
+			'type' => 'text'
+		),
+		array(
+			'name' => 'ticket_to_id',
+			'value' => '"#".$data->ticketTo->id.". ".$data->ticketTo->subject',
+			//'filter'=>CHTML::listData(User::model()->findAll(), 'id', 'name'),
+			'type' => 'text'
+		),
+	),
+));
+}
+?>
+
+<?php
 	if ($innerListProvider->totalItemCount > 0) {
 ?>
 <br/>
@@ -116,7 +150,6 @@ $this->widget('zii.widgets.CDetailView', array(
 	'itemView'=>'_view',
 )); ?>
 </table>
-
 <?php
 }
 ?>

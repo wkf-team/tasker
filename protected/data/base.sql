@@ -181,11 +181,11 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `wkf_task`.`relation` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `ticket_from_id` INT NOT NULL,
-  `ticket_to_id1` INT NOT NULL,
+  `ticket_to_id` INT NOT NULL,
   `relation_type_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_relation_ticket1_idx` (`ticket_from_id` ASC),
-  INDEX `fk_relation_ticket2_idx` (`ticket_to_id1` ASC),
+  INDEX `fk_relation_ticket2_idx` (`ticket_to_id` ASC),
   INDEX `fk_relation_relation_type1_idx` (`relation_type_id` ASC),
   CONSTRAINT `fk_relation_ticket1`
     FOREIGN KEY (`ticket_from_id`)
@@ -193,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `wkf_task`.`relation` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_relation_ticket2`
-    FOREIGN KEY (`ticket_to_id1`)
+    FOREIGN KEY (`ticket_to_id`)
     REFERENCES `wkf_task`.`ticket` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
@@ -271,6 +271,14 @@ INSERT INTO `wkf_task`.`usergroup` (`id`, `name`, `level`) VALUES (4, 'Адми�
 
 COMMIT;
 
+-- -----------------------------------------------------
+-- Data for table `wkf_task`.`user`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `wkf_task`;
+INSERT INTO `wkf_task`.`user` (`id`, `name`, `mail`, `password`, `work_time_per_week`, `usergroup_id`, `notification_enabled`) VALUES (1, 'admin', NULL, '$1$4175$ZEZh1cGO4IxtOEdt/kuXc/', NULL, 4, 0);
+
+COMMIT;
 
 -- -----------------------------------------------------
 -- Data for table `wkf_task`.`priority`

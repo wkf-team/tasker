@@ -30,14 +30,16 @@ $this->breadcrumbs=array(
 
 <table style="width:900px;">
 <tr>
-	<th width=200px></th>
+	<th width=150px></th>
 	<th>id</th>
 	<th style="width:400px;"><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('subject'));?></th>
 	<th><?php 
 	//echo CHtml::encode($dataProvider->model->getAttributeLabel('due_date'));
 	echo CHtml::encode($dataProvider->model->getAttributeLabel('owner_user_id'));?></th>
+	<th class="filter_balance_only"><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('estimate_start_date'));?></th>
 	<th class="filter_balance_only"><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('due_date'));?></th>
 	<th class="filter_balance_only"><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('estimate_time'));?></th>
+	<th class="filter_balance_only">Пред.</th>
 </tr>
 	
 <?php $this->widget('zii.widgets.CListView', array(
@@ -89,12 +91,12 @@ $(function () {
       },
       text: false
     }).click(OpenEditDialog);
-	$(".btnOpen").button({
+	/*$(".btnOpen").button({
       icons: {
         primary: "ui-icon-folder-open"
       },
       text: false
-    }).click();
+    }).click();*/
 	$(".btnDelete").button({
       icons: {
         primary: "ui-icon-trash"
@@ -107,12 +109,12 @@ $(function () {
       },
       text: false
     }).click(OpenNewDialog);
-	$(".btnInline").button({
+	/*$(".btnInline").button({
       icons: {
         primary: "ui-icon-seek-next"
       },
       text: false
-    }).click(StartAISE);
+    }).click(StartAISE);*/
 	$("#btnAddEpic").button({
       icons: {
         primary: "ui-icon-plusthick"
@@ -159,6 +161,7 @@ $(function () {
 		dialog.find("#Ticket_owner_user_id").val(data.owner_user_id);
 		dialog.find("#Ticket_ticket_type_id").val(data.ticket_type_id);
 		dialog.find("#Ticket_parent_ticket_id").val(data.parent_ticket_id);
+		dialog.find("#blocked_by").val(data.blocked_by);
 		// open
 		dialog.dialog("open");
 	}
@@ -185,6 +188,7 @@ $(function () {
 		dialog.find("#Ticket_owner_user_id").val(newTicketData.owner_user_id);
 		dialog.find("#Ticket_ticket_type_id").val(isTask ? 2 : 1);
 		dialog.find("#Ticket_parent_ticket_id").val(parent_ticket_id);
+		dialog.find("#blocked_by").val(null);
 		// open
 		dialog.dialog("open");
 	}

@@ -64,6 +64,7 @@ class Ticket extends CActiveRecord
 	protected function beforeSave()
 	{
 		if ($this->due_date == '') $this->due_date = null;
+		if ($this->estimate_start_date == '') $this->estimate_start_date = null;
 		return parent::beforeSave();
 	}
 	
@@ -190,8 +191,8 @@ class Ticket extends CActiveRecord
 		return array(
 			'attachements' => array(self::HAS_MANY, 'Attachement', 'ticket_id'),
 			'comments' => array(self::HAS_MANY, 'Comment', 'ticket_id'),
-			'relations' => array(self::HAS_MANY, 'Relation', 'ticket_from_id'),
-			'relations1' => array(self::HAS_MANY, 'Relation', 'ticket_to_id1'),
+			'relTicketsFrom' => array(self::HAS_MANY, 'Relation', 'ticket_from_id'),
+			'relTicketsTo' => array(self::HAS_MANY, 'Relation', 'ticket_to_id'),
 			'priority' => array(self::BELONGS_TO, 'Priority', 'priority_id'),
 			'status' => array(self::BELONGS_TO, 'Status', 'status_id'),
 			'resolution' => array(self::BELONGS_TO, 'Resolution', 'resolution_id'),
@@ -215,7 +216,7 @@ class Ticket extends CActiveRecord
 			'subject' => 'Тема',
 			'description' => 'Описание',
 			'create_date' => 'Дата создания',
-			'estimate_start_date' => 'Estimate Start Date',
+			'estimate_start_date' => 'План старт',
 			'due_date' => 'Срок',
 			'end_date' => 'Дата закрытия',
 			'estimate_time' => 'Оценка времени (ч)',
@@ -225,11 +226,87 @@ class Ticket extends CActiveRecord
 			'resolution_id' => 'Резолюция',
 			'ticket_type_id' => 'Тип',
 			'author_user_id' => 'Автор',
-			'owner_user_id' => 'Владелец',
-			'tester_user_id' => 'Tester User',
-			'responsible_user_id' => 'Responsible User',
+			'owner_user_id' => 'Текущий владелец',
+			'tester_user_id' => 'QA',
+			'responsible_user_id' => 'Ответственный',
 			'parent_ticket_id' => 'Родительская задача',
 		);
+	}
+	
+	public function __get($name) {
+		if ($name == "blocked_by") return $this->GetBlockedBy_ValueString();
+		return parent::__get($name);
+	}
+	
+	public $includeBlockedBy = false;
+	public function getIterator()
+	{
+		$attributes=$this->getAttributes();
+		//without this hack I am receiving PHP Warning while updating ticket
+		//TODO check and fix it
+		if ($this->includeBlockedBy) $attributes['blocked_by'] = $this->blocked_by;
+		return new CMapIterator($attributes);
+	}
+	
+	public function GetBlockedBy_HtmlString()
+	{
+		return $this->GetBlockedBy(true);
+	}
+	
+	public function GetBlockedBy_ValueString()
+	{
+		return $this->GetBlockedBy(false);
+	}
+	
+	private function GetBlockedBy($withHtml)
+	{
+		$relText = "";
+		foreach($this->relTicketsTo as $relation) {
+			if ($relation->relation_type_id == 1) {
+				if ($withHtml) $relText .= CHtml::link(CHtml::encode($relation->ticket_from_id), array('view', 'id'=>$relation->ticket_from_id)).", ";
+				else $relText .= $relation->ticket_from_id.", ";
+			}
+		}
+		if ($relText != "") $relText = substr($relText, 0, strlen($relText) - 2);
+		return $relText;
+	}
+	
+	public function UpdateBlockedBy($value)
+	{
+		// check blocked_by field
+		if ($value == "") // make no relation
+		{
+			foreach($this->relTicketsTo as $relation) {
+				if ($relation->relation_type_id == 1) {
+					$relation->delete();
+				}
+			}
+		} else { // parse relations
+			$ids = explode(",", $value);
+			$ids_array = array();
+			//add if new
+			foreach($ids as $id_s) {
+				$id = (int)trim($id_s);
+				// id is digits, id is not current and ticket with id exists
+				if ($id > 0 && $id != $this->id && Ticket::model()->findByPk($id) != null) {
+					//if not found then add relation
+					if(Relation::model()->findByAttributes(array('ticket_to_id' => $this->id, 'ticket_from_id' => $id, 'relation_type_id' => 1)) == null) {
+						$rel = new Relation();
+						$rel->ticket_to_id = $this->id;
+						$rel->ticket_from_id = $id;
+						$rel->relation_type_id = 1;
+						$rel->save();
+					}
+					$ids_array[] = $id;
+				} else Yii::app()->log("UpdateBlockedBy for ticket ".$this->id." has wrong input: ".$id_s, "warning");
+			}
+			//delete if not exist
+			foreach($this->relTicketsTo as $relation) {
+				if ($relation->relation_type_id == 1 && !in_array($relation->ticket_from_id, $ids_array)) {
+					$relation->delete();
+				}
+			}
+		}
 	}
 
 	/**

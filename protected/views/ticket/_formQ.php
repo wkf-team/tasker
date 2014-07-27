@@ -52,6 +52,13 @@
 		<?php echo $form->error($model,'owner_user_id'); ?>
 	</div>
 
+	<div class="row">
+		<?php
+		echo CHtml::label("Предшественники", "blocked_by"); 
+		echo CHtml::textField("blocked_by", $model->GetBlockedBy_ValueString());
+		?>
+	</div>
+
 <?php $this->endWidget(); ?>
 
 </div><!-- form -->

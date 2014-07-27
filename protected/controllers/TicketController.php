@@ -73,9 +73,22 @@ class TicketController extends Controller
 				'order'=>Ticket::$orderString,
 			),
 			'pagination' => array('pageSize'=>30)));
+		$relationsListProvider=new CActiveDataProvider('Relation', array('criteria'=>array(
+				'condition'=>'ticket_from_id = :tid OR ticket_to_id = :tid',
+				'params'=>array(':tid'=>$id),
+				'order'=>'relation_type_id, ticket_from_id, ticket_to_id',
+			),
+			'pagination' => array('pageSize'=>30)));
+		$commentsProvider=new CActiveDataProvider('Comment', array('criteria'=>array(
+				'condition'=>'ticket_id = :tid',
+				'params'=>array(':tid'=>$id),
+				'order'=>'create_date DESC',
+			),
+			'pagination' => array('pageSize'=>30)));
 		$this->render('view',array(
 			'model'=>$model,
-			'innerListProvider'=>$innerListProvider
+			'innerListProvider'=>$innerListProvider,
+			'relationsListProvider'=>$relationsListProvider
 		));
 	}
 
@@ -88,7 +101,7 @@ class TicketController extends Controller
 		$model=Ticket::create();
 
 		// Uncomment the following line if AJAX validation is needed
-		$this->performAjaxValidation($model);
+		//$this->performAjaxValidation($model);
 		if(isset($_POST['Ticket']))
 		{
 			$model->attributes=$_POST['Ticket'];
@@ -216,6 +229,7 @@ class TicketController extends Controller
 			$model->attributes=$_POST['Ticket'];
 			if ($model->id) $model->isNewRecord = false;
 			if (!$model->save()) Yii::log(CJSON::encode($model->getErrors()), "error");
+			else $model->UpdateBlockedBy($_POST['blocked_by']);
 		}
 	}
 	
@@ -232,8 +246,8 @@ class TicketController extends Controller
 		$dataProvider=new CActiveDataProvider('Ticket', array(
 			'criteria'=>array(
 				// открытые цели, незакрытые задач
-				'condition'=>'status_id < 3 AND 
-					(ticket_type_id = 1 OR parent_ticket_id IS NOT NULL)'.
+				'condition'=>'status_id < 3 './/AND 
+					//(ticket_type_id = 1 OR parent_ticket_id IS NOT NULL)'.
 					($filter_new ? " AND create_date > '".date("Y-m-d", time() - 2*24*60*60)."'" : ""),
 				// сортировка по целям
 				'order'=>'if (ticket_type_id = 1, 100 * id, parent_ticket_id * 100 + 1), due_date',

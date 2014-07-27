@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /**
  * This is the model class for table "relation".
@@ -6,12 +6,12 @@
  * The followings are the available columns in table 'relation':
  * @property integer $id
  * @property integer $ticket_from_id
- * @property integer $ticket_to_id1
+ * @property integer $ticket_to_id
  * @property integer $relation_type_id
  *
  * The followings are the available model relations:
  * @property Ticket $ticketFrom
- * @property Ticket $ticketToId1
+ * @property Ticket $ticketTo
  * @property RelationType $relationType
  */
 class Relation extends CActiveRecord
@@ -32,11 +32,11 @@ class Relation extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('ticket_from_id, ticket_to_id1, relation_type_id', 'required'),
-			array('ticket_from_id, ticket_to_id1, relation_type_id', 'numerical', 'integerOnly'=>true),
+			array('ticket_from_id, ticket_to_id, relation_type_id', 'required'),
+			array('ticket_from_id, ticket_to_id, relation_type_id', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, ticket_from_id, ticket_to_id1, relation_type_id', 'safe', 'on'=>'search'),
+			array('id, ticket_from_id, ticket_to_id, relation_type_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -49,7 +49,7 @@ class Relation extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'ticketFrom' => array(self::BELONGS_TO, 'Ticket', 'ticket_from_id'),
-			'ticketToId1' => array(self::BELONGS_TO, 'Ticket', 'ticket_to_id1'),
+			'ticketTo' => array(self::BELONGS_TO, 'Ticket', 'ticket_to_id'),
 			'relationType' => array(self::BELONGS_TO, 'RelationType', 'relation_type_id'),
 		);
 	}
@@ -61,9 +61,9 @@ class Relation extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'ticket_from_id' => 'Ticket From',
-			'ticket_to_id1' => 'Ticket To Id1',
-			'relation_type_id' => 'Relation Type',
+			'ticket_from_id' => 'Источник',
+			'ticket_to_id' => 'Приемник',
+			'relation_type_id' => 'Отношение',
 		);
 	}
 
@@ -87,7 +87,7 @@ class Relation extends CActiveRecord
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('ticket_from_id',$this->ticket_from_id);
-		$criteria->compare('ticket_to_id1',$this->ticket_to_id1);
+		$criteria->compare('ticket_to_id',$this->ticket_to_id);
 		$criteria->compare('relation_type_id',$this->relation_type_id);
 
 		return new CActiveDataProvider($this, array(
