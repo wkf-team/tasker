@@ -154,6 +154,53 @@ $this->widget('zii.widgets.grid.CGridView', array(
 }
 ?>
 
+<br/>
+<h2>Вложения</h2>
+<?php
+echo CHtml::link("Add new attachment", array('attachment/create', 'ticket_id'=>$model->id), array('id'=>'btnAddAttachment'));
+if ($attachmentProvider->totalItemCount > 0) {
+$this->widget('zii.widgets.grid.CGridView', array(
+	'id'=>'attachment-grid',
+	'cssFile' => 'css/gridView.css',
+	'dataProvider'=>$attachmentProvider,
+	'columns'=>array(
+		array(
+			'name' => 'name',
+			'value' => 'CHtml::link($data->name, "attachments/".$data->name)',
+			'type' => 'html'
+		),
+		array(
+			'name' => 'author_id',
+			'value' => '$data->author->name',
+			'type' => 'text'
+		),
+		'create_date',
+		array(
+			'class'=>'CButtonColumn',
+			'buttons'=>array(
+				'view' => array('visible'=>'false'),
+				'update' => array('visible'=>'false'),
+				'delete' => array('visible'=>'User::CheckLevel(20)'),//allow coordinator
+			),
+			'deleteButtonUrl'=>"CHtml::normalizeUrl(array('attachment/delete', 'id'=>\$data->id))",
+		),
+	),
+));
+}
+?>
+
+<br/>
+<h2>Комментарии</h2>
+<?php
+echo CHtml::link("Add new comment", array('comment/create'), array('id'=>'btnAddComment'));
+if ($commentsProvider->totalItemCount > 0) {
+$this->widget('zii.widgets.CListView', array(
+	'dataProvider'=>$commentsProvider,
+	'itemView'=>'/comment/_view',
+));
+}
+?>
+
 <script>
 $(function () {
 	$(".wf_action").button().click(function (ev, ui){
@@ -165,6 +212,18 @@ $(function () {
 			$("#resolution").dialog('open');
 		}
 	});
+	$("#btnAddAttachment").button({
+      icons: {
+        primary: "ui-icon-plusthick"
+      },
+      text: false
+    });
+	$("#btnAddComment").button({
+      icons: {
+        primary: "ui-icon-plusthick"
+      },
+      text: false
+    });
 	$("#resolution").dialog({
 		autoOpen	: false,
 		modal		: true,

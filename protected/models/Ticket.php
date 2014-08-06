@@ -295,10 +295,10 @@ class Ticket extends CActiveRecord
 						$rel->ticket_to_id = $this->id;
 						$rel->ticket_from_id = $id;
 						$rel->relation_type_id = 1;
-						$rel->save();
+						if (!$rel->save()) Yii::log(CJSON::encode($rel->getErrors()), "error");
 					}
 					$ids_array[] = $id;
-				} else Yii::app()->log("UpdateBlockedBy for ticket ".$this->id." has wrong input: ".$id_s, "warning");
+				} else Yii::log("UpdateBlockedBy for ticket ".$this->id." has wrong input: ".$id_s, "warning");
 			}
 			//delete if not exist
 			foreach($this->relTicketsTo as $relation) {

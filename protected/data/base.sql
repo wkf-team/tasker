@@ -190,12 +190,12 @@ CREATE TABLE IF NOT EXISTS `wkf_task`.`relation` (
   CONSTRAINT `fk_relation_ticket1`
     FOREIGN KEY (`ticket_from_id`)
     REFERENCES `wkf_task`.`ticket` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_relation_ticket2`
     FOREIGN KEY (`ticket_to_id`)
     REFERENCES `wkf_task`.`ticket` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_relation_relation_type1`
     FOREIGN KEY (`relation_type_id`)
@@ -231,23 +231,23 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `wkf_task`.`attachement`
+-- Table `wkf_task`.`attachment`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `wkf_task`.`attachement` (
+CREATE TABLE IF NOT EXISTS `wkf_task`.`attachment` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `create_date` DATE NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `ticket_id` INT NOT NULL,
   `author_id` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_attachement_ticket1_idx` (`ticket_id` ASC),
-  INDEX `fk_attachement_user1_idx` (`author_id` ASC),
-  CONSTRAINT `fk_attachement_ticket1`
+  INDEX `fk_attachment_ticket1_idx` (`ticket_id` ASC),
+  INDEX `fk_attachment_user1_idx` (`author_id` ASC),
+  CONSTRAINT `fk_attachment_ticket1`
     FOREIGN KEY (`ticket_id`)
     REFERENCES `wkf_task`.`ticket` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_attachement_user1`
+  CONSTRAINT `fk_attachment_user1`
     FOREIGN KEY (`author_id`)
     REFERENCES `wkf_task`.`user` (`id`)
     ON DELETE NO ACTION

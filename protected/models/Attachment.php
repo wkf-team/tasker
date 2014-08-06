@@ -1,9 +1,9 @@
 <?php
 
 /**
- * This is the model class for table "attachement".
+ * This is the model class for table "attachment".
  *
- * The followings are the available columns in table 'attachement':
+ * The followings are the available columns in table 'attachment':
  * @property integer $id
  * @property string $create_date
  * @property string $name
@@ -14,14 +14,14 @@
  * @property Ticket $ticket
  * @property User $author
  */
-class Attachement extends CActiveRecord
+class Attachment extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'attachement';
+		return 'attachment';
 	}
 
 	/**
@@ -32,12 +32,10 @@ class Attachement extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('create_date, name, ticket_id, author_id', 'required'),
-			array('ticket_id, author_id', 'numerical', 'integerOnly'=>true),
+			//array('name', 'required'),
 			array('name', 'length', 'max'=>45),
 			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-			array('id, create_date, name, ticket_id, author_id', 'safe', 'on'=>'search'),
+			array('create_date, name, ticket_id, author_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -61,10 +59,10 @@ class Attachement extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'create_date' => 'Create Date',
-			'name' => 'Name',
-			'ticket_id' => 'Ticket',
-			'author_id' => 'Author',
+			'create_date' => 'Дата создания',
+			'name' => 'Имя',
+			'ticket_id' => 'Задача',
+			'author_id' => 'Автор',
 		);
 	}
 
@@ -101,10 +99,17 @@ class Attachement extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Attachement the static model class
+	 * @return Attachment the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+	
+	public function SetDefault($ticket_id)
+	{
+		$this->ticket_id = $ticket_id;
+		$this->author_id = Yii::app()->user->id;
+		$this->create_date = date("Y/m/d");
 	}
 }

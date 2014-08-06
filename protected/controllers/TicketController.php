@@ -85,10 +85,18 @@ class TicketController extends Controller
 				'order'=>'create_date DESC',
 			),
 			'pagination' => array('pageSize'=>30)));
+		$attachmentProvider=new CActiveDataProvider('Attachment', array('criteria'=>array(
+				'condition'=>'ticket_id = :tid',
+				'params'=>array(':tid'=>$id),
+				'order'=>'create_date DESC',
+			),
+			'pagination' => array('pageSize'=>30)));
 		$this->render('view',array(
 			'model'=>$model,
 			'innerListProvider'=>$innerListProvider,
-			'relationsListProvider'=>$relationsListProvider
+			'relationsListProvider'=>$relationsListProvider,
+			'commentsProvider'=>$commentsProvider,
+			'attachmentProvider'=>$attachmentProvider
 		));
 	}
 
@@ -220,8 +228,12 @@ class TicketController extends Controller
 	 */
 	public function actionAjaxEdit()
 	{
-		//Yii::log("edit input: ".CJSON::encode($_POST['Ticket']), "debug");
-		$model=Ticket::create('plan');
+		if (isset($_POST['Ticket']['id']) && $_POST['Ticket']['id']) {
+			$model=Ticket::create('plan');
+		} else {
+			$model=Ticket::create();
+			unset($_POST['Ticket']['id']);
+		}
 		CActiveForm::validate($model);
 		if ($model->HasErrors()) echo CJSON::encode($model->getErrors());
 		else if(isset($_POST['Ticket']))
