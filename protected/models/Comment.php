@@ -32,12 +32,11 @@ class Comment extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('create_date, ticket_id, author_id', 'required'),
-			array('ticket_id, author_id', 'numerical', 'integerOnly'=>true),
+			array('text', 'required'),
 			array('text', 'length', 'max'=>1000),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, create_date, text, ticket_id, author_id', 'safe', 'on'=>'search'),
+			array('create_date, text, ticket_id, author_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -61,10 +60,10 @@ class Comment extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'create_date' => 'Create Date',
-			'text' => 'Text',
-			'ticket_id' => 'Ticket',
-			'author_id' => 'Author',
+			'create_date' => 'Дата создания',
+			'text' => 'Текст',
+			'ticket_id' => 'Задача',
+			'author_id' => 'Автор',
 		);
 	}
 
@@ -106,5 +105,19 @@ class Comment extends CActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+	
+	public function SetDefault($ticket_id)
+	{
+		$this->ticket_id = $ticket_id;
+		$this->author_id = Yii::app()->user->id;
+		$this->create_date = date("Y/m/d H:i:s");
+	}
+	
+	public function encodeDate($date)
+	{
+		if ($date == null || $date == "") return $date;
+		$dt = new DateTime($date);
+		return CHtml::encode($dt->format("d.m.Y"));
 	}
 }

@@ -20,31 +20,16 @@
 	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'create_date'); ?>
-		<?php echo $form->textField($model,'create_date'); ?>
-		<?php echo $form->error($model,'create_date'); ?>
-	</div>
-
-	<div class="row">
 		<?php echo $form->labelEx($model,'text'); ?>
 		<?php echo $form->textField($model,'text',array('size'=>60,'maxlength'=>1000)); ?>
 		<?php echo $form->error($model,'text'); ?>
 	</div>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'ticket_id'); ?>
-		<?php echo $form->textField($model,'ticket_id'); ?>
-		<?php echo $form->error($model,'ticket_id'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'author_id'); ?>
-		<?php echo $form->textField($model,'author_id'); ?>
-		<?php echo $form->error($model,'author_id'); ?>
-	</div>
-
 	<div class="row buttons">
-		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
+		<?php 
+		echo CHtml::link("Cancel", array('ticket/view', 'id'=>$model->ticket_id));
+		echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save');
+		?>
 	</div>
 
 <?php $this->endWidget(); ?>

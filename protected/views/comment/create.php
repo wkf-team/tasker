@@ -3,8 +3,8 @@
 /* @var $model Comment */
 
 $this->breadcrumbs=array(
-	'Comments'=>array('index'),
-	'Create',
+	'Ticket'=>array('ticket/view', 'id'=>$model->ticket_id),
+	'Create comment',
 );
 
 $this->menu=array(

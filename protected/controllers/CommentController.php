@@ -31,13 +31,13 @@ class CommentController extends Controller
 				'actions'=>array('index','view'),
 				'users'=>array('*'),
 			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
+			array('allow', // allow for participants
 				'actions'=>array('create','update'),
-				'users'=>array('@'),
+				'expression'=>'User::CheckLevel(10)',
 			),
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
+			array('allow', // allow coordinator
 				'actions'=>array('admin','delete'),
-				'users'=>array('admin'),
+				'expression'=>'User::CheckLevel(20)',
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -70,13 +70,19 @@ class CommentController extends Controller
 		if(isset($_POST['Comment']))
 		{
 			$model->attributes=$_POST['Comment'];
+			$model->SetDefault((int)$_GET['ticket_id']);
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+				$this->redirect(array('ticket/view','id'=>$model->ticket_id));
 		}
 
-		$this->render('create',array(
-			'model'=>$model,
-		));
+		if (isset($_GET['ticket_id']))
+		{
+			$this->layout = '//layouts/column1';
+			$model->SetDefault((int)$_GET['ticket_id']);
+			$this->render('create',array(
+				'model'=>$model,
+			));
+		} else { Yii::log("Accessing comment/create without id", "warning"); }
 	}
 
 	/**

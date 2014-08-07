@@ -3,8 +3,8 @@
 /* @var $model Attachment */
 
 $this->breadcrumbs=array(
-	'Attachments'=>array('index'),
-	'Create',
+	'Ticket'=>array('ticket/view', 'id'=>$model->ticket_id),
+	'Create attachment',
 );
 
 $this->menu=array(

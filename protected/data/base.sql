@@ -210,7 +210,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `wkf_task`.`comment` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `create_date` DATE NOT NULL,
+  `create_date` DATETIME NOT NULL,
   `text` VARCHAR(1000) NULL,
   `ticket_id` INT NOT NULL,
   `author_id` INT NOT NULL,
@@ -220,7 +220,7 @@ CREATE TABLE IF NOT EXISTS `wkf_task`.`comment` (
   CONSTRAINT `fk_comment_ticket1`
     FOREIGN KEY (`ticket_id`)
     REFERENCES `wkf_task`.`ticket` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_comment_user1`
     FOREIGN KEY (`author_id`)
