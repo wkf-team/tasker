@@ -99,16 +99,6 @@ class Ticket extends CActiveRecord
 		else return $result;
 	}
 	
-	public function getWorkflowActions()
-	{
-		switch($this->status_id) {
-			case 1: return array(array('name'=>'start', 'needResolution'=>false), array('name'=>'close', 'needResolution'=>true));
-			case 2: return array(array('name'=>'done', 'needResolution'=>true), array('name'=>'close', 'needResolution'=>true));
-			case 3: return array(array('name'=>'reopen', 'needResolution'=>false), array('name'=>'close', 'needResolution'=>false));
-			case 4: return array(array('name'=>'reopen', 'needResolution'=>false));
-		}
-	}
-	
 	public function encodeDate($date)
 	{
 		if ($date == null || $date == "") return $date;
@@ -116,26 +106,66 @@ class Ticket extends CActiveRecord
 		return CHtml::encode($dt->format("d.m.Y"));
 	}
 	
+	/**
+	old vals: 1 - open, 2 - in work, 3 - done, 4 - closed
+	*/
+	public function getWorkflowActions()
+	{
+		switch($this->status_id) {
+			case 1: return array(array('name'=>'start', 'needResolution'=>false), array('name'=>'close', 'needResolution'=>true));
+			case 2: return array(array('name'=>'start', 'needResolution'=>false), array('name'=>'withdraw', 'needResolution'=>false));
+			case 3: return array(array('name'=>'start', 'needResolution'=>false), array('name'=>'withdraw', 'needResolution'=>false));
+			case 4: return array($ret_arr = $this->tester_user_id ? array('name'=>'test', 'needResolution'=>true) : array('name'=>'done', 'needResolution'=>true), array('name'=>'hold', 'needResolution'=>false), array('name'=>'close', 'needResolution'=>true));
+			case 5: return array(array('name'=>'pass', 'needResolution'=>false), array('name'=>'fail', 'needResolution'=>false), array('name'=>'close', 'needResolution'=>true));
+			case 6: return array(array('name'=>'reopen', 'needResolution'=>false), array('name'=>'close', 'needResolution'=>false));
+			case 7: return array(array('name'=>'reopen', 'needResolution'=>false));
+		}
+	}
+	
 	public function makeWorkflowAction($action, $resolution = null, $worked_time = null)
 	{
 		switch ($action) {
 			case 'start' :
 			$this->owner_user_id = Yii::app()->user->id;
+			$this->status_id = 4;
+			break;
+			case 'hold' :
+			$this->status_id = 3;
+			break;
+			case 'test' :
+			$this->owner_user_id = $this->tester_user_id;
+			Sendmail::mailAssignTicket($this);
+			$this->resolution_id = $resolution;
+			$this->worked_time = $worked_time;
+			$this->status_id = 5;
+			break;
+			case 'pass' :
+			$this->end_date = date("Y-m-d");
+			$this->status_id = 6;
+			break;
+			case 'fail' :
+			$this->owner_user_id = $this->responsible_user_id;
+			Sendmail::mailAssignTicket($this);
 			$this->status_id = 2;
+			$this->end_date = null;
+			$this->resolution_id = 1;
 			break;
 			case 'done' : 
-			$this->status_id = 3;
+			$this->status_id = 6;
 			$this->resolution_id = $resolution;
 			$this->worked_time = $worked_time;
 			$this->end_date = date("Y-m-d");
 			break;
 			case 'reopen' : 
-			$this->status_id = 1;
+			$this->status_id = 2;
 			$this->end_date = null;
 			$this->resolution_id = 1;
 			break;
+			case 'withdraw' : 
+			$this->status_id = 1;
+			break;
 			case 'close' : 
-			$this->status_id = 4;
+			$this->status_id = 7;
 			if(!$this->end_date) $this->end_date = date("Y-m-d");
 			if ($resolution) $this->resolution_id = $resolution;
 			$this->worked_time = $worked_time;

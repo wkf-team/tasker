@@ -176,7 +176,7 @@ class TicketController extends Controller
 	{
 		$dataProvider=new CActiveDataProvider('Ticket', array('criteria'=>array(
 				// открытые цели, незакрытые задач
-				'condition'=>'status_id < 3',
+				'condition'=>'status_id < 6',
 				'order'=>Ticket::$orderString,
 			),
 			'pagination' => array('pageSize'=>20)));
@@ -193,7 +193,7 @@ class TicketController extends Controller
 		$dataProvider=new CActiveDataProvider('Ticket', array(
 			'criteria'=>array(
 				// открытые цели, незакрытые задач
-				'condition'=>'status_id < 3 AND owner_user_id = '.$id,
+				'condition'=>'status_id < 6 AND owner_user_id = '.$id,
 				'order'=>Ticket::$orderString,
 			),'pagination'=>array(
 				'pageSize'=>20,
@@ -212,7 +212,7 @@ class TicketController extends Controller
 		$dataProvider=new CActiveDataProvider('Ticket', array(
 			'criteria'=>array(
 				// открытые цели, незакрытые задач
-				'condition'=>'status_id < 3 AND parent_ticket_id = '.$id,
+				'condition'=>'status_id < 6 AND parent_ticket_id = '.$id,
 				'order'=>Ticket::$orderString,
 			),'pagination'=>array(
 				'pageSize'=>20,
@@ -258,7 +258,7 @@ class TicketController extends Controller
 		$dataProvider=new CActiveDataProvider('Ticket', array(
 			'criteria'=>array(
 				// открытые цели, незакрытые задач
-				'condition'=>'status_id < 3 './/AND 
+				'condition'=>'status_id < 6 './/AND 
 					//(ticket_type_id = 1 OR parent_ticket_id IS NOT NULL)'.
 					($filter_new ? " AND create_date > '".date("Y-m-d", time() - 2*24*60*60)."'" : ""),
 				// сортировка по целям

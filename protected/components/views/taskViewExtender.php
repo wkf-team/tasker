@@ -12,6 +12,9 @@ $(function() {
 	$("td:contains(Решен)").css("color","green");
 	$("td:contains(Закрыт)").css("color","green");
 	$("td:contains(В работе)").css("color","yellow");
+	$("td:contains(На тестировании)").css("color","yellow");
+	$("td:contains(Отложен)").css("color","yellow");
+	$("td:contains(Переоткрыт)").css("color","red");
 	$("td:contains(Блокер)").css("color","red");
 	$("td:contains(Высокий)").css("color","red");
 	$("td:contains(Средний)").css("color","yellow");

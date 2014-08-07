@@ -299,9 +299,12 @@ COMMIT;
 START TRANSACTION;
 USE `wkf_task`;
 INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (1, 'Открыт');
-INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (2, 'В работе');
-INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (3, 'Решен');
-INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (4, 'Закрыт');
+INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (2, 'Переоткрыт');
+INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (3, 'Отложен');
+INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (4, 'В работе');
+INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (5, 'На тестировании');
+INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (6, 'Решен');
+INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (7, 'Закрыт');
 
 COMMIT;
 
