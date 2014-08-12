@@ -11,7 +11,9 @@
 			menubar:false,
 			language : 'ru',
 			statusbar: true,
-			resize: true
+			resize: true,
+			toolbar:'styleselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link | removeformat',
+			removeformat_selector : 'b,strong,em,i,span,ins,ul,li,ol'
 		});
 </script>
 <div class="form">
