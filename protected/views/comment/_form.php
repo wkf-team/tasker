@@ -15,8 +15,6 @@
 	'enableAjaxValidation'=>false,
 )); ?>
 
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
-
 	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
@@ -28,7 +26,7 @@
 	<div class="row buttons">
 		<?php 
 		echo CHtml::link("Cancel", array('ticket/view', 'id'=>$model->ticket_id));
-		echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save');
+		echo CHtml::submitButton($model->isNewRecord ? 'Добавить' : 'Сохранить');
 		?>
 	</div>
 

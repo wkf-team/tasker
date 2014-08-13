@@ -278,15 +278,19 @@ class TicketController extends Controller
 		$model=$this->loadModel($id);
 		if (isset($_POST['Ticket']))
 		{
-			$resolution = (int)$_POST['Ticket']['resolution_id'];
-			$worked_time = (int)$_POST['Ticket']['worked_time'];
-			$model->makeWorkflowAction($action, $resolution, $worked_time);
-		} else $model->makeWorkflowAction($action);
-		if($model->save()) {
-			Sendmail::mailChangeTicket($model);
-			$this->redirect(array('view','id'=>$model->id));
+			$model->resolution_id = (int)$_POST['Ticket']['resolution_id'];
+			$model->worked_time = (int)$_POST['Ticket']['worked_time'];
 		}
-
+		$model->makeWorkflowAction($action);
+		if (isset($_POST['Comment']) && $_POST['Comment'] > '')
+		{
+			$comment = new Comment();
+			$comment->attributes=$_POST['Comment'];
+			$comment->SetDefault($id);
+			$comment->save();
+		}
+		Sendmail::mailChangeTicket($model);
+		$this->redirect(array('view','id'=>$model->id));
 	}
 
 	/**

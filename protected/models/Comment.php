@@ -61,7 +61,7 @@ class Comment extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'create_date' => 'Дата создания',
-			'text' => 'Текст',
+			'text' => 'Комментарий',
 			'ticket_id' => 'Задача',
 			'author_id' => 'Автор',
 		);
