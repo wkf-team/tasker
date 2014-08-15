@@ -1,4 +1,4 @@
-﻿<div id="goalsComplete">
+<div id="goalsComplete" style="display:inline-block;padding-right:10px;">
 Выполнение целей:<br/>
     <?php 
     foreach($this->goals as $goal) {

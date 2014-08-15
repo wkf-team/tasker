@@ -1,4 +1,4 @@
-﻿<?php /* @var $this Controller */ ?>
+<?php /* @var $this Controller */ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -28,9 +28,12 @@
 
 <div class="container" id="page">
 
-	<div id="header">
-		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?></div>
-		<div style="position: relative; top: -40px; right: -700px;">
+	<div id="header" style="position: relative;">
+		<div style="position:relative; top:5px; left:40%;">
+			<?php $this->widget('RW_GoalsComplete'); ?>
+		</div>
+		<div id="logo" style="position:absolute; top:0px;"><?php echo CHtml::encode(Yii::app()->name); ?></div>
+		<div style="position: absolute; top: 10px; right:10px;">
 			<?php
 			$this->widget('RW_ReportsPreview');
 			echo CHtml::beginForm(array('ticket/QuickSearch'), 'GET', array('style'=>'display:inline;'));
@@ -38,7 +41,7 @@
 			echo CHtml::linkButton('Поиск');
 			echo CHtml::endForm();
 			?>
-		</div>
+		</div><br/>
 		<?php  ?>
 	</div><!-- header -->
 

@@ -28,7 +28,7 @@ $this->breadcrumbs=array(
 </td></tr></table>
 -->
 
-<table style="width:900px;">
+<table>
 <tr>
 	<th width=150px></th>
 	<th>id</th>

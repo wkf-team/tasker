@@ -6,7 +6,6 @@ body
 	font: normal 10pt Arial,Helvetica,sans-serif;
 	background: #EFEFEF;
 	font-family : "Helvetica";
-	margin: 50px;
 	background: rgb(51, 51, 51);
 	background-image: url(custom/images/ui-bg_diagonals-small_55_000000_40x40.png);
 	color : rgb(204, 204, 204);
@@ -23,8 +22,8 @@ a:hover {
 
 #page
 {
-	margin-top: 5px;
-	margin-bottom: 5px;
+	margin-top: 40px;
+	margin-bottom: 40px;
 	background: rgb(51, 51, 51);
 	border: 1px solid #C9E0ED;
 }

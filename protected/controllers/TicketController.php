@@ -222,7 +222,7 @@ class TicketController extends Controller
 	public function actionPlan()
 	{
 		$filter_new = 0;
-		$layout='//layouts/column1';
+		$this->layout='//layouts/column1';
 		
 		$model=Ticket::create();
 		

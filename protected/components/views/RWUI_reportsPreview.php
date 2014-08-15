@@ -1,4 +1,5 @@
-﻿<style>
+<div style="display:inline-block;">
+<style>
 #reports {
 	position: fixed;
 	width: 360px;
@@ -25,6 +26,7 @@
     <p>
 		<?php
 			$this->widget('RW_GoalsComplete'); 
+			echo "<br/>";
 			$this->widget('RW_UsersBalance'); 
 			$this->widget('RW_TermsBreak'); 
 		?>
@@ -58,3 +60,4 @@ $(function () {
 
 });
 </script>
+</div>
