@@ -27,21 +27,9 @@ pre {
 }
 </style>
 
+<?php $this->widget('WW_Workflow', array('model'=>$model)); ?>
+
 <?php
-$actions = $model->getWorkflowActions();
-foreach ($actions as $action) {
-	echo CHtml::link(
-		$action->button_name,
-		array('ticket/makeWF',
-			'id'=>$model->id,
-			'action'=>$action->step_name),
-		array(
-			'class'=>'wf_action'.
-				(strpos($action->input_data, 'resolution') !== false ?' wf_resolution' : '').
-				(strpos($action->input_data, 'comment') !== false ?' wf_comment' : '')
-			)
-	);
-}
 echo "<br/><br/><b>Описание</b><br/>".$model->description;
 
 $this->widget('zii.widgets.CDetailView', array(
@@ -84,174 +72,12 @@ $this->widget('zii.widgets.CDetailView', array(
 	),
 )); ?>
 
+<br />
 
-<div class="form" id="resolution" title="Уточните">
+<?php $this->widget('AW_AttList', array('ticket_id'=>$model->id, 'title'=>'Вложенные файлы')); ?>
 
-<?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'ticket-form',
-	'enableAjaxValidation'=>false,
-)); ?>
+<?php $this->widget('LW_LinksList', array('ticket_id'=>$model->id, 'title'=>'Ссылки')); ?>
 
-	<div class="row">
-		<?php
-		echo $form->labelEx($model,'resolution_id', array('class'=>'wfc_resolution'));
-		echo $form->dropDownList($model,'resolution_id', CHTML::listData(Resolution::model()->findAll('id > 1'), 'id', 'name'), array('class'=>'wfc_resolution'));
-		echo $form->error($model,'resolution_id');
-		echo $form->label($model,'worked_time', array('class'=>'wfc_resolution'));
-		echo $form->textField($model, 'worked_time', array('class'=>'wfc_resolution'));
-		$comment = new Comment();
-		echo $form->label($comment,'text', array('class'=>'wfc_comment'));
-		echo $form->textField($comment,'text',array('maxlength'=>1000, 'class'=>'wfc_comment'));
-		?>
-	</div>
+<?php $this->widget('TW_InnerTaskList', array('ticket_id'=>$model->id, 'title'=>'Вложенные задачи')); ?>
 
-<?php $this->endWidget(); ?>
-
-</div><!-- form -->
-
-<br/>
-<h2>Вложения</h2>
-<?php
-echo CHtml::link("Add new attachment", array('attachment/create', 'ticket_id'=>$model->id), array('id'=>'btnAddAttachment'));
-if ($attachmentProvider->totalItemCount > 0) {
-$this->widget('zii.widgets.grid.CGridView', array(
-	'id'=>'attachment-grid',
-	'cssFile' => 'css/gridView.css',
-	'dataProvider'=>$attachmentProvider,
-	'columns'=>array(
-		array(
-			'name' => 'name',
-			'value' => 'CHtml::link($data->name, "attachments/".$data->name)',
-			'type' => 'html'
-		),
-		array(
-			'name' => 'author_id',
-			'value' => '$data->author->name',
-			'type' => 'text'
-		),
-		'create_date',
-		array(
-			'class'=>'CButtonColumn',
-			'buttons'=>array(
-				'view' => array('visible'=>'false'),
-				'update' => array('visible'=>'false'),
-				'delete' => array('visible'=>'User::CheckLevel(20)'),//allow coordinator
-			),
-			'deleteButtonUrl'=>"CHtml::normalizeUrl(array('attachment/delete', 'id'=>\$data->id))",
-		),
-	),
-));
-}
-?>
-
-<?php
-	if ($relationsListProvider->totalItemCount > 0) {
-?>
-<br/>
-<h2>Связи</h2>
-
-<?php
-$this->widget('zii.widgets.grid.CGridView', array(
-	'cssFile' => 'css/gridView.css',
-    'dataProvider'=>$relationsListProvider,
-	'columns'=>array(
-		array(
-			'name' => 'ticket_from_id',
-			'value' => '"#".$data->ticketFrom->id.". ".$data->ticketFrom->subject',
-			//'filter'=>CHTML::listData(User::model()->findAll(), 'id', 'name'),
-			'type' => 'text'
-		),
-		array(
-			'name' => 'relation_type_id',
-			'value' => '$data->relationType->direct_name',
-			//'filter'=>CHTML::listData(User::model()->findAll(), 'id', 'name'),
-			'type' => 'text'
-		),
-		array(
-			'name' => 'ticket_to_id',
-			'value' => '"#".$data->ticketTo->id.". ".$data->ticketTo->subject',
-			//'filter'=>CHTML::listData(User::model()->findAll(), 'id', 'name'),
-			'type' => 'text'
-		),
-	),
-));
-}
-?>
-
-<?php
-	if ($innerListProvider->totalItemCount > 0) {
-?>
-<br/>
-<h2>Вложенные задачи</h2>
-<table>
-<tr>
-	<th><?php echo CHtml::encode($innerListProvider->model->getAttributeLabel('id'));?></th>
-	<th><?php echo CHtml::encode($innerListProvider->model->getAttributeLabel('ticket_type_id'));?></th>
-	<th><?php echo CHtml::encode($innerListProvider->model->getAttributeLabel('subject'));?></th>
-	<th><?php echo CHtml::encode($innerListProvider->model->getAttributeLabel('owner_user_id'));?></th>
-	<th><?php echo CHtml::encode($innerListProvider->model->getAttributeLabel('due_date'));?></th>
-	<th><?php echo CHtml::encode($innerListProvider->model->getAttributeLabel('priority_id'));?></th>
-	<th><?php echo CHtml::encode($innerListProvider->model->getAttributeLabel('status_id'));?></th>
-</tr>
-<?php $this->widget('zii.widgets.CListView', array(
-	'dataProvider'=>$innerListProvider,
-	'itemView'=>'_view',
-)); ?>
-</table>
-<?php
-}
-?>
-
-<br/>
-<h2>Комментарии</h2>
-<?php
-echo CHtml::link("Add new comment", array('comment/create', 'ticket_id'=>$model->id), array('id'=>'btnAddComment'));
-if ($commentsProvider->totalItemCount > 0) {
-$this->widget('zii.widgets.CListView', array(
-	'dataProvider'=>$commentsProvider,
-	'itemView'=>'/comment/_view',
-));
-}
-?>
-
-<script>
-$(function () {
-	$(".wf_action").button().click(function (ev, ui){
-		var action = $(ev.target).closest(".wf_action");
-		if (action.hasClass("wf_resolution") || action.hasClass("wf_comment")) {
-			if (action.hasClass("wf_resolution")) $(".wfc_resolution").show();
-			else $(".wfc_resolution").hide();
-			if (action.hasClass("wf_comment")) $(".wfc_comment").show();
-			else $(".wfc_comment").hide();
-			ev.preventDefault();
-			//TODO make action
-			$("#resolution").find("form").attr("action", action.attr("href"));
-			$("#resolution").dialog('open');
-		}
-	});
-	$("#btnAddAttachment").button({
-      icons: {
-        primary: "ui-icon-plusthick"
-      },
-      text: false
-    });
-	$("#btnAddComment").button({
-      icons: {
-        primary: "ui-icon-plusthick"
-      },
-      text: false
-    });
-	$("#resolution").dialog({
-		autoOpen	: false,
-		modal		: true,
-		position	: { my: "left top", at: "right bottom", of: ".wf_action:last" },
-		buttons		: {
-			OK		: function () {
-				var activeForm = $("#resolution").find("form");
-				$.post(activeForm.get(0).action, activeForm.serialize(), function() {location.reload(); });
-			},
-			Cancel	: function () {$("#resolution").dialog("close");}
-		}
-	});
-});
-</script>
+<?php $this->widget('CW_CommentList', array('ticket_id'=>$model->id, 'title'=>'Комментарии')); ?>

@@ -32,7 +32,7 @@
 		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?></div>
 		<div style="position: relative; top: -40px; right: -700px;">
 			<?php
-			$this->widget('ReportsPreview');
+			$this->widget('RW_ReportsPreview');
 			echo CHtml::beginForm(array('ticket/QuickSearch'), 'GET', array('style'=>'display:inline;'));
 			echo CHtml::textField('text');
 			echo CHtml::linkButton('Поиск');
@@ -67,7 +67,7 @@
 	<?php echo $content; ?>
 
 	<div class="clear"></div>
-	<?php $this->widget("TaskViewExtender"); ?>
+	<?php $this->widget("TW_TaskViewExtender"); ?>
 	<div id="footer">
 		Developed by <a href="http://wkf.bit.ru/">WKF Team</a>.<br/>
 		Available on <a href="https://github.com/wkf-team/tasker">GitHub</a> under MIT license<br/>

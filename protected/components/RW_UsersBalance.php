@@ -1,11 +1,11 @@
 <?php
-class UsersBalance extends CWidget {
+class RW_UsersBalance extends CWidget {
  
     public $users;
  
     public function run() {
 		$this->users = VUsersBalance::model()->findAll();
-        $this->render('usersBalance');
+        $this->render('RWUI_usersBalance');
     }
  
 }

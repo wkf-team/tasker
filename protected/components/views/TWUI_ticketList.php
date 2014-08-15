@@ -1,6 +1,4 @@
-﻿<h2>Мои задачи</h2>
-<div id="myTasks">
-<table>
+<table style="background:rgb(51,51,51);">
 <tr>
 	<th><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('id'));?></th>
 	<th><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('ticket_type_id'));?></th>
@@ -15,4 +13,3 @@
 	'itemView'=>'application.views.ticket._view',
 )); ?>
 </table>
-</div>

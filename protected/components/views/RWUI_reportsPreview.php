@@ -24,9 +24,9 @@
     <h3 class="ui-widget-header ui-corner-all">Отчеты</h3>
     <p>
 		<?php
-			$this->widget('GoalsComplete'); 
-			$this->widget('UsersBalance'); 
-			$this->widget('TermsBreak'); 
+			$this->widget('RW_GoalsComplete'); 
+			$this->widget('RW_UsersBalance'); 
+			$this->widget('RW_TermsBreak'); 
 		?>
     </p>
   </div>

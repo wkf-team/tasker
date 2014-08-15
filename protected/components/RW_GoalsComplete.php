@@ -1,11 +1,11 @@
 <?php
-class GoalsComplete extends CWidget {
+class RW_GoalsComplete extends CWidget {
  
     public $goals;
  
     public function run() {
 		$this->goals = VGoalsComplete::model()->findAll();
-        $this->render('goalsComplete');
+        $this->render('RWUI_goalsComplete');
     }
  
 }

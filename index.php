@@ -1,7 +1,8 @@
 <?php
 
 // change the following paths if necessary
-$yii=dirname(__FILE__).'/../yii/framework/yii.php';
+$yii_path = dirname(__FILE__).'/../yii/framework/';
+$yii=$yii_path.'yii.php';
 $config=dirname(__FILE__).'/protected/config/main.php';
 
 // specify how many levels of call stack should be shown in each log message

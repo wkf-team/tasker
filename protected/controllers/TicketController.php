@@ -66,37 +66,8 @@ class TicketController extends Controller
 	public function actionView($id)
 	{
 		$model = $this->loadModel($id);
-		$innerListProvider=new CActiveDataProvider('Ticket', array('criteria'=>array(
-				// открытые цели, незакрытые задач
-				'condition'=>'parent_ticket_id = :tid',
-				'params'=>array(':tid'=>$id),
-				'order'=>Ticket::$orderString,
-			),
-			'pagination' => array('pageSize'=>30)));
-		$relationsListProvider=new CActiveDataProvider('Relation', array('criteria'=>array(
-				'condition'=>'ticket_from_id = :tid OR ticket_to_id = :tid',
-				'params'=>array(':tid'=>$id),
-				'order'=>'relation_type_id, ticket_from_id, ticket_to_id',
-			),
-			'pagination' => array('pageSize'=>30)));
-		$commentsProvider=new CActiveDataProvider('Comment', array('criteria'=>array(
-				'condition'=>'ticket_id = :tid',
-				'params'=>array(':tid'=>$id),
-				'order'=>'create_date DESC',
-			),
-			'pagination' => array('pageSize'=>30)));
-		$attachmentProvider=new CActiveDataProvider('Attachment', array('criteria'=>array(
-				'condition'=>'ticket_id = :tid',
-				'params'=>array(':tid'=>$id),
-				'order'=>'create_date DESC',
-			),
-			'pagination' => array('pageSize'=>30)));
 		$this->render('view',array(
-			'model'=>$model,
-			'innerListProvider'=>$innerListProvider,
-			'relationsListProvider'=>$relationsListProvider,
-			'commentsProvider'=>$commentsProvider,
-			'attachmentProvider'=>$attachmentProvider
+			'model'=>$model
 		));
 	}
 

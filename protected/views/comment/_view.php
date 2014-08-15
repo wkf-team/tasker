@@ -3,7 +3,7 @@
 /* @var $data Comment */
 ?>
 
-<div class="view">
+<div class="view" style="background:white; color:black;">
 
 	<?php
 	echo CHtml::encode($data->author->name) . ", " . $data->encodeDate($data->create_date);

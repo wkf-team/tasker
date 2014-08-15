@@ -10,7 +10,7 @@ $this->breadcrumbs=array(
 <h1>Отчеты</h1>
 
 <?php
-	$this->widget('GoalsComplete'); 
-	$this->widget('UsersBalance'); 
-	$this->widget('TermsBreak'); 
+	$this->widget('RW_GoalsComplete'); 
+	$this->widget('RW_UsersBalance'); 
+	$this->widget('RW_TermsBreak'); 
 ?>

@@ -1,11 +1,11 @@
 <?php
-class TermsBreak extends CWidget {
+class RW_TermsBreak extends CWidget {
  
     public $breaks;
  
     public function run() {
 		$this->breaks = VTermsBreak::model()->findAll();
-        $this->render('termsBreak');
+        $this->render('RWUI_termsBreak');
     }
  
 }

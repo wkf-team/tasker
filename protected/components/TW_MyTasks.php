@@ -1,5 +1,5 @@
 <?php
-class MyTasks extends CWidget {
+class TW_MyTasks extends CWidget {
  
     public function run() {
 		$id = Yii::app()->user->id;
@@ -17,7 +17,7 @@ class MyTasks extends CWidget {
 				'pageSize'=>20,
 			),
 		));
-		$this->render('myTasks',array(
+		$this->render('TWUI_ticketList',array(
 			'dataProvider'=>$dataProvider,
 		));
     }
