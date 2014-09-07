@@ -3,14 +3,15 @@ CREATE VIEW `v_goals_complete` AS
         `goals`.`id` AS `id`,
         `goals`.`subject` AS `subject`,
         count(`tasks`.`id`) AS `total`,
-        sum(if((`tasks`.`status_id` >= 3), 1, 0)) AS `closed`
+        sum(if((`tasks`.`status_id` >= 6), 1, 0)) AS `closed`
     from
         (`ticket` `goals`
         left join `ticket` `tasks` ON ((`tasks`.`parent_ticket_id` = `goals`.`id`)))
     where
-        ((`goals`.`status_id` < 3)
+        ((`goals`.`status_id` < 6 OR `goals`.`status_id` = 6 AND `goals`.`end_date` >= subdate(now(), 14))
             and (`goals`.`ticket_type_id` = 1))
-    group by `goals`.`id`;
+    group by `goals`.`id`
+	order by `goals`.`due_date`;
 
 CREATE VIEW `v_users_balance` AS
     select 
@@ -22,7 +23,7 @@ CREATE VIEW `v_users_balance` AS
         (`ticket` `t`
         left join `user` ON ((`user`.`id` = `t`.`owner_user_id`)))
     where
-        ((`t`.`status_id` < 3)
+        ((`t`.`status_id` < 6)
             and (`t`.`ticket_type_id` > 1))
     group by `t`.`owner_user_id`;
 
@@ -40,8 +41,8 @@ CREATE VIEW `v_terms_break` AS
         left join `ticket` `tasks` ON ((`tasks`.`parent_ticket_id` = `goals`.`id`)))
     where
         ((`goals`.`ticket_type_id` = 1)
-            and (`goals`.`status_id` >= 3)
-            and (`tasks`.`status_id` < 3)) 
+            and (`goals`.`status_id` >= 6)
+            and (`tasks`.`status_id` < 6)) 
     union select 
         2 AS `error_type`,
         `tasks`.`id` AS `id`,
@@ -54,7 +55,7 @@ CREATE VIEW `v_terms_break` AS
         `ticket` `tasks` 
 		left join `user` on `tasks`.`owner_user_id` = `user`.`id`
     where
-        ((`tasks`.`status_id` < 3)
+        ((`tasks`.`status_id` < 6)
             and (`tasks`.`due_date` < curdate())) 
     union select 
         3 AS `error_type`,
@@ -70,8 +71,8 @@ CREATE VIEW `v_terms_break` AS
         left join `user` `owner` ON ((`tasks`.`owner_user_id` = `owner`.`id`)))
     where
         ((`goals`.`ticket_type_id` = 1)
-            and (`goals`.`status_id` < 3)
-            and (`tasks`.`status_id` < 3)
+            and (`goals`.`status_id` < 6)
+            and (`tasks`.`status_id` < 6)
             and (`owner`.`work_time_per_week` > 0)
             and (`tasks`.`due_date` is not null)
             and ((curdate() + ((`tasks`.`estimate_time` / `owner`.`work_time_per_week`) * 7)) > `tasks`.`due_date`)) 
@@ -89,8 +90,8 @@ CREATE VIEW `v_terms_break` AS
         left join `user` `owner` ON ((`tasks`.`owner_user_id` = `owner`.`id`)))
     where
         ((`goals`.`ticket_type_id` = 1)
-            and (`goals`.`status_id` < 3)
-            and (`tasks`.`status_id` < 3)
+            and (`goals`.`status_id` < 6)
+            and (`tasks`.`status_id` < 6)
             and (`owner`.`work_time_per_week` > 0)
             and (`goals`.`due_date` is not null))
     group by `owner`.`id` , `goals`.`id` , `owner`.`work_time_per_week` , `goals`.`due_date`

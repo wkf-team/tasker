@@ -84,6 +84,25 @@ class Ticket extends CActiveRecord
 		return $ticket;
 	}
 	
+	public function postpone()
+	{
+		$postpone_time = 3 * 24 * 3600;
+		switch ($this->status_id)
+		{
+			case 1:
+			case 2:
+				$this->estimate_start_date = date("Y-m-d", time() + $postpone_time);
+				if ($this->ownerUser->work_time_per_week > 0) $this->due_date = date("Y-m-d", time() + $postpone_time + $this->estimate_time * 7 * 24 * 3600 / $this->ownerUser->work_time_per_week);
+				break;
+			case 3:
+			case 4:
+			case 5: if ($this->ownerUser->work_time_per_week > 0) $this->due_date = date("Y-m-d", time() + $postpone_time + $this->estimate_time * 7 * 24 * 3600 / $this->ownerUser->work_time_per_week); break;
+			default: break;
+		}
+		Yii::log("The ticket $this->id was posponed by user " . Yii::app()->user->id, "info", "app.model.ticket");
+		$this->save();
+	}
+	
 	public static function quick_search($text)
 	{
 		if (is_numeric ($text)) {
@@ -189,7 +208,7 @@ class Ticket extends CActiveRecord
 			'subject' => 'Тема',
 			'description' => 'Описание',
 			'create_date' => 'Дата создания',
-			'estimate_start_date' => 'План старт',
+			'estimate_start_date' => 'План начала',
 			'due_date' => 'Срок',
 			'end_date' => 'Дата закрытия',
 			'estimate_time' => 'Оценка времени (ч)',

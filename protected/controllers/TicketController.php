@@ -32,7 +32,7 @@ class TicketController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow for participants
-				'actions'=>array('create','update','admin','plan','AjaxEdit','makeWF'),
+				'actions'=>array('create','update','admin','plan','AjaxEdit','makeWF','postpone'),
 				'expression'=>'User::CheckLevel(10)',
 			),
 			array('allow', // allow coordinator
@@ -57,6 +57,14 @@ class TicketController extends Controller
 		} else {
 			$this->actionView($result->id);
 		}
+	}
+	
+	public function actionPostpone($id)
+	{
+		$model = $this->loadModel($id);
+		$model->postpone();
+		Sendmail::mailChangeTicketDate($this);
+		$this->redirect(array('ticket/view', 'id'=>$model->id));
 	}
 
 	/**
@@ -111,12 +119,15 @@ class TicketController extends Controller
 		if(isset($_POST['Ticket']))
 		{
 			$prevAll = CJSON::encode($model);
+			$prevEst = $model->estimate_start_date;
+			$prevDue = $model->due_date;
 			$prevOwner = $model->owner_user_id;
 			$model->attributes=$_POST['Ticket'];
 			if($model->save())
 			{
 				if ($model->owner_user_id != $prevOwner) Sendmail::mailAssignTicket($model);
-				if (CJSON::encode($model) != $prevAll) Sendmail::mailChangeTicket($model);
+				elseif ($model->estimate_start_date != $prevEst || $model->due_date != $prevDue) Sendmail::mailChangeTicketDate($model);
+				elseif (CJSON::encode($model) != $prevAll) Sendmail::mailChangeTicket($model);
 				$this->redirect(array('view','id'=>$model->id));
 			}
 		}

@@ -4,6 +4,11 @@ class Sendmail //extends CComponent
 	public static $mailPrefix = "WKF.Task ";
 	public static $baseUrl = "http://wkf.bit.ru/wkf.task/";
 	
+	private static function normalizeUrl($arr)
+	{
+		return Sendmail::$baseUrl.strstr(CHtml::normalizeUrl($arr),'?');
+	}
+	
 	// Еженедельный дайджест на всех по статусу
 	public static function mailWeeklyStatus($ticketsClosed, $ticketsOverdue)
 	{
@@ -43,7 +48,7 @@ class Sendmail //extends CComponent
 				$user = $tickets[$i]->ownerUser;
 				$message = "У вас просрочены следующие задачи:<ul>";
 			}
-			$message .= "<li>".CHtml::link($tickets[$i]->subject, Sendmail::$baseUrl.strstr(CHtml::normalizeUrl(array('ticket/view', 'id'=>$tickets[$i]->id)),'?'))."</li>";
+			$message .= "<li>".CHtml::link($tickets[$i]->subject, Sendmail::normalizeUrl(array('ticket/view', 'id'=>$tickets[$i]->id))).". ".CHtml::link("Отложить на 3 дня", Sendmail::normalizeUrl(array('ticket/postpone', 'id'=>$tickets[$i]->id)))."</li>";
 		}
 		Sendmail::mail(array($user), "Просрочены задачи", $message."</ul>");
 	}
@@ -58,6 +63,12 @@ class Sendmail //extends CComponent
 	public static function mailChangeTicket($ticket)
 	{
 		Sendmail::mail(array($ticket->ownerUser, $ticket->authorUser), "Изменено: ".$ticket->subject, User::model()->findByPk(Yii::app()->user->id)->name." изменил данные по задаче: ".CHtml::link($ticket->subject, Yii::app()->createAbsoluteUrl('ticket/view', array('id'=>$ticket->id))));
+	}
+	
+	// Изменение срока по задаче
+	public static function mailChangeTicketDate($ticket)
+	{
+		Sendmail::mail(array($ticket->ownerUser, $ticket->authorUser), "Изменен срок: ".$ticket->subject, User::model()->findByPk(Yii::app()->user->id)->name." изменил срок по задаче: ".CHtml::link($ticket->subject, Yii::app()->createAbsoluteUrl('ticket/view', array('id'=>$ticket->id))));
 	}
 	
 	// Создание/назначение задачи

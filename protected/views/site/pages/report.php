@@ -11,6 +11,7 @@ $this->breadcrumbs=array(
 
 <?php
 	$this->widget('RW_GoalsComplete'); 
+	echo "<br/>";
 	$this->widget('RW_UsersBalance'); 
 	$this->widget('RW_TermsBreak'); 
 ?>
