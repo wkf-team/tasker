@@ -28,11 +28,15 @@
 
 	<div class="row buttons">
 		<?php 
-		echo CHtml::link("Cancel", array('ticket/view', 'id'=>$model->ticket_id));
-		echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); 
+		echo CHtml::link("Отмена", array('ticket/view', 'id'=>$model->ticket_id), array('class'=>'action'));
+		echo CHtml::submitButton('OK', array('class'=>'action')); 
 		?>
 	</div>
 
 <?php $this->endWidget(); ?>
-
+<script>
+$(function () {
+	$(".action").button();
+});
+</script>
 </div><!-- form -->

@@ -45,19 +45,19 @@
 		<?php echo $form->error($model,'description'); ?>
 	</div>
 	
-<?php if ($model->status_id <= 2) { ?>
+<?php //if ($model->status_id <= 2) { ?>
 	<div class="row">
 		<?php echo $form->labelEx($model,'estimate_start_date'); ?>
 		<?php echo $form->dateField($model,'estimate_start_date'); ?>
 		<?php echo $form->error($model,'estimate_start_date'); ?>
 	</div>
-<?php } elseif ($model->status_id < 6) { ?>
+<?php //} elseif ($model->status_id < 6) { ?>
 	<div class="row">
 		<?php echo $form->labelEx($model,'due_date'); ?>
 		<?php echo $form->dateField($model,'due_date'); ?>
 		<?php echo $form->error($model,'due_date'); ?>
 	</div>
-	<?php } ?>
+	<?php //} ?>
 	<div class="row">
 		<?php echo $form->labelEx($model,'estimate_time'); ?>
 		<?php //TODO: switch to timeField

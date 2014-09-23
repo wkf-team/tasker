@@ -93,10 +93,14 @@ class Ticket extends CActiveRecord
 			case 2:
 				$this->estimate_start_date = date("Y-m-d", time() + $postpone_time);
 				if ($this->ownerUser->work_time_per_week > 0) $this->due_date = date("Y-m-d", time() + $postpone_time + $this->estimate_time * 7 * 24 * 3600 / $this->ownerUser->work_time_per_week);
+				else $this->due_date = date("Y-m-d", time() + $postpone_time);
 				break;
 			case 3:
 			case 4:
-			case 5: if ($this->ownerUser->work_time_per_week > 0) $this->due_date = date("Y-m-d", time() + $postpone_time + $this->estimate_time * 7 * 24 * 3600 / $this->ownerUser->work_time_per_week); break;
+			case 5:
+				if ($this->ownerUser->work_time_per_week > 0) $this->due_date = date("Y-m-d", time() + $postpone_time + $this->estimate_time * 7 * 24 * 3600 / $this->ownerUser->work_time_per_week);
+				else $this->due_date = date("Y-m-d", time() + $postpone_time);
+				break;
 			default: break;
 		}
 		Yii::log("The ticket $this->id was posponed by user " . Yii::app()->user->id, "info", "app.model.ticket");
