@@ -63,7 +63,7 @@ class TicketController extends Controller
 	{
 		$model = $this->loadModel($id);
 		$model->postpone();
-		Sendmail::mailChangeTicketDate($this);
+		Sendmail::mailChangeTicketDate($model);
 		$this->redirect(array('ticket/view', 'id'=>$model->id));
 	}
 
@@ -92,6 +92,8 @@ class TicketController extends Controller
 		if(isset($_POST['Ticket']))
 		{
 			$model->attributes=$_POST['Ticket'];
+			if ($_POST['estimate_start_auto']) $model->calculateEstimateStartDate();
+			if ($_POST['responsible_auto']) $model->responsible_user_id = $model->owner_user_id;
 			if($model->save())
 			{
 				Sendmail::mailAssignTicket($model);
@@ -123,6 +125,8 @@ class TicketController extends Controller
 			$prevDue = $model->due_date;
 			$prevOwner = $model->owner_user_id;
 			$model->attributes=$_POST['Ticket'];
+			if ($model->due_date != $prevDue && $_POST['estimate_start_auto']) $model->calculateEstimateStartDate();
+			if ($model->owner_user_id != $prevOwner && $_POST['responsible_auto']) $model->responsible_user_id = $model->owner_user_id;
 			if($model->save())
 			{
 				if ($model->owner_user_id != $prevOwner) Sendmail::mailAssignTicket($model);

@@ -107,6 +107,15 @@ class Ticket extends CActiveRecord
 		$this->save();
 	}
 	
+	public function calculateEstimateStartDate()
+	{
+		if ($this->ownerUser->work_time_per_week > 0 && $this->due_date > '' && $this->status_id == 1) {
+			$this->estimate_start_date = date("Y-m-d", strtotime($this->due_date) - $this->estimate_time * 7 * 24 * 3600 / $this->ownerUser->work_time_per_week);
+		} else {
+			$this->estimate_start_date = $this->due_date;
+		}
+	}
+	
 	public static function quick_search($text)
 	{
 		if (is_numeric ($text)) {

@@ -45,19 +45,19 @@
 		<?php echo $form->error($model,'description'); ?>
 	</div>
 	
-<?php //if ($model->status_id <= 2) { ?>
-	<div class="row">
-		<?php echo $form->labelEx($model,'estimate_start_date'); ?>
-		<?php echo $form->dateField($model,'estimate_start_date'); ?>
-		<?php echo $form->error($model,'estimate_start_date'); ?>
-	</div>
-<?php //} elseif ($model->status_id < 6) { ?>
 	<div class="row">
 		<?php echo $form->labelEx($model,'due_date'); ?>
 		<?php echo $form->dateField($model,'due_date'); ?>
 		<?php echo $form->error($model,'due_date'); ?>
+		<?php echo CHTML::checkBox("estimate_start_auto", true, array('onclick'=>'EstimateStartAutoChange();')) . " Автоматически обновить дату начала "; ?>
 	</div>
-	<?php //} ?>
+	
+	<div class="row" id="divEstimateStartDate">
+		<?php echo $form->labelEx($model,'estimate_start_date'); ?>
+		<?php echo $form->dateField($model,'estimate_start_date'); ?>
+		<?php echo $form->error($model,'estimate_start_date'); ?>
+	</div>
+	
 	<div class="row">
 		<?php echo $form->labelEx($model,'estimate_time'); ?>
 		<?php //TODO: switch to timeField
@@ -95,18 +95,19 @@
 		<?php echo $form->labelEx($model,'owner_user_id'); ?>
 		<?php echo $form->dropDownList($model,'owner_user_id', CHTML::listData(User::model()->findAll(), 'id', 'name')); ?>
 		<?php echo $form->error($model,'owner_user_id'); ?>
+		<?php echo CHTML::checkBox("responsible_auto", true, array('onclick'=>'ResponsibleAutoChange();')) . " Обновить ответственного"; ?>
+	</div>
+
+	<div class="row" id="divResponsible">
+		<?php echo $form->labelEx($model,'responsible_user_id'); ?>
+		<?php echo $form->dropDownList($model,'responsible_user_id', CHTML::listData(User::model()->findAll(), 'id', 'name')); ?>
+		<?php echo $form->error($model,'responsible_user_id'); ?>
 	</div>
 	
 	<div class="row">
 		<?php echo $form->labelEx($model,'tester_user_id'); ?>
 		<?php echo $form->dropDownList($model,'tester_user_id', CHTML::listData(User::model()->findAll(), 'id', 'name'), array('empty' => '-- Не выбрано --')); ?>
 		<?php echo $form->error($model,'tester_user_id'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'responsible_user_id'); ?>
-		<?php echo $form->dropDownList($model,'responsible_user_id', CHTML::listData(User::model()->findAll(), 'id', 'name')); ?>
-		<?php echo $form->error($model,'responsible_user_id'); ?>
 	</div>
 
 	<div class="row">
@@ -133,4 +134,24 @@ function setParentVisibility() {
 	if($("#Ticket_ticket_type_id").val() == 1) $("#Ticket_parent_ticket_id").val("").closest(".row").hide();
 	else $("#Ticket_parent_ticket_id").closest(".row").show();
 }
+
+function EstimateStartAutoChange() {
+	if ($("#estimate_start_auto").prop("checked")) {
+		$("#divEstimateStartDate").hide();
+	} else {
+		$("#divEstimateStartDate").show();
+	}
+}
+
+$("#divEstimateStartDate").hide();
+
+function ResponsibleAutoChange() {
+	if ($("#responsible_auto").prop("checked")) {
+		$("#divResponsible").hide();
+	} else {
+		$("#divResponsible").show();
+	}
+}
+
+$("#divResponsible").hide();
 </script>
