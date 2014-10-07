@@ -76,6 +76,7 @@ class Ticket extends CActiveRecord
 		$ticket->resolution_id = 1;
 		$ticket->priority_id = 2;
 		$ticket->author_user_id = Yii::app()->user->id;
+		$ticket->tester_user_id = Yii::app()->user->id;
 		// default is coordinator
 		$user = User::model()->findByAttributes(array('usergroup_id'=>3));
 		$user = $user ? $user->id : $ticket->author_user_id;
