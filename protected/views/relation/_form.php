@@ -40,11 +40,16 @@
 	<div class="row buttons">
 		<?php 
 		echo CHtml::hiddenField('direction', $direction);
-		echo CHtml::link("Cancel", array('ticket/view', 'id'=>($direction == "from" ? $model->ticket_from_id : $model->ticket_to_id)));
-		echo CHtml::submitButton($model->isNewRecord ? 'Создать' : 'Сохранить');
+		echo CHtml::link("Отмена", array('ticket/view', 'id'=>($direction == "from" ? $model->ticket_from_id : $model->ticket_to_id)), array('class'=>'action'));
+		echo CHtml::submitButton('OK', array('class'=>'action', 'style'=>'margin:0px;')); 
 		?>
 	</div>
 
 <?php $this->endWidget(); ?>
+<script>
+$(function () {
+	$(".action").button();
+});
+</script>
 
 </div><!-- form -->

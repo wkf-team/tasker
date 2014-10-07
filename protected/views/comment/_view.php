@@ -9,8 +9,7 @@
 	echo CHtml::encode($data->author->name) . ", " . $data->encodeDate($data->create_date);
 	?>
 	<br />
-	<?php echo CHtml::encode($data->text); ?>
-	<br />
+	<pre style="margin:0px;"><?php echo CHtml::encode($data->text); ?></pre>
 	
 	<!-- <b><?php echo CHtml::encode($data->getAttributeLabel('id')); ?>:</b>
 	<?php echo CHtml::link(CHtml::encode($data->id), array('view', 'id'=>$data->id)); ?>

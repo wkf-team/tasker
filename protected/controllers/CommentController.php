@@ -70,6 +70,7 @@ class CommentController extends Controller
 		if(isset($_POST['Comment']))
 		{
 			$model->attributes=$_POST['Comment'];
+			$model->text = trim($model->text);
 			$model->SetDefault((int)$_GET['ticket_id']);
 			if($model->save())
 				$this->redirect(array('ticket/view','id'=>$model->ticket_id));

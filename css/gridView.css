@@ -10,7 +10,6 @@
 
 .grid-view table.items
 {
-	background: white;
 	border-collapse: collapse;
 	width: 100%;
 	border: 1px #D0E3EF solid;
@@ -61,12 +60,12 @@
 
 .grid-view table.items tr.even
 {
-	background: #f1fbe5;
+	background: #C1EB9C;
 }
 
 .grid-view table.items tr.odd
 {
-	background: #9fda58;
+	background: #9EEB59; 
 }
 
 .grid-view table.items tr.selected

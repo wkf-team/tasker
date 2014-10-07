@@ -29,7 +29,7 @@
 	<div class="row buttons">
 		<?php 
 		echo CHtml::link("Отмена", array('ticket/view', 'id'=>$model->ticket_id), array('class'=>'action'));
-		echo CHtml::submitButton('OK', array('class'=>'action')); 
+		echo CHtml::submitButton('OK', array('class'=>'action', 'style'=>'margin:0px;')); 
 		?>
 	</div>
 
