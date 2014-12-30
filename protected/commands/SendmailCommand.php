@@ -17,6 +17,14 @@ class SendmailCommand extends CConsoleCommand
 			));
 			Sendmail::mailWeeklyStatus($ticketsClosed, $ticketsOverdue);
 		}
+		// every 3 days digest
+		if (((int)date("j")) % 3 == 0) {
+			$ticketsDigest = Ticket::model()->findAll(array(
+				'condition' => 'status_id < 6',
+				'order' => 'owner_user_id'
+			));
+			if (count($ticketsDigest) > 0) Sendmail::mailDigestTickets($ticketsDigest);
+		}
 	}
 }
 ?>

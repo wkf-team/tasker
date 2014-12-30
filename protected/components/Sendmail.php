@@ -53,6 +53,26 @@ class Sendmail //extends CComponent
 		Sendmail::mail(array($user), "Просрочены задачи", $message."</ul>");
 	}
 	
+	// Дайджест задач
+	public static function mailDigestTickets($tickets)
+	{
+		$user = $tickets[0]->ownerUser;
+		$message = "Вам назначены следующие задачи:<ul>";
+		$counter = 0;
+		for ($i = 0; $i < count($tickets); $i++)
+		{
+			if ($tickets[$i]->owner_user_id != $user->id) {
+				if ($counter > 0 && $user->digest_enabled) Sendmail::mail(array($user), "Дайджест задач", $message."</ul>");
+				$user = $tickets[$i]->ownerUser;
+				$counter = 0;
+				$message = "Вам назначены следующие задачи:<ul>";
+			}
+			$counter++;
+			$message .= "<li>".CHtml::link($tickets[$i]->subject, Sendmail::normalizeUrl(array('ticket/view', 'id'=>$tickets[$i]->id))).". ".CHtml::link("Отложить на 3 дня", Sendmail::normalizeUrl(array('ticket/postpone', 'id'=>$tickets[$i]->id)))."</li>";
+		}
+		if ($counter > 0 && $user->digest_enabled) Sendmail::mail(array($user), "Дайджест задач", $message."</ul>");
+	}
+	
 	// Регистрация пользователя
 	public static function mailCreateUser($user)
 	{

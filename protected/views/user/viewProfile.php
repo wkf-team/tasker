@@ -23,5 +23,6 @@ $this->menu=array(
 		'work_time_per_week',
 		'usergroup.name:text:'.CHtml::activeLabel($model, "usergroup_id"),
 		'notification_enabled:boolean',
+		'digest_enabled:boolean',
 	),
 )); ?>

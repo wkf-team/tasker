@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS `wkf_task`.`user` (
   `work_time_per_week` INT NULL,
   `usergroup_id` INT NOT NULL,
   `notification_enabled` TINYINT(1) NOT NULL,
+  `digest_enabled` TINYINT( 1 ) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_user_usergroup1_idx` (`usergroup_id` ASC),
   CONSTRAINT `fk_user_usergroup1`

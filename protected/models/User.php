@@ -11,6 +11,7 @@
  * @property integer $work_time_per_week
  * @property integer $usergroup_id
  * @property integer $notification_enabled
+ * @property integer $digest_enabled
  *
  * The followings are the available model relations:
  * @property Attachement[] $attachements
@@ -57,12 +58,12 @@ class User extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('name, usergroup_id, notification_enabled', 'required'),
-			array('work_time_per_week, usergroup_id, notification_enabled', 'numerical', 'integerOnly'=>true),
+			array('work_time_per_week, usergroup_id, notification_enabled, digest_enabled', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>45),
 			array('mail', 'length', 'max'=>255),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, mail, work_time_per_week, usergroup_id, notification_enabled', 'safe', 'on'=>'search'),
+			array('id, name, mail, work_time_per_week, usergroup_id, notification_enabled, digest_enabled', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -91,12 +92,13 @@ class User extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
-			'mail' => 'Mail',
-			'password' => 'Password',
-			'work_time_per_week' => 'Work Time Per Week',
-			'usergroup_id' => 'Usergroup',
-			'notification_enabled' => 'Notification Enabled',
+			'name' => 'Имя',
+			'mail' => 'Почта',
+			'password' => 'Пароль',
+			'work_time_per_week' => 'Рабочих часов в неделю',
+			'usergroup_id' => 'Группа',
+			'notification_enabled' => 'Оповещения',
+			'digest_enabled' => 'Дайджест',
 		);
 	}
 
@@ -118,6 +120,7 @@ class User extends CActiveRecord
 		$criteria->compare('work_time_per_week',$this->work_time_per_week);
 		$criteria->compare('usergroup_id',$this->usergroup_id);
 		$criteria->compare('notification_enabled',$this->notification_enabled);
+		$criteria->compare('digest_enabled',$this->digest_enabled);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

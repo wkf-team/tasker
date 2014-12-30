@@ -53,6 +53,12 @@
 		<?php echo $form->error($model,'notification_enabled'); ?>
 	</div>
 
+	<div class="row">
+		<?php echo $form->label($model,'digest_enabled'); ?>
+		<?php echo $form->checkBox($model,'digest_enabled'); ?>
+		<?php echo $form->error($model,'digest_enabled'); ?>
+	</div>
+
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
 	</div>
