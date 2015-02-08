@@ -27,12 +27,16 @@ class TicketController extends Controller
 	public function accessRules()
 	{
 		return array(
-			array('allow',  // allow all users
-				'actions'=>array('index','view','usersTasks','epicTasks','QuickSearch'),
-				'users'=>array('*'),
+			array('allow',  // allow authenticated users
+				'actions'=>array('index','usersTasks','epicTasks','QuickSearch','admin'),
+				'users'=>array('@'),
+			),
+			array('allow',  // allow by project control
+				'actions'=>array('view','update'),
+				'expression'=>'User::CheckLevel(10) && UserHasProject::HasUserAccess($model->project_id, Yii::app()->user->id)',
 			),
 			array('allow', // allow for participants
-				'actions'=>array('create','update','admin','plan','AjaxEdit','makeWF','postpone'),
+				'actions'=>array('create','admin','plan','AjaxEdit','makeWF','postpone'),
 				'expression'=>'User::CheckLevel(10)',
 			),
 			array('allow', // allow coordinator
@@ -74,6 +78,7 @@ class TicketController extends Controller
 	public function actionView($id)
 	{
 		$model = $this->loadModel($id);
+		$model->project->SetSelected();
 		$this->render('view',array(
 			'model'=>$model
 		));
@@ -148,7 +153,10 @@ class TicketController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		$this->loadModel($id)->delete();
+		$model = $this->loadModel($id);
+		if (count($model->attachments) > 0)
+			foreach ($model->attachments as $att) $att->delete();
+		$model->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if(!isset($_GET['ajax']))
@@ -162,7 +170,9 @@ class TicketController extends Controller
 	{
 		$dataProvider=new CActiveDataProvider('Ticket', array('criteria'=>array(
 				// открытые цели, незакрытые задач
-				'condition'=>'status_id < 6',
+				'condition'=>'status_id < 6 AND p.is_selected = 1 AND p.user_id = :uid',
+				'join'=>'INNER JOIN user_has_project AS p ON p.project_id = t.project_id',
+				'params'=>array(':uid'=>Yii::app()->user->id),
 				'order'=>Ticket::$orderString,
 			),
 			'pagination' => array('pageSize'=>20)));
@@ -179,7 +189,9 @@ class TicketController extends Controller
 		$dataProvider=new CActiveDataProvider('Ticket', array(
 			'criteria'=>array(
 				// открытые цели, незакрытые задач
-				'condition'=>'status_id < 6 AND owner_user_id = '.$id,
+				'condition'=>'status_id < 6 AND p.user_id = :uid AND owner_user_id = :oid',
+				'join'=>'INNER JOIN user_has_project AS p ON p.project_id = t.project_id',
+				'params'=>array(':uid'=>Yii::app()->user->id, ':oid'=>$id),
 				'order'=>Ticket::$orderString,
 			),'pagination'=>array(
 				'pageSize'=>20,
@@ -198,7 +210,9 @@ class TicketController extends Controller
 		$dataProvider=new CActiveDataProvider('Ticket', array(
 			'criteria'=>array(
 				// открытые цели, незакрытые задач
-				'condition'=>'status_id < 6 AND parent_ticket_id = '.$id,
+				'condition'=>'status_id < 6 AND p.user_id = :uid AND parent_ticket_id = :pid',
+				'join'=>'INNER JOIN user_has_project AS p ON p.project_id = t.project_id',
+				'params'=>array(':uid'=>Yii::app()->user->id, ':pid'=>$id),
 				'order'=>Ticket::$orderString,
 			),'pagination'=>array(
 				'pageSize'=>20,
@@ -215,16 +229,18 @@ class TicketController extends Controller
 	public function actionAjaxEdit()
 	{
 		if (isset($_POST['Ticket']['id']) && $_POST['Ticket']['id']) {
-			$model=Ticket::create('plan');
+			$model=$this->loadModel($_POST['Ticket']['id']);
 		} else {
 			$model=Ticket::create();
 			unset($_POST['Ticket']['id']);
 		}
-		CActiveForm::validate($model);
-		if ($model->HasErrors()) echo CJSON::encode($model->getErrors());
-		else if(isset($_POST['Ticket']))
+		if(isset($_POST['Ticket']))
 		{
+			$prevDue = $model->due_date;
+			$prevOwner = $model->owner_user_id;
 			$model->attributes=$_POST['Ticket'];
+			if ($model->due_date != $prevDue) $model->calculateEstimateStartDate();
+			if ($model->owner_user_id != $prevOwner) $model->responsible_user_id = $model->owner_user_id;
 			if ($model->id) $model->isNewRecord = false;
 			if (!$model->save()) Yii::log(CJSON::encode($model->getErrors()), "error");
 			else $model->UpdateBlockedBy($_POST['blocked_by']);
@@ -244,9 +260,11 @@ class TicketController extends Controller
 		$dataProvider=new CActiveDataProvider('Ticket', array(
 			'criteria'=>array(
 				// открытые цели, незакрытые задач
-				'condition'=>'status_id < 6 './/AND 
+				'condition'=>'status_id < 6 AND p.user_id = :uid'.
 					//(ticket_type_id = 1 OR parent_ticket_id IS NOT NULL)'.
-					($filter_new ? " AND create_date > '".date("Y-m-d", time() - 2*24*60*60)."'" : ""),
+					($filter_new ? " AND create_date > :cd'".date("Y-m-d", time() - 2*24*60*60)."'" : ""),
+				'join'=>'INNER JOIN user_has_project AS p ON p.project_id = t.project_id',
+				'params'=>array(':uid'=>Yii::app()->user->id),
 				// сортировка по целям
 				'order'=>'if (ticket_type_id = 1, 100 * id, parent_ticket_id * 100 + 1), due_date',
 				//'with'=>array('author'),
@@ -267,15 +285,22 @@ class TicketController extends Controller
 			$model->resolution_id = (int)$_POST['Ticket']['resolution_id'];
 			$model->worked_time = (int)$_POST['Ticket']['worked_time'];
 		}
-		$model->makeWorkflowAction($action);
-		if (isset($_POST['Comment']) && $_POST['Comment'] > '')
+		$user_id = Yii::app()->user->id;
+		if (User::CheckLevel(20) ||
+			$model->owner_user_id == $user_id ||
+			$model->responsible_user_id == $user_id ||
+			$model->author_user_id == $user_id)
 		{
-			$comment = new Comment();
-			$comment->attributes=$_POST['Comment'];
-			$comment->SetDefault($id);
-			$comment->save();
+			$model->makeWorkflowAction($action);
+			if (isset($_POST['Comment']) && $_POST['Comment'] > '')
+			{
+				$comment = new Comment();
+				$comment->attributes=$_POST['Comment'];
+				$comment->SetDefault($id);
+				$comment->save();
+			}
+			Sendmail::mailChangeTicket($model);
 		}
-		Sendmail::mailChangeTicket($model);
 		$this->redirect(array('view','id'=>$model->id));
 	}
 

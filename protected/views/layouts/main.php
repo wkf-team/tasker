@@ -32,7 +32,7 @@
 		<div style="position:relative; top:5px; left:40%;">
 			<?php $this->widget('RW_GoalsComplete'); ?>
 		</div>
-		<div id="logo" style="position:absolute; top:0px;"><?php echo CHtml::encode(Yii::app()->name); ?></div>
+		<div id="logo" style="position:absolute; top:0px;"><?php echo CHtml::encode(Yii::app()->name)." - ".Project::GetSelected()->name; ?></div>
 		<div style="position: absolute; top: 10px; right:10px;">
 			<?php
 			$this->widget('RW_ReportsPreview');
@@ -54,6 +54,7 @@
 				array('label'=>'Отчеты', 'url'=>array('/site/page', 'view'=>'report')),
 				array('label'=>'О проекте', 'url'=>array('/site/page', 'view'=>'about')),
 				array('label'=>'Пользователи', 'url'=>array('/user')),
+				array('label'=>'Проекты', 'url'=>array('/project')),
 				array('label'=>'Мой профиль', 'url'=>array('/user/ViewProfile')),
 				array('label'=>'Логин', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Выход ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest),

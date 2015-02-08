@@ -14,13 +14,20 @@
  * @property integer $digest_enabled
  *
  * The followings are the available model relations:
- * @property Attachement[] $attachements
+ * @property Attachment[] $attachments
  * @property Comment[] $comments
+ * @property SpentTime[] $spentTimes
  * @property Ticket[] $tickets
  * @property Ticket[] $tickets1
  * @property Ticket[] $tickets2
  * @property Ticket[] $tickets3
+ * @property TicketHistory[] $ticketHistories
+ * @property TicketHistory[] $ticketHistories1
+ * @property TicketHistory[] $ticketHistories2
+ * @property TicketHistory[] $ticketHistories3
+ * @property TicketHistory[] $ticketHistories4
  * @property Usergroup $usergroup
+ * @property Project[] $projects
  */
 class User extends CActiveRecord
 {
@@ -57,7 +64,7 @@ class User extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, usergroup_id, notification_enabled', 'required'),
+			array('name, usergroup_id, notification_enabled, digest_enabled', 'required'),
 			array('work_time_per_week, usergroup_id, notification_enabled, digest_enabled', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>45),
 			array('mail', 'length', 'max'=>255),
@@ -75,13 +82,20 @@ class User extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'attachements' => array(self::HAS_MANY, 'Attachement', 'author_id'),
+			'attachments' => array(self::HAS_MANY, 'Attachment', 'author_id'),
 			'comments' => array(self::HAS_MANY, 'Comment', 'author_id'),
+			'spentTimes' => array(self::HAS_MANY, 'SpentTime', 'user_id'),
 			'tickets' => array(self::HAS_MANY, 'Ticket', 'author_user_id'),
 			'tickets1' => array(self::HAS_MANY, 'Ticket', 'owner_user_id'),
 			'tickets2' => array(self::HAS_MANY, 'Ticket', 'tester_user_id'),
 			'tickets3' => array(self::HAS_MANY, 'Ticket', 'responsible_user_id'),
+			'ticketHistories' => array(self::HAS_MANY, 'TicketHistory', 'author_user_id'),
+			'ticketHistories1' => array(self::HAS_MANY, 'TicketHistory', 'owner_user_id'),
+			'ticketHistories2' => array(self::HAS_MANY, 'TicketHistory', 'tester_user_id'),
+			'ticketHistories3' => array(self::HAS_MANY, 'TicketHistory', 'responsible_user_id'),
+			'ticketHistories4' => array(self::HAS_MANY, 'TicketHistory', 'hist_create_user_id'),
 			'usergroup' => array(self::BELONGS_TO, 'Usergroup', 'usergroup_id'),
+			'projects' => array(self::MANY_MANY, 'Project', 'user_has_project(user_id, project_id)'),
 		);
 	}
 

@@ -22,12 +22,16 @@
  * @property integer $tester_user_id
  * @property integer $responsible_user_id
  * @property integer $parent_ticket_id
+ * @property integer $iteration_id
+ * @property integer $project_id
  *
  * The followings are the available model relations:
- * @property Attachement[] $attachements
+ * @property Attachment[] $attachments
  * @property Comment[] $comments
  * @property Relation[] $relations
  * @property Relation[] $relations1
+ * @property SpentTime[] $spentTimes
+ * @property SubTicket[] $subTickets
  * @property Priority $priority
  * @property Status $status
  * @property Resolution $resolution
@@ -38,6 +42,8 @@
  * @property Ticket[] $tickets
  * @property User $testerUser
  * @property User $responsibleUser
+ * @property Iteration $iteration
+ * @property Project $project
  */
 class Ticket extends CActiveRecord
 {
@@ -63,6 +69,7 @@ class Ticket extends CActiveRecord
 	
 	protected function beforeSave()
 	{
+		if ($this->isNewRecord) $this->project_id = Project::GetSelected()->id;
 		if ($this->due_date == '') $this->due_date = null;
 		if ($this->estimate_start_date == '') $this->estimate_start_date = null;
 		return parent::beforeSave();
@@ -82,6 +89,7 @@ class Ticket extends CActiveRecord
 		$user = $user ? $user->id : $ticket->author_user_id;
 		$ticket->owner_user_id = $user;
 		$ticket->responsible_user_id = $user;
+		$ticket->project_id = Project::GetSelected()->id;
 		return $ticket;
 	}
 	
@@ -122,12 +130,14 @@ class Ticket extends CActiveRecord
 		if (is_numeric ($text)) {
 			$id = (int)$text;
 			$model = Ticket::model()->findByPk($id);
-			if ($model) return $model;
+			if ($model && UserHasProject::HasUserAccess($model->project_id, Yii::app()->user->id))
+				return $model;
 		}
-		$cond = new CDbCriteria();
-		$cond->addSearchCondition('subject', $text);
-		$cond->addSearchCondition('description', $text, true, 'OR');
-		$result = Ticket::model()->findAll($cond);
+		$result = Ticket::model()->findAll(array(
+			'condition'=>'(subject LIKE :qstr OR description LIKE :qstr) AND p.user_id = :uid',
+			'join'=>'INNER JOIN user_has_project AS p ON p.project_id = t.project_id',
+			'params'=>array(':qstr'=>$text, ':uid'=>Yii::app()->user->id)
+		));
 		if (count($result) == 1) return $result[0];
 		else return $result;
 	}
@@ -176,14 +186,14 @@ class Ticket extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('subject, priority_id, status_id, resolution_id, ticket_type_id, owner_user_id, responsible_user_id', 'required'),
-			array('estimate_time, worked_time, priority_id, status_id, resolution_id, ticket_type_id, author_user_id, owner_user_id, tester_user_id, responsible_user_id, parent_ticket_id', 'numerical', 'integerOnly'=>true),
+			array('estimate_time, worked_time, priority_id, status_id, resolution_id, ticket_type_id, author_user_id, owner_user_id, tester_user_id, responsible_user_id, parent_ticket_id, iteration_id, project_id', 'numerical', 'integerOnly'=>true),
 			array('subject', 'length', 'max'=>255),
 			array('description', 'length', 'max'=>10000),
 			array('estimate_start_date, due_date, end_date', 'safe'),
 			array('id', 'safe', 'on' => 'plan'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, subject, description, create_date, estimate_start_date, due_date, end_date, estimate_time, worked_time, priority_id, status_id, resolution_id, ticket_type_id, author_user_id, owner_user_id, tester_user_id, responsible_user_id, parent_ticket_id', 'safe', 'on'=>'search'),
+			array('id, subject, description, create_date, estimate_start_date, due_date, end_date, estimate_time, worked_time, priority_id, status_id, resolution_id, ticket_type_id, author_user_id, owner_user_id, tester_user_id, responsible_user_id, parent_ticket_id, iteration_id, project_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -195,10 +205,14 @@ class Ticket extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'attachements' => array(self::HAS_MANY, 'Attachement', 'ticket_id'),
+			'attachments' => array(self::HAS_MANY, 'Attachment', 'ticket_id'),
 			'comments' => array(self::HAS_MANY, 'Comment', 'ticket_id'),
 			'relTicketsFrom' => array(self::HAS_MANY, 'Relation', 'ticket_from_id'),
 			'relTicketsTo' => array(self::HAS_MANY, 'Relation', 'ticket_to_id'),
+			'spentTimes' => array(self::HAS_MANY, 'SpentTime', 'ticket_id'),
+			'subTickets' => array(self::HAS_MANY, 'SubTicket', 'ticket_id'),
+			'project' => array(self::BELONGS_TO, 'Project', 'project_id'),
+			'iteration' => array(self::BELONGS_TO, 'Iteration', 'iteration_id'),
 			'priority' => array(self::BELONGS_TO, 'Priority', 'priority_id'),
 			'status' => array(self::BELONGS_TO, 'Status', 'status_id'),
 			'resolution' => array(self::BELONGS_TO, 'Resolution', 'resolution_id'),
@@ -236,6 +250,8 @@ class Ticket extends CActiveRecord
 			'tester_user_id' => 'QA',
 			'responsible_user_id' => 'Ответственный',
 			'parent_ticket_id' => 'Родительская задача',
+			'iteration_id' => 'Итерация',
+			'project_id' => 'Проект',
 		);
 	}
 	
@@ -344,6 +360,8 @@ class Ticket extends CActiveRecord
 		$criteria->compare('tester_user_id',$this->tester_user_id);
 		$criteria->compare('responsible_user_id',$this->responsible_user_id);
 		$criteria->compare('parent_ticket_id',$this->parent_ticket_id);
+		$criteria->compare('iteration_id',$this->iteration_id);
+		$criteria->compare('project_id',$this->project_id);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

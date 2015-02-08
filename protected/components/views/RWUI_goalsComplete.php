@@ -1,5 +1,5 @@
 <div id="goalsComplete" style="display:inline-block;padding-right:10px;">
-Выполнение целей:<br/>
+Выполнение целей по проектам:<br/>
     <?php 
     foreach($this->goals as $goal) {
         echo CHtml::link($goal->subject, array('ticket/view', 'id'=>$goal->id));

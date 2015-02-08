@@ -58,9 +58,50 @@
 		<?php echo $form->checkBox($model,'digest_enabled'); ?>
 		<?php echo $form->error($model,'digest_enabled'); ?>
 	</div>
+	
+	<?php if (!$model->isNewRecord) { ?>
+		<h2>Оповещения</h2>
+		<?php 
+		$rights = new UserHasProject();
+		$rights->user_id = $model->id;
+		$this->widget('zii.widgets.grid.CGridView', array(
+			'id'=>'rights-grid',
+			'cssFile' => 'css/gridView.css',
+			'dataProvider'=>$rights->search(),
+			'filter'=>$rights,
+			'filterPosition'=>'',
+			'columns'=>array(
+				array(
+					'class'=>'CButtonColumn',
+					'buttons'=>array(
+						'view'=>array(
+							'visible'=>'false',
+						),
+						'update'=>array(
+							'url'=>'CHtml::normalizeUrl(array(\'user/'.(Yii::app()->user->id == $model->id ? 'SwitchMyRight' : 'SwitchUserRight').'\', \'id\'=>'.$model->id.', \'project_id\'=>$data->project_id))',
+						),
+						'delete'=>array(
+							'visible'=>'false'
+						),
+					),
+				),
+				array(
+					'name' => 'project_id',
+					'value' => '$data->project->name',
+					'type' => 'text'
+				),
+				array(
+					'name' => 'get_notifications',
+					'value' => '$data->get_notifications',
+					'type' => 'boolean'
+				),
+			),
+		));
+	} // is new record
+	?>
 
 	<div class="row buttons">
-		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
+		<?php echo CHtml::submitButton($model->isNewRecord ? 'Создать' : 'Сохранить'); ?>
 	</div>
 
 <?php $this->endWidget(); ?>

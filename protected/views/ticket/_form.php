@@ -112,7 +112,7 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'parent_ticket_id'); ?>
-		<?php echo $form->dropDownList($model,'parent_ticket_id', CHTML::listData(Ticket::model()->findAll('ticket_type_id = 1 AND status_id < 3'), 'id', 'subject'), array('empty' => '-- Пусто --')); ?>
+		<?php echo $form->dropDownList($model,'parent_ticket_id', CHTML::listData(Ticket::model()->findAll('ticket_type_id = 1 AND status_id < 3 AND project_id = '.$model->project_id), 'id', 'subject'), array('empty' => '-- Пусто --')); ?>
 		<?php echo $form->error($model,'parent_ticket_id'); ?>
 	</div>
 

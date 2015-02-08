@@ -28,7 +28,7 @@ class UserController extends Controller
 	{
 		return array(
 			array('allow', // allow authenticated user
-				'actions'=>array('ViewProfile','UpdateProfile'),
+				'actions'=>array('ViewProfile','UpdateProfile','SwitchMyRight'),
 				'users'=>array('@'),
 			),
 			array('allow',  // allow coordinator
@@ -36,7 +36,7 @@ class UserController extends Controller
 				'expression'=>'User::CheckLevel(10)',
 			),
 			array('allow', // allow admin
-				'actions'=>array('create','update','delete','admin'),
+				'actions'=>array('create','update','delete','admin','SwitchUserRight'),
 				'expression'=>'User::CheckLevel(30)',
 			),
 			array('deny',  // deny all users
@@ -166,6 +166,21 @@ class UserController extends Controller
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
+	}
+	
+	public function actionSwitchUserRight($id, $project_id)
+	{
+		if (UserHasProject::HasUserAccess($project_id, Yii::app()->user->id))
+		{
+			UserHasProject::SwitchUserAccess($project_id, $id);
+		}
+		$this->redirect(array('update', 'id'=>$id));
+	}
+	
+	public function actionSwitchMyRight($project_id)
+	{
+		UserHasProject::SwitchUserAccess($project_id, Yii::app()->user->id);
+		$this->redirect(array('updateProfile'));
 	}
 
 	/**

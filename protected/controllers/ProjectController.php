@@ -1,9 +1,7 @@
 <?php
 
-class AttachmentController extends Controller
+class ProjectController extends Controller
 {
-	var $attachment_path = "attachments/";
-
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
@@ -29,16 +27,12 @@ class AttachmentController extends Controller
 	public function accessRules()
 	{
 		return array(
-			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
-				'users'=>array('*'),
-			),
-			array('allow', // allow for participants
-				'actions'=>array('create','update'),
-				'expression'=>'User::CheckLevel(10)',
+			array('allow',  // allow authenticated users
+				'actions'=>array('index','view','SetSelected'),
+				'users'=>array('@'),
 			),
 			array('allow', // allow coordinator
-				'actions'=>array('admin','delete'),
+				'actions'=>array('create','update','admin','delete','addRight','removeRight','switchRight'),
 				'expression'=>'User::CheckLevel(20)',
 			),
 			array('deny',  // deny all users
@@ -64,33 +58,28 @@ class AttachmentController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Attachment;
+		$model=new Project;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_FILES['filename']))
+		if(isset($_POST['Project']))
 		{
-			$model->SetDefault((int)$_GET['ticket_id']);
-			$uploadfile = $this->attachment_path . $model->ticket_id . "_". basename($_FILES['filename']['name']);
-
-			if (move_uploaded_file($_FILES['filename']['tmp_name'], $uploadfile)) {
-				$model->name = $model->ticket_id . "_". basename($_FILES['filename']['name']);
-				if($model->save())
-					$this->redirect(array('ticket/view','id'=>$model->ticket_id));
-			} else {
-				Yii::log("Wrong file upload: ".$_FILES['filename']['error'], "error");
+			$model->attributes=$_POST['Project'];
+			if($model->save()) {
+				$model->SetDefaultRights();
+				$this->redirect(array('view','id'=>$model->id));
 			}
 		}
-		
-		if (isset($_GET['ticket_id']))
-		{
-			$this->layout = '//layouts/column1';
-			$model->SetDefault((int)$_GET['ticket_id']);
-			$this->render('create',array(
-				'model'=>$model,
-			));
-		} else { Yii::log("Accessing attachment/create without id", "warning"); }
+		$model->start_date = date("Y-m-d");
+		$this->render('create',array(
+			'model'=>$model,
+		));
+	}
+	
+	public function actionSetSelected($id)
+	{
+		$this->loadModel($id)->SetSelected();
 	}
 
 	/**
@@ -105,9 +94,9 @@ class AttachmentController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Attachment']))
+		if(isset($_POST['Project']))
 		{
-			$model->attributes=$_POST['Attachment'];
+			$model->attributes=$_POST['Project'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -124,9 +113,7 @@ class AttachmentController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		$model = $this->loadModel($id);
-		//unlink file in onBeforeDelete
-		$model->delete();
+		$this->loadModel($id)->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if(!isset($_GET['ajax']))
@@ -138,7 +125,13 @@ class AttachmentController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Attachment');
+		$dataProvider=new CActiveDataProvider('Project', array(
+			'criteria'=>array(
+				'condition'=>'u.user_id = :uid',
+				'join'=>'INNER JOIN user_has_project AS u ON u.project_id = t.id',
+				'params'=>array(':uid'=>Yii::app()->user->id),
+			),
+		));
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -149,26 +142,53 @@ class AttachmentController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new Attachment('search');
+		$model=new Project('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Attachment']))
-			$model->attributes=$_GET['Attachment'];
+		if(isset($_GET['Project']))
+			$model->attributes=$_GET['Project'];
 
 		$this->render('admin',array(
 			'model'=>$model,
 		));
+	}
+	
+	public function actionSwitchRight($id, $user_id)
+	{
+		if (UserHasProject::HasUserAccess($id, Yii::app()->user->id))
+		{
+			UserHasProject::SwitchUserAccess($id, $user_id);
+		}
+		$this->redirect(array('update', 'id'=>$id));
+	}
+	
+	public function actionRemoveRight($id, $user_id)
+	{
+		if (UserHasProject::HasUserAccess($id, Yii::app()->user->id))
+		{
+			UserHasProject::RemoveUserAccess($id, $user_id);
+		}
+		$this->redirect(array('update', 'id'=>$id));
+	}
+	
+	public function actionAddRight($id, $user_id, $notification)
+	{
+		if (UserHasProject::HasUserAccess($id, Yii::app()->user->id))
+		{
+			UserHasProject::SetUserAccess($id, $user_id, $notification);
+		}
+		$this->redirect(array('update', 'id'=>$id));
 	}
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
 	 * @param integer $id the ID of the model to be loaded
-	 * @return Attachment the loaded model
+	 * @return Project the loaded model
 	 * @throws CHttpException
 	 */
 	public function loadModel($id)
 	{
-		$model=Attachment::model()->findByPk($id);
+		$model=Project::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -176,11 +196,11 @@ class AttachmentController extends Controller
 
 	/**
 	 * Performs the AJAX validation.
-	 * @param Attachment $model the model to be validated
+	 * @param Project $model the model to be validated
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='attachment-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='project-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();

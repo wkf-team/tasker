@@ -8,7 +8,7 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'Просмотреть', 'url'=>array('view', 'id'=>$model->id))
+	array('label'=>'Просмотреть', 'url'=>array('viewProfile'))
 );
 ?>
 

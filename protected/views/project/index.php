@@ -1,9 +1,9 @@
-﻿<?php
-/* @var $this TicketController */
+<?php
+/* @var $this ProjectController */
 /* @var $dataProvider CActiveDataProvider */
 
 $this->breadcrumbs=array(
-	'Задачи',
+	'Проекты',
 );
 
 $this->menu=array(
@@ -12,8 +12,10 @@ $this->menu=array(
 );
 ?>
 
-<h1>Список задач по проекту</h1>
+<h1>Проекты</h1>
 
-<?php $this->widget('TW_TicketList', array(
-	'dataProvider'=>$dataProvider
+<?php
+$this->widget('zii.widgets.CListView', array(
+	'dataProvider'=>$dataProvider,
+	'itemView'=>'_view',
 )); ?>

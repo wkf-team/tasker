@@ -1,29 +1,28 @@
 <?php
 
 /**
- * This is the model class for table "attachment".
+ * This is the model class for table "sub_ticket".
  *
- * The followings are the available columns in table 'attachment':
+ * The followings are the available columns in table 'sub_ticket':
  * @property integer $id
- * @property string $create_date
- * @property string $name
+ * @property string $text
+ * @property integer $order_num
+ * @property integer $is_done
+ * @property integer $iteration_id
  * @property integer $ticket_id
- * @property integer $author_id
  *
  * The followings are the available model relations:
+ * @property Iteration $iteration
  * @property Ticket $ticket
- * @property User $author
  */
-class Attachment extends CActiveRecord
+class SubTicket extends CActiveRecord
 {
-	var $attachment_path = "attachments/";
-	
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'attachment';
+		return 'sub_ticket';
 	}
 
 	/**
@@ -34,10 +33,12 @@ class Attachment extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			//array('name', 'required'),
-			array('name', 'length', 'max'=>45),
+			array('text, order_num, is_done, ticket_id', 'required'),
+			array('order_num, is_done, iteration_id, ticket_id', 'numerical', 'integerOnly'=>true),
+			array('text', 'length', 'max'=>255),
 			// The following rule is used by search().
-			array('create_date, name, ticket_id, author_id', 'safe', 'on'=>'search'),
+			// @todo Please remove those attributes that should not be searched.
+			array('id, text, order_num, is_done, iteration_id, ticket_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -49,8 +50,8 @@ class Attachment extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'iteration' => array(self::BELONGS_TO, 'Iteration', 'iteration_id'),
 			'ticket' => array(self::BELONGS_TO, 'Ticket', 'ticket_id'),
-			'author' => array(self::BELONGS_TO, 'User', 'author_id'),
 		);
 	}
 
@@ -61,16 +62,12 @@ class Attachment extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'create_date' => 'Дата создания',
-			'name' => 'Имя',
-			'ticket_id' => 'Задача',
-			'author_id' => 'Автор',
+			'text' => 'Text',
+			'order_num' => 'Order Num',
+			'is_done' => 'Is Done',
+			'iteration_id' => 'Iteration',
+			'ticket_id' => 'Ticket',
 		);
-	}
-	
-	protected function beforeDelete()
-	{
-		unlink($this->attachment_path.$this->name);
 	}
 
 	/**
@@ -92,10 +89,11 @@ class Attachment extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('create_date',$this->create_date,true);
-		$criteria->compare('name',$this->name,true);
+		$criteria->compare('text',$this->text,true);
+		$criteria->compare('order_num',$this->order_num);
+		$criteria->compare('is_done',$this->is_done);
+		$criteria->compare('iteration_id',$this->iteration_id);
 		$criteria->compare('ticket_id',$this->ticket_id);
-		$criteria->compare('author_id',$this->author_id);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -106,17 +104,10 @@ class Attachment extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Attachment the static model class
+	 * @return SubTicket the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
-	}
-	
-	public function SetDefault($ticket_id)
-	{
-		$this->ticket_id = $ticket_id;
-		$this->author_id = Yii::app()->user->id;
-		$this->create_date = date("Y/m/d");
 	}
 }

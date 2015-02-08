@@ -134,6 +134,7 @@ class WorkflowStep extends CModel
 				Sendmail::mailAssignTicket($ticket);
 				break;
 				case 'pass' :
+				$ticket->owner_user_id = $ticket->responsible_user_id;//without notifications
 				$ticket->end_date = date("Y-m-d");
 				break;
 				case 'fail' :
