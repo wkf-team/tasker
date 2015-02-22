@@ -115,6 +115,23 @@
 		<?php echo $form->dropDownList($model,'parent_ticket_id', CHTML::listData(Ticket::model()->findAll('ticket_type_id = 1 AND status_id < 3 AND project_id = '.$model->project_id), 'id', 'subject'), array('empty' => '-- Пусто --')); ?>
 		<?php echo $form->error($model,'parent_ticket_id'); ?>
 	</div>
+	
+	<?php if (!$model->isNewRecord) { ?>
+	<div class="row">
+		<?php
+		$comment = new Comment();
+		echo $form->label($comment,'text', array('class'=>'wfc_comment'));
+		echo $form->textArea($comment,'text',array('maxlength'=>1000, 'class'=>'wfc_comment'));
+		?>
+	</div>
+	<?php } ?>
+	
+	<?php if (User::CheckLevel(20)) { ?>
+	<div class="row">
+		<label>Разослать уведомления</label>
+		<input type="checkbox" name="sendNotifications" checked />
+	</div>
+	<?php } ?>
 
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Создать' : 'Сохранить'); ?>

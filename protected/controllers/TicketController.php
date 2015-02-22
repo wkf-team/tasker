@@ -101,7 +101,7 @@ class TicketController extends Controller
 			if ($_POST['responsible_auto']) $model->responsible_user_id = $model->owner_user_id;
 			if($model->save())
 			{
-				Sendmail::mailAssignTicket($model);
+				if (isset($_POST['sendNotifications'])) Sendmail::mailAssignTicket($model);
 				$this->redirect(array('view','id'=>$model->id));
 			}
 		}
@@ -134,9 +134,19 @@ class TicketController extends Controller
 			if ($model->owner_user_id != $prevOwner && $_POST['responsible_auto']) $model->responsible_user_id = $model->owner_user_id;
 			if($model->save())
 			{
-				if ($model->owner_user_id != $prevOwner) Sendmail::mailAssignTicket($model);
-				elseif ($model->estimate_start_date != $prevEst || $model->due_date != $prevDue) Sendmail::mailChangeTicketDate($model);
-				elseif (CJSON::encode($model) != $prevAll) Sendmail::mailChangeTicket($model);
+				if (isset($_POST['sendNotifications'])) 
+				{
+					if ($model->owner_user_id != $prevOwner) Sendmail::mailAssignTicket($model);
+					elseif ($model->estimate_start_date != $prevEst || $model->due_date != $prevDue) Sendmail::mailChangeTicketDate($model);
+					elseif (CJSON::encode($model) != $prevAll) Sendmail::mailChangeTicket($model);
+				}
+				if (isset($_POST['Comment']) && $_POST['Comment'] > '')
+				{
+					$comment = new Comment();
+					$comment->attributes=$_POST['Comment'];
+					$comment->SetDefault($id);
+					$comment->save();
+				}
 				$this->redirect(array('view','id'=>$model->id));
 			}
 		}
