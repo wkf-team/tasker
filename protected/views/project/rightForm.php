@@ -3,7 +3,6 @@
 /* @var $model UserHasProject */
 /* @var $form CActiveForm */
 ?>
-<button id="addUserHasProject">Добавить</button>
 <div class="form" id="rightForm" title="Добавить">
 
 <?php $form=$this->beginWidget('CActiveForm', array(

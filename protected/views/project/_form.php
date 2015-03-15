@@ -73,12 +73,9 @@
 					'type' => 'boolean'
 				),
 			),
-		));
-		$right = new UserHasProject();
-		$right->project_id = $model->id;
-		$this->renderPartial('rightForm', array('model'=>$right));
-	} // is new record
-	?>
+		)); ?>
+	<button id="addUserHasProject">Добавить</button>
+	<?php } // is new record ?>
 
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Создать' : 'Сохранить'); ?>
@@ -87,3 +84,9 @@
 <?php $this->endWidget(); ?>
 
 </div><!-- form -->
+
+<?php
+$right = new UserHasProject();
+$right->project_id = $model->id;
+$this->renderPartial('rightForm', array('model'=>$right));
+?>

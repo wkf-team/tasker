@@ -96,7 +96,14 @@ class User extends CActiveRecord
 			'ticketHistories4' => array(self::HAS_MANY, 'TicketHistory', 'hist_create_user_id'),
 			'usergroup' => array(self::BELONGS_TO, 'Usergroup', 'usergroup_id'),
 			'projects' => array(self::MANY_MANY, 'Project', 'user_has_project(user_id, project_id)'),
+			'projectSettings' => array(self::HAS_MANY, 'UserHasProject', 'user_id'),
 		);
+	}
+	
+	public function getProjectSettings($project)
+	{
+		foreach ($this->projectSettings as $p) if ($p->project_id == $project->id) return $p;
+		return null;
 	}
 
 	/**

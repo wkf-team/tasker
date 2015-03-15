@@ -93,6 +93,7 @@ class Project extends CActiveRecord
 			'tickets' => array(self::HAS_MANY, 'Ticket', 'project_id'),
 			'ticketHistories' => array(self::HAS_MANY, 'TicketHistory', 'project_id'),
 			'users' => array(self::MANY_MANY, 'User', 'user_has_project(project_id, user_id)'),
+			'userSettings' => array(self::HAS_MANY, 'UserHasProject', 'project_id'),
 		);
 	}
 

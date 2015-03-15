@@ -7,7 +7,6 @@
  * @property integer $user_id
  * @property integer $project_id
  * @property integer $get_notifications
- * @property integer $is_active
  *
  * The followings are the available model relations:
  * @property User $user
