@@ -12,7 +12,7 @@ $this->menu=array(
 );
 ?>
 
-<h1>Список задач по проекту</h1>
+<h1>Список задач</h1>
 
 <?php $this->widget('TW_TicketList', array(
 	'dataProvider'=>$dataProvider

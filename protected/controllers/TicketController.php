@@ -180,7 +180,7 @@ class TicketController extends Controller
 	{
 		$dataProvider=new CActiveDataProvider('Ticket', array('criteria'=>array(
 				// открытые цели, незакрытые задач
-				'condition'=>'status_id < 6 AND p.is_selected = 1 AND p.user_id = :uid',
+				'condition'=>'status_id < 6 AND p.user_id = :uid',
 				'join'=>'INNER JOIN user_has_project AS p ON p.project_id = t.project_id',
 				'params'=>array(':uid'=>Yii::app()->user->id),
 				'order'=>Ticket::$orderString,

@@ -10,8 +10,12 @@ class Sendmail //extends CComponent
 	}
 	
 	// Еженедельный дайджест на всех по статусу
-	public static function mailWeeklyStatus($ticketsClosed, $ticketsOverdue)
+	public static function mailWeeklyStatus()
 	{
+		$ticketsClosed = Ticket::model()->findAll(array(
+			'condition' => 'status_id >= 6 AND resolution_id = 2 AND end_date > subdate(now(), 7)',
+			'order' => 'owner_user_id'
+		));
 		if (count($ticketsClosed) > 0) {
 			$message = "За прошедшую неделю были выполнены задачи:<ul>";
 			for ($i = 0; $i < count($ticketsClosed); $i++) {
@@ -21,6 +25,10 @@ class Sendmail //extends CComponent
 		} else {
 			$message = "За прошедшую неделю ни одной задачи закрыто не было.<br/>";
 		}
+		$ticketsOverdue = Ticket::model()->findAll(array(
+			'condition' => 'status_id < 6 AND due_date < SUBDATE(NOW(), 1)',
+			'order' => 'owner_user_id'
+		));
 		if (count($ticketsOverdue) > 0) {
 			$message .= "В данный момент просрочены задачи:<ul>";
 			for ($i = 0; $i < count($ticketsOverdue); $i++) {
@@ -37,40 +45,54 @@ class Sendmail //extends CComponent
 	}
 	
 	// Просрочка задачи
-	public static function mailOverdueTickets($tickets)
+	public static function mailOverdueTickets()
 	{
-		$user = $tickets[0]->ownerUser;
-		$message = "У вас просрочены следующие задачи:<ul>";
-		for ($i = 0; $i < count($tickets); $i++)
+		$tickets = Ticket::model()->findAll(array(
+			'condition' => 'status_id < 6 AND due_date < SUBDATE(NOW(), 1)',
+			'order' => 'owner_user_id'
+		));
+		if (count($tickets) > 0)
 		{
-			if ($tickets[$i]->owner_user_id != $user->id) {
-				Sendmail::mail(array($user), "Просрочены задачи", $message."</ul>");
-				$user = $tickets[$i]->ownerUser;
-				$message = "У вас просрочены следующие задачи:<ul>";
+			$user = $tickets[0]->ownerUser;
+			$message = "У вас просрочены следующие задачи:<ul>";
+			for ($i = 0; $i < count($tickets); $i++)
+			{
+				if ($tickets[$i]->owner_user_id != $user->id) {
+					Sendmail::mail(array($user), "Просрочены задачи", $message."</ul>");
+					$user = $tickets[$i]->ownerUser;
+					$message = "У вас просрочены следующие задачи:<ul>";
+				}
+				$message .= "<li>".CHtml::link($tickets[$i]->subject, Sendmail::normalizeUrl(array('ticket/view', 'id'=>$tickets[$i]->id))).". ".CHtml::link("Отложить на 3 дня", Sendmail::normalizeUrl(array('ticket/postpone', 'id'=>$tickets[$i]->id)))."</li>";
 			}
-			$message .= "<li>".CHtml::link($tickets[$i]->subject, Sendmail::normalizeUrl(array('ticket/view', 'id'=>$tickets[$i]->id))).". ".CHtml::link("Отложить на 3 дня", Sendmail::normalizeUrl(array('ticket/postpone', 'id'=>$tickets[$i]->id)))."</li>";
+			Sendmail::mail(array($user), "Просрочены задачи", $message."</ul>");
 		}
-		Sendmail::mail(array($user), "Просрочены задачи", $message."</ul>");
 	}
 	
 	// Дайджест задач
-	public static function mailDigestTickets($tickets)
+	public static function mailDigestTickets()
 	{
-		$user = $tickets[0]->ownerUser;
-		$message = "Вам назначены следующие задачи:<ul>";
-		$counter = 0;
-		for ($i = 0; $i < count($tickets); $i++)
+		$tickets = Ticket::model()->findAll(array(
+			'condition' => 'status_id < 6',
+			'order' => 'owner_user_id'
+		));
+		if (count($tickets) > 0)
 		{
-			if ($tickets[$i]->owner_user_id != $user->id) {
-				if ($counter > 0 && $user->digest_enabled) Sendmail::mail(array($user), "Дайджест задач", $message."</ul>");
-				$user = $tickets[$i]->ownerUser;
-				$counter = 0;
-				$message = "Вам назначены следующие задачи:<ul>";
+			$user = $tickets[0]->ownerUser;
+			$message = "Вам назначены следующие задачи:<ul>";
+			$counter = 0;
+			for ($i = 0; $i < count($tickets); $i++)
+			{
+				if ($tickets[$i]->owner_user_id != $user->id) {
+					if ($counter > 0 && $user->digest_enabled) Sendmail::mail(array($user), "Дайджест задач", $message."</ul>");
+					$user = $tickets[$i]->ownerUser;
+					$counter = 0;
+					$message = "Вам назначены следующие задачи:<ul>";
+				}
+				$counter++;
+				$message .= "<li>".CHtml::link($tickets[$i]->subject, Sendmail::normalizeUrl(array('ticket/view', 'id'=>$tickets[$i]->id))).". ".CHtml::link("Отложить на 3 дня", Sendmail::normalizeUrl(array('ticket/postpone', 'id'=>$tickets[$i]->id)))."</li>";
 			}
-			$counter++;
-			$message .= "<li>".CHtml::link($tickets[$i]->subject, Sendmail::normalizeUrl(array('ticket/view', 'id'=>$tickets[$i]->id))).". ".CHtml::link("Отложить на 3 дня", Sendmail::normalizeUrl(array('ticket/postpone', 'id'=>$tickets[$i]->id)))."</li>";
+			if ($counter > 0 && $user->digest_enabled) Sendmail::mail(array($user), "Дайджест задач", $message."</ul>");
 		}
-		if ($counter > 0 && $user->digest_enabled) Sendmail::mail(array($user), "Дайджест задач", $message."</ul>");
 	}
 	
 	// Регистрация пользователя

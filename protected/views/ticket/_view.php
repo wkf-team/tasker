@@ -22,6 +22,9 @@
 	<td><?php echo CHtml::encode($data->priority->name); ?>
 	</td>
 
+	<td><?php echo CHtml::encode($data->project->name); ?>
+	</td>
+
 	<td><?php echo CHtml::encode($data->status->name); ?>
 	</td>
 
