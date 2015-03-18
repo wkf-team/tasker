@@ -24,6 +24,11 @@ if ($toProvider->totalItemCount > 0) {
 				'type' => 'text'
 			),
 			array(
+				'name' => CHtml::activeLabel(Ticket::model(), 'priority_id'),
+				'value' => '$data->ticketFrom->priority->name',
+				'type' => 'text'
+			),
+			array(
 				'name' => CHtml::activeLabel(Ticket::model(), 'due_date'),
 				'value' => '$data->ticketFrom->encodeDate($data->ticketFrom->due_date)',
 				'type' => 'text'
@@ -64,6 +69,11 @@ if ($fromProvider->totalItemCount > 0) {
 			array(
 				'name' => CHtml::activeLabel(Ticket::model(), 'status_id'),
 				'value' => '$data->ticketTo->status->name',
+				'type' => 'text'
+			),
+			array(
+				'name' => CHtml::activeLabel(Ticket::model(), 'priority_id'),
+				'value' => '$data->ticketFrom->priority->name',
 				'type' => 'text'
 			),
 			array(
