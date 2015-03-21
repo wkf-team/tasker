@@ -49,15 +49,15 @@
 		<?php $this->widget('zii.widgets.CMenu',array(
 			'items'=>array(
 				array('label'=>'Главная', 'url'=>array('/site/index')),
-				array('label'=>'Задачи', 'url'=>array('/ticket')),
+				array('label'=>'Задачи', 'url'=>array('/ticket/index')),
 				array('label'=>'Планирование', 'url'=>array('/ticket/plan')),
 				array('label'=>'Отчеты', 'url'=>array('/site/page', 'view'=>'report')),
-				array('label'=>'О проекте', 'url'=>array('/site/page', 'view'=>'about')),
-				array('label'=>'Пользователи', 'url'=>array('/user')),
-				array('label'=>'Проекты', 'url'=>array('/project')),
+				array('label'=>'Пользователи', 'url'=>array('/user/index')),
+				array('label'=>'Проекты', 'url'=>array('/project/index')),
 				array('label'=>'Мой профиль', 'url'=>array('/user/ViewProfile')),
 				array('label'=>'Логин', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Выход ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest),
+				array('label'=>'О проекте', 'url'=>array('/site/page', 'view'=>'about')),
 			),
 		)); ?>
 	</div><!-- mainmenu -->

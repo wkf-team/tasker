@@ -75,10 +75,39 @@ $this->widget('zii.widgets.CDetailView', array(
 
 <br />
 
-<?php $this->widget('AW_AttList', array('ticket_id'=>$model->id, 'title'=>'Вложенные файлы')); ?>
+<div id="tabs">
+	<ul>
+		<li id="link-tabs-1"><a href="#tabs-1">Комментарии</a></li>
+		<li id="link-tabs-2"><a href="#tabs-2">Файлы</a></li>
+		<li id="link-tabs-3"><a href="#tabs-3">Связи</a></li>
+		<li id="link-tabs-4"><a href="#tabs-4">Подзадачи</a></li>
+	</ul>
+	<div id="tabs-1">
+	<?php $this->widget('CW_CommentList', array('ticket_id'=>$model->id, 'title'=>'Комментарии')); ?>
+	</div>
+	<div id="tabs-2">
+	<?php $this->widget('AW_AttList', array('ticket_id'=>$model->id, 'title'=>'Вложенные файлы')); ?>
+	</div>
+	<div id="tabs-3">
+	<?php $this->widget('LW_LinksList', array('ticket_id'=>$model->id, 'title'=>'Ссылки')); ?>
+	</div>
+	<div id="tabs-4">
+	<?php $this->widget('TW_InnerTaskList', array('ticket_id'=>$model->id, 'title'=>'Вложенные задачи')); ?>
+	</div>
+</div>
+<script language="javascript">
+	function updateLink(num, hide) {
+		var link = $("#link-tabs-"+num+" a");
+		var count = $("#tabs-"+num+" tbody tr").length + $("#tabs-"+num+" .items .view").length;
+		if (count == 0 && hide) link.hide();
+		link.html(link.html() + " (" + count + ")");
+	}
 
-<?php $this->widget('LW_LinksList', array('ticket_id'=>$model->id, 'title'=>'Ссылки')); ?>
-
-<?php $this->widget('TW_InnerTaskList', array('ticket_id'=>$model->id, 'title'=>'Вложенные задачи')); ?>
-
-<?php $this->widget('CW_CommentList', array('ticket_id'=>$model->id, 'title'=>'Комментарии')); ?>
+	$(function(){
+		updateLink(1, false);
+		updateLink(2, false);
+		updateLink(3, false);
+		updateLink(4, true);
+		$( "#tabs" ).tabs();
+	});
+</script>

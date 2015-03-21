@@ -5,7 +5,7 @@ table.detail-view .null
 
 table.detail-view
 {
-	background: white;
+	//background: white;
 	color: black;
 	border-collapse: collapse;
 	width: 100%;
@@ -26,14 +26,14 @@ table.detail-view th
 	width: 160px;
 }
 
-table.detail-view tr.odd
-{
-	background:#9EEB59;
-}
-
 table.detail-view tr.even
 {
-	background:#C1EB9C;
+	background: #588B27;
+}
+
+table.detail-view tr.odd
+{
+	background: #3C7902;
 }
 
 table.detail-view tr.odd th

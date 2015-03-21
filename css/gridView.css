@@ -60,22 +60,22 @@
 
 .grid-view table.items tr.even
 {
-	background: #C1EB9C;
+	background: #588B27;
 }
 
 .grid-view table.items tr.odd
 {
-	background: #9EEB59; 
+	background: #3C7902;
 }
 
 .grid-view table.items tr.selected
 {
-	background: #BCE774;
+	background: #A1DD68;
 }
 
 .grid-view table.items tbody tr:hover
 {
-	background: #ECFBD4;
+	background: #5EBA07;
 }
 
 .grid-view .link-column img
@@ -103,6 +103,7 @@
 {
 	margin: 0 0 5px 0;
 	text-align: right;
+	color: #3C7902;
 }
 
 .grid-view .pager

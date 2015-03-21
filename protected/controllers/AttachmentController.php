@@ -72,10 +72,11 @@ class AttachmentController extends Controller
 		if(isset($_FILES['filename']))
 		{
 			$model->SetDefault((int)$_GET['ticket_id']);
-			$uploadfile = $this->attachment_path . $model->ticket_id . "_". basename($_FILES['filename']['name']);
+			if(!file_exists($this->attachment_path . "/" . $model->ticket_id)) mkdir($this->attachment_path . "/" . $model->ticket_id, 0777, true);
+			$uploadfile = $this->attachment_path . "/" . $model->ticket_id . "/". basename($_FILES['filename']['name']);
 
 			if (move_uploaded_file($_FILES['filename']['tmp_name'], $uploadfile)) {
-				$model->name = $model->ticket_id . "_". basename($_FILES['filename']['name']);
+				$model->name = basename($_FILES['filename']['name']);
 				if($model->save())
 					$this->redirect(array('ticket/view','id'=>$model->ticket_id));
 			} else {

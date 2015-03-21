@@ -8,7 +8,7 @@ if ($dataProvider->totalItemCount > 0) {
 		'columns'=>array(
 			array(
 				'name' => 'name',
-				'value' => 'CHtml::link($data->name, "attachments/".$data->name)',
+				'value' => 'CHtml::link($data->name, "attachments/".$data->ticket_id."/".$data->name)',
 				'type' => 'html'
 			),
 			array(
