@@ -72,8 +72,10 @@ class CommentController extends Controller
 			$model->attributes=$_POST['Comment'];
 			$model->text = trim($model->text);
 			$model->SetDefault((int)$_GET['ticket_id']);
-			if($model->save())
+			if($model->save()){
+				Sendmail::mailCommentTicket($model->ticket, $model->text);
 				$this->redirect(array('ticket/view','id'=>$model->ticket_id));
+			}
 		}
 
 		if (isset($_GET['ticket_id']))

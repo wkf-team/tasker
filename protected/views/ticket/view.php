@@ -70,6 +70,8 @@ $this->widget('zii.widgets.CDetailView', array(
 					CHtml::link("#".$model->parent_ticket_id.". ".$model->parentTicket->subject, array('ticket/view', 'id'=>$model->parent_ticket_id)) 
 					: null
 		),
+		'initial_version',
+		'resolved_version',
 	),
 )); ?>
 

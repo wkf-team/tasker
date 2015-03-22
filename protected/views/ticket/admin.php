@@ -78,17 +78,6 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 			'filter'=>CHTML::listData(Resolution::model()->findAll(), 'id', 'name'),
 			'type' => 'text'
 		),
-		/*
-		'id',
-		'create_date',
-		'due_date',
-		'description',
-		'estimate_time',
-		'worked_time',
-		'resolution_id',
-		'author_user_id',
-		'parent_ticket_id',
-		*/
 		array(
 			'class'=>'CButtonColumn',
 		),

@@ -93,6 +93,8 @@ CREATE TABLE IF NOT EXISTS `wkf_task`.`project` (
   `name` VARCHAR(45) NOT NULL,
   `start_date` DATE NOT NULL,
   `is_active` TINYINT(1) NOT NULL,
+  `current_version` VARCHAR(25) NULL,
+  `next_version` VARCHAR(25) NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
@@ -138,6 +140,8 @@ CREATE TABLE IF NOT EXISTS `wkf_task`.`ticket` (
   `parent_ticket_id` INT NULL,
   `iteration_id` INT NULL,
   `project_id` INT NOT NULL,
+  `initial_version` VARCHAR(25) NULL,
+  `resolved_version` VARCHAR(25) NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_ticket_refPriority_idx` (`priority_id` ASC),
   INDEX `fk_ticket_refStatus1_idx` (`status_id` ASC),

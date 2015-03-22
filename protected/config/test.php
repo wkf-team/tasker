@@ -27,21 +27,19 @@ return CMap::mergeArray(
 				'password' => '',
 				'charset' => 'utf8',
 			),
-			/*
 			'log'=>array(
 				'class'=>'CLogRouter',
 				'routes'=>array(
 					array(
 						'class'=>'CFileLogRoute',
 						'levels'=>'error, warning, info, debug',
-					),
+					),/*
 					array(
 						'class'=>'CWebLogRoute',
-					),
+					),*/
 					
 				),
 			),
-			*/
 		),
 	)
 );

@@ -8,6 +8,8 @@
  * @property string $name
  * @property string $start_date
  * @property integer $is_active
+ * @property string $current_version
+ * @property string $next_version
  *
  * The followings are the available model relations:
  * @property Iteration[] $iterations
@@ -75,9 +77,10 @@ class Project extends CActiveRecord
 			array('name, start_date, is_active', 'required'),
 			array('is_active', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>45),
+			array('current_version, next_version', 'length', 'max'=>25),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, name, start_date, is_active', 'safe', 'on'=>'search'),
+			array('id, name, start_date, is_active, current_version, next_version', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -107,6 +110,8 @@ class Project extends CActiveRecord
 			'name' => 'Имя',
 			'start_date' => 'Дата начала',
 			'is_active' => 'Активен',
+			'current_version' => 'Текущая версия',
+			'next_version' => 'Следующая версия',
 		);
 	}
 
@@ -132,6 +137,8 @@ class Project extends CActiveRecord
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('start_date',$this->start_date,true);
 		$criteria->compare('is_active',$this->is_active);
+		$criteria->compare('current_version',$this->current_version,true);
+		$criteria->compare('next_version',$this->next_version,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

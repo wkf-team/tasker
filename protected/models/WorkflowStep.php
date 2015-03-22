@@ -131,7 +131,6 @@ class WorkflowStep extends CModel
 				break;
 				case 'test' :
 				$ticket->owner_user_id = $ticket->tester_user_id;
-				Sendmail::mailAssignTicket($ticket);
 				break;
 				case 'pass' :
 				$ticket->owner_user_id = $ticket->responsible_user_id;//without notifications
@@ -139,7 +138,6 @@ class WorkflowStep extends CModel
 				break;
 				case 'fail' :
 				$ticket->owner_user_id = $ticket->responsible_user_id;
-				Sendmail::mailAssignTicket($ticket);
 				$ticket->end_date = null;
 				$ticket->resolution_id = 1;
 				break;

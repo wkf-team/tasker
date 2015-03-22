@@ -21,6 +21,13 @@
 	<b><?php echo CHtml::encode($data->getAttributeLabel('is_active')); ?>:</b>
 	<?php echo $data->is_active == 1 ? "yes" : "no"; ?>
 	<br />
+	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('current_version')); ?>:</b>
+	<?php echo CHtml::encode($data->current_version); ?>
+	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('next_version')); ?>:</b>
+	<?php echo CHtml::encode($data->next_version); ?>
+	<br />
 
 </div>

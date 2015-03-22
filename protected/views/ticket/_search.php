@@ -111,6 +111,25 @@ div.wide a:hover {
 		<?php echo $form->label($model,'parent_ticket_id'); ?>
 		<?php echo $form->dropDownList($model,'parent_ticket_id', CHTML::listData(Ticket::model()->findAll('ticket_type_id = 1 AND status_id < 3'), 'id', 'subject'), array('empty' => '-- Выберите для поиска --')); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->label($model,'project_id'); ?>
+		<?php echo $form->dropDownList($model,'project_id', CHTML::listData(Project::model()->findAll(array(
+			'join' => 'INNER JOIN user_has_project AS p ON t.id = p.project_id',
+			'condition' => 'p.user_id = :uid',
+			'params' => array(':uid'=>Yii::app()->user->id)
+		)), 'id', 'name'), array('empty' => '-- Выберите для поиска --')); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'initial_version'); ?>
+		<?php echo $form->textField($model,'initial_version',array('size'=>25,'maxlength'=>25)); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'resolved_version'); ?>
+		<?php echo $form->textField($model,'resolved_version',array('size'=>25,'maxlength'=>25)); ?>
+	</div>
 
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Search'); ?>

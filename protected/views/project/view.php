@@ -29,5 +29,7 @@ $this->menu=array(
 			'value' => $model->encodeDate($model->start_date)
 		),
 		'is_active:boolean',
+		'current_version',
+		'next_version',
 	),
 )); ?>

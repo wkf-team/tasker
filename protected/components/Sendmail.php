@@ -98,14 +98,16 @@ class Sendmail extends CController
 	}
 	
 	// Изменение данных по задаче
-	public static function mailChangeTicket($ticket)
+	public static function mailChangeTicket($ticket, $comment=null, $addUser = null, $removeUser = null)
 	{
 		if ($ticket->project->is_active == 1)
 		{
 			$users = array();
-			if ($ticket->ownerUser->getProjectSettings($ticket->project)->get_notifications == 1) $users[] = $ticket->ownerUser;
-			if ($ticket->authorUser->getProjectSettings($ticket->project)->get_notifications == 1) $users[] = $ticket->authorUser;
-			Sendmail::mail($users, "Изменено: ".$ticket->subject, User::model()->findByPk(Yii::app()->user->id)->name." изменил данные по задаче: ".CHtml::link($ticket->subject, Yii::app()->createAbsoluteUrl('ticket/view', array('id'=>$ticket->id))));
+			if ($ticket->ownerUser->getProjectSettings($ticket->project)->get_notifications == 1 && $ticket->ownerUser->id != $removeUser) $users[] = $ticket->ownerUser;
+			if ($ticket->authorUser->getProjectSettings($ticket->project)->get_notifications == 1 && $ticket->authorUser->id != $removeUser) $users[] = $ticket->authorUser;
+			if ($addUser != null && $addUser != $ticket->ownerUser->id && $addUser != $ticket->authorUser->id
+			&& ($user = User::model()->findByPk($addUser)) && $user->getProjectSettings($ticket->project)->get_notifications == 1) $users[] = $user;
+			Sendmail::mail($users, "Изменено: ".$ticket->subject, Yii::app()->user->name." изменил данные по задаче ".CHtml::link($ticket->subject, Yii::app()->createAbsoluteUrl('ticket/view', array('id'=>$ticket->id))).($comment == null ? "" : " с комментарием: ".$comment));
 		}
 	}
 	
@@ -117,16 +119,42 @@ class Sendmail extends CController
 			$users = array();
 			if ($ticket->ownerUser->getProjectSettings($ticket->project)->get_notifications == 1) $users[] = $ticket->ownerUser;
 			if ($ticket->authorUser->getProjectSettings($ticket->project)->get_notifications == 1) $users[] = $ticket->authorUser;
-			Sendmail::mail($users, "Изменен срок: ".$ticket->subject, User::model()->findByPk(Yii::app()->user->id)->name." изменил срок по задаче: ".CHtml::link($ticket->subject, Yii::app()->createAbsoluteUrl('ticket/view', array('id'=>$ticket->id))));
+			Sendmail::mail($users, "Изменен срок: ".$ticket->subject, Yii::app()->user->name." изменил срок по задаче ".CHtml::link($ticket->subject, Yii::app()->createAbsoluteUrl('ticket/view', array('id'=>$ticket->id))));
 		}
 	}
 	
 	// Создание/назначение задачи
-	public static function mailAssignTicket($ticket)
+	public static function mailAssignTicket($ticket, $comment=null)
 	{
 		if ($ticket->project->is_active == 1 && $ticket->ownerUser->getProjectSettings($ticket->project)->get_notifications == 1)
 		{
-			Sendmail::mail(array($ticket->ownerUser), "Новая задача: ".$ticket->subject, "Вам назначена новая задача: ".CHtml::link($ticket->subject, Yii::app()->createAbsoluteUrl('ticket/view', array('id'=>$ticket->id))));
+			Sendmail::mail(array($ticket->ownerUser), "Новая задача: ".$ticket->subject, "Вам назначена новая задача: ".CHtml::link($ticket->subject, Yii::app()->createAbsoluteUrl('ticket/view', array('id'=>$ticket->id))).($comment == null ? "" : " с комментарием: ".$comment));
+		}
+	}
+	
+	// Изменение статуса по задаче
+	public static function mailMakeWFTicket($ticket, $comment=null, $addUser = null, $removeUser = null)
+	{
+		if ($ticket->project->is_active == 1)
+		{
+			$users = array();
+			if ($ticket->ownerUser->getProjectSettings($ticket->project)->get_notifications == 1 && $ticket->ownerUser->id != $removeUser) $users[] = $ticket->ownerUser;
+			if ($ticket->authorUser->getProjectSettings($ticket->project)->get_notifications == 1 && $ticket->authorUser->id != $removeUser) $users[] = $ticket->authorUser;
+			if ($addUser != null && $addUser != $ticket->ownerUser->id && $addUser != $ticket->authorUser->id
+			&& ($user = User::model()->findByPk($addUser)) && $user->getProjectSettings($ticket->project)->get_notifications == 1) $users[] = $user;
+			Sendmail::mail($users, "Изменен статус: ".$ticket->subject, Yii::app()->user->name." изменил статус по задаче ".CHtml::link($ticket->subject, Yii::app()->createAbsoluteUrl('ticket/view', array('id'=>$ticket->id))).($comment == null ? "" : " с комментарием: ".$comment));
+		}
+	}
+	
+	// Комментарий к задаче
+	public static function mailCommentTicket($ticket, $comment)
+	{
+		if ($ticket->project->is_active == 1)
+		{
+			$users = array();
+			if ($ticket->ownerUser->getProjectSettings($ticket->project)->get_notifications == 1) $users[] = $ticket->ownerUser;
+			if ($ticket->authorUser->getProjectSettings($ticket->project)->get_notifications == 1) $users[] = $ticket->authorUser;
+			Sendmail::mail($users, "Новый комментарий к задаче: ".$ticket->subject, Yii::app()->user->name." добавил комментарий к задаче ".CHtml::link($ticket->subject, Yii::app()->createAbsoluteUrl('ticket/view', array('id'=>$ticket->id))).": ".$comment);
 		}
 	}
 	

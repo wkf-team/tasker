@@ -24,6 +24,8 @@
  * @property integer $parent_ticket_id
  * @property integer $iteration_id
  * @property integer $project_id
+ * @property string $initial_version
+ * @property string $resolved_version
  *
  * The followings are the available model relations:
  * @property Attachment[] $attachments
@@ -189,11 +191,12 @@ class Ticket extends CActiveRecord
 			array('estimate_time, worked_time, priority_id, status_id, resolution_id, ticket_type_id, author_user_id, owner_user_id, tester_user_id, responsible_user_id, parent_ticket_id, iteration_id, project_id', 'numerical', 'integerOnly'=>true),
 			array('subject', 'length', 'max'=>255),
 			array('description', 'length', 'max'=>10000),
+			array('initial_version, resolved_version', 'length', 'max'=>25),
 			array('estimate_start_date, due_date, end_date', 'safe'),
 			array('id', 'safe', 'on' => 'plan'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, subject, description, create_date, estimate_start_date, due_date, end_date, estimate_time, worked_time, priority_id, status_id, resolution_id, ticket_type_id, author_user_id, owner_user_id, tester_user_id, responsible_user_id, parent_ticket_id, iteration_id, project_id', 'safe', 'on'=>'search'),
+			array('id, subject, description, create_date, estimate_start_date, due_date, end_date, estimate_time, worked_time, priority_id, status_id, resolution_id, ticket_type_id, author_user_id, owner_user_id, tester_user_id, responsible_user_id, parent_ticket_id, iteration_id, project_id, initial_version, resolved_version', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -252,6 +255,8 @@ class Ticket extends CActiveRecord
 			'parent_ticket_id' => 'Родительская задача',
 			'iteration_id' => 'Итерация',
 			'project_id' => 'Проект',
+			'initial_version' => 'Обнаружено в версии',
+			'resolved_version' => 'Исправлено в версии',
 		);
 	}
 	
@@ -362,6 +367,8 @@ class Ticket extends CActiveRecord
 		$criteria->compare('parent_ticket_id',$this->parent_ticket_id);
 		$criteria->compare('iteration_id',$this->iteration_id);
 		$criteria->compare('project_id',$this->project_id);
+		$criteria->compare('initial_version',$this->initial_version,true);
+		$criteria->compare('resolved_version',$this->resolved_version,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

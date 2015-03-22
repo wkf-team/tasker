@@ -46,6 +46,15 @@
 	</div>
 	
 	<div class="row">
+		<?php echo $form->labelEx($model,'initial_version'); ?>
+		<?php 
+		if ($model->isNewRecord) $model->initial_version = $model->project->current_version;
+		echo $form->textField($model,'initial_version',array('size'=>25,'maxlength'=>25));
+		?>
+		<?php echo $form->error($model,'initial_version'); ?>
+	</div>
+	
+	<div class="row">
 		<?php echo $form->labelEx($model,'due_date'); ?>
 		<?php echo $form->dateField($model,'due_date'); ?>
 		<?php echo $form->error($model,'due_date'); ?>
@@ -142,10 +151,22 @@
 </div><!-- form -->
 <script>
 $(function() {
-	$("#Ticket_ticket_type_id").change(setParentVisibility);
+	$("#Ticket_ticket_type_id").change(TicketType_OnChange);
 	$(".datepicker").datepicker({ firstDay: 1, showOn: "both", dateFormat: "yy-mm-dd" });
-	setParentVisibility();
+	initialVersionDefault = $("#Ticket_initial_version").val();
+	TicketType_OnChange();
 });
+
+function TicketType_OnChange() {
+	setParentVisibility();
+	setInitialVersionVisibility();
+}
+
+var initialVersionDefault;
+function setInitialVersionVisibility () {
+	if($("#Ticket_ticket_type_id").val() != 3) $("#Ticket_initial_version").val("").closest(".row").hide();
+	else $("#Ticket_initial_version").val(initialVersionDefault).closest(".row").show();
+}
 
 function setParentVisibility() {
 	if($("#Ticket_ticket_type_id").val() == 1) $("#Ticket_parent_ticket_id").val("").closest(".row").hide();

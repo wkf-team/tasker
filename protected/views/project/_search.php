@@ -30,6 +30,16 @@
 		<?php echo $form->label($model,'is_active'); ?>
 		<?php echo $form->textField($model,'is_active'); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->label($model,'current_version'); ?>
+		<?php echo $form->textField($model,'current_version',array('size'=>25,'maxlength'=>25)); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'next_version'); ?>
+		<?php echo $form->textField($model,'next_version',array('size'=>25,'maxlength'=>25)); ?>
+	</div>
 
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Search'); ?>

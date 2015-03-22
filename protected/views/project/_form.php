@@ -36,6 +36,19 @@
 		<?php echo $form->checkBox($model,'is_active'); ?>
 		<?php echo $form->error($model,'is_active'); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'current_version'); ?>
+		<?php echo $form->textField($model,'current_version',array('size'=>25,'maxlength'=>25)); ?>
+		<?php echo $form->error($model,'current_version'); ?>
+	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'next_version'); ?>
+		<?php echo $form->textField($model,'next_version',array('size'=>25,'maxlength'=>25)); ?>
+		<?php echo $form->error($model,'next_version'); ?>
+	</div>
+	
 	<?php if (!$model->isNewRecord) { ?>
 		<h2>Права доступа</h2>
 		<?php 
@@ -76,7 +89,7 @@
 		)); ?>
 	<button id="addUserHasProject">Добавить</button>
 	<?php } // is new record ?>
-
+	
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Создать' : 'Сохранить'); ?>
 	</div>

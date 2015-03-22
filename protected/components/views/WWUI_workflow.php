@@ -26,6 +26,11 @@ foreach ($actions as $action) {
 		echo $form->error($model,'resolution_id');
 		echo $form->label($model,'worked_time', array('class'=>'wfc_resolution'));
 		echo $form->textField($model, 'worked_time', array('class'=>'wfc_resolution'));
+		$back_resolved = $model->resolved_version;
+		$model->resolved_version = $model->project->next_version;
+		echo $form->label($model,'resolved_version', array('class'=>'wfc_resolution'));
+		echo $form->textField($model, 'resolved_version', array('class'=>'wfc_resolution'));
+		$model->resolved_version = $back_resolved;
 		$comment = new Comment();
 		echo $form->label($comment,'text', array('class'=>'wfc_comment'));
 		echo $form->textArea($comment,'text',array('maxlength'=>1000, 'class'=>'wfc_comment'));

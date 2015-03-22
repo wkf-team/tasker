@@ -134,18 +134,24 @@ class TicketController extends Controller
 			if ($model->owner_user_id != $prevOwner && $_POST['responsible_auto']) $model->responsible_user_id = $model->owner_user_id;
 			if($model->save())
 			{
-				if (isset($_POST['sendNotifications'])) 
-				{
-					if ($model->owner_user_id != $prevOwner) Sendmail::mailAssignTicket($model);
-					elseif ($model->estimate_start_date != $prevEst || $model->due_date != $prevDue) Sendmail::mailChangeTicketDate($model);
-					elseif (CJSON::encode($model) != $prevAll) Sendmail::mailChangeTicket($model);
-				}
 				if (isset($_POST['Comment']) && $_POST['Comment'] > '')
 				{
 					$comment = new Comment();
 					$comment->attributes=$_POST['Comment'];
 					$comment->SetDefault($id);
 					$comment->save();
+				}
+				if (isset($_POST['sendNotifications']) && CJSON::encode($model) != $prevAll) 
+				{
+					$addUserNotification = null;
+					$removeUserNotification = null;
+					if ($model->owner_user_id != $prevOwner)
+					{
+						Sendmail::mailAssignTicket($model, isset($comment) ? $comment->text : null);
+						$addUserNotification = $prevOwner;
+						$removeUserNotification = $model->owner_user_id;
+					}
+					Sendmail::mailChangeTicket($model, isset($comment) ? $comment->text : null, $addUserNotification, $removeUserNotification);
 				}
 				$this->redirect(array('view','id'=>$model->id));
 			}
@@ -238,22 +244,38 @@ class TicketController extends Controller
 	 */
 	public function actionAjaxEdit()
 	{
+		$prevDue = "";
+		$prevOwner = "";
 		if (isset($_POST['Ticket']['id']) && $_POST['Ticket']['id']) {
 			$model=$this->loadModel($_POST['Ticket']['id']);
+			$prevDue = $model->due_date;
+			$prevOwner = $model->owner_user_id;
+			$prevAll = CJSON::encode($model);
 		} else {
 			$model=Ticket::create();
 			unset($_POST['Ticket']['id']);
 		}
 		if(isset($_POST['Ticket']))
 		{
-			$prevDue = $model->due_date;
-			$prevOwner = $model->owner_user_id;
 			$model->attributes=$_POST['Ticket'];
 			if ($model->due_date != $prevDue) $model->calculateEstimateStartDate();
 			if ($model->owner_user_id != $prevOwner) $model->responsible_user_id = $model->owner_user_id;
 			if ($model->id) $model->isNewRecord = false;
 			if (!$model->save()) Yii::log(CJSON::encode($model->getErrors()), "error");
 			else $model->UpdateBlockedBy($_POST['blocked_by']);
+			if ($model->isNewRecord) Sendmail::mailAssignTicket($model);
+			elseif ($prevAll != CJSON::encode($model))
+			{
+				$addUserNotification = null;
+				$removeUserNotification = null;
+				if ($model->owner_user_id != $prevOwner)
+				{
+					Sendmail::mailAssignTicket($model);
+					$addUserNotification = $prevOwner;
+					$removeUserNotification = $model->owner_user_id;
+				}
+				Sendmail::mailChangeTicket($model, null, $addUserNotification, $removeUserNotification);
+			}
 		}
 	}
 	
@@ -270,7 +292,7 @@ class TicketController extends Controller
 		$dataProvider=new CActiveDataProvider('Ticket', array(
 			'criteria'=>array(
 				// открытые цели, незакрытые задач
-				'condition'=>'status_id < 6 AND p.user_id = :uid'.
+				'condition'=>'status_id < 6 AND p.user_id = :uid AND p.is_selected = 1'.
 					//(ticket_type_id = 1 OR parent_ticket_id IS NOT NULL)'.
 					($filter_new ? " AND create_date > :cd'".date("Y-m-d", time() - 2*24*60*60)."'" : ""),
 				'join'=>'INNER JOIN user_has_project AS p ON p.project_id = t.project_id',
@@ -294,8 +316,10 @@ class TicketController extends Controller
 		{
 			$model->resolution_id = (int)$_POST['Ticket']['resolution_id'];
 			$model->worked_time = (int)$_POST['Ticket']['worked_time'];
+			$model->resolved_version = $_POST['Ticket']['resolved_version'];
 		}
 		$user_id = Yii::app()->user->id;
+		$prevOwner = $model->owner_user_id;
 		if (User::CheckLevel(20) ||
 			$model->owner_user_id == $user_id ||
 			$model->responsible_user_id == $user_id ||
@@ -309,7 +333,15 @@ class TicketController extends Controller
 				$comment->SetDefault($id);
 				$comment->save();
 			}
-			Sendmail::mailChangeTicket($model);
+			$addUserNotification = null;
+			$removeUserNotification = null;
+			if ($prevOwner != $model->owner_user_id)
+			{
+				Sendmail::mailAssignTicket($model, isset($comment) ? $comment->text : null);
+				$addUserNotification = $prevOwner;
+				$removeUserNotification = $model->owner_user_id;
+			}
+			Sendmail::mailMakeWFTicket($model, isset($comment) ? $comment->text : null, $addUserNotification, $removeUserNotification);
 		}
 		$this->redirect(array('view','id'=>$model->id));
 	}
