@@ -26,8 +26,8 @@ class Sendmail extends CController
 				'params' => array(':pid'=>$project->id),
 				'order' => 'owner_user_id'
 			));
-			$message = $instance->renderPartial("//../../protected/components/views/SL_projectStatus", array('ticketsClosed'=>$ticketsClosed,'ticketsOverdue'=>$ticketsOverdue,'projectName'=>$project->name), true);
-			Sendmail::mail(User::model()->findAll(array(
+			$message = $instance->renderInternal("views/SL_projectStatus.php", array('ticketsClosed'=>$ticketsClosed,'ticketsOverdue'=>$ticketsOverdue,'projectName'=>$project->name), true);
+			$result = Sendmail::mail(User::model()->findAll(array(
 				'join'=>'LEFT OUTER JOIN usergroup AS ug ON t.usergroup_id = ug.id
 							LEFT OUTER JOIN user_has_project AS up ON t.id = up.user_id',
 				'condition'=>'ug.level >= 10 AND t.notification_enabled = 1 AND up.project_id = :pid AND up.get_notifications = 1',
