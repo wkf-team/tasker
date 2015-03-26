@@ -47,6 +47,12 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 	'filter'=>$model,
 	'columns'=>array(
 		array(
+			'name' => 'id',
+			'value' => '$data->id',
+			'type' => 'text',
+			'htmlOptions'=>array('width'=>'20px')
+		),
+		array(
 			'name' => 'ticket_type_id',
 			'value' => '$data->ticketType->name',
 			'filter'=>CHTML::listData(TicketType::model()->findAll(), 'id', 'name'),
