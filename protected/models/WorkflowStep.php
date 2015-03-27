@@ -36,6 +36,11 @@ class WorkflowStep extends CModel
 		return array('state_from', 'state_to', 'step_name', 'button_name', 'priority', 'input_data');
 	}
 	
+	public static function IsActionWithResolution($action)
+	{
+		return $action == "close" || $action == "done" || $action == "test";
+	}
+	
 	public static function GetAction($sf, $step)
 	{
 		switch ($sf)

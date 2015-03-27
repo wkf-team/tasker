@@ -100,7 +100,10 @@ $this->widget('zii.widgets.CDetailView', array(
 <script language="javascript">
 	function updateLink(num, hide) {
 		var link = $("#link-tabs-"+num+" a");
-		var count = $("#tabs-"+num+" tbody tr").length + $("#tabs-"+num+" .items .view").length;
+		var summary = $("#tabs-"+num+" .summary");
+		var count = 0;
+		if (summary.length == 1) count = new RegExp("of ([0-9]+)").exec(summary.html())[1];
+		if (summary.length == 2) count = parseInt(new RegExp("of ([0-9]+)").exec($(summary[0]).html())[1]) + parseInt(new RegExp("of ([0-9]+)").exec($(summary[1]).html())[1]);
 		if (count == 0 && hide) link.hide();
 		link.html(link.html() + " (" + count + ")");
 	}
