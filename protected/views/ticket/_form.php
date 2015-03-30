@@ -6,7 +6,7 @@
 <script src="js/tinymce/tinymce.min.js"></script>
 <script>
         tinymce.init({
-			selector:'textarea',
+			selector:'textarea.editor',
 			plugins : 'link',
 			menubar:false,
 			language : 'ru',
@@ -41,7 +41,7 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'description'); ?>
-		<?php echo $form->textArea($model,'description',array('maxlength'=>1023)); ?>
+		<?php echo $form->textArea($model,'description',array('maxlength'=>1023,'class'=>'editor')); ?>
 		<?php echo $form->error($model,'description'); ?>
 	</div>
 	
