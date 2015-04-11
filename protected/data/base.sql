@@ -510,7 +510,7 @@ CREATE  OR REPLACE VIEW `v_goals_complete` AS
         ((`goals`.`status_id` < 6 OR `goals`.`status_id` = 6 AND `goals`.`end_date` >= subdate(now(), 14))
             and (`goals`.`ticket_type_id` = 1))
     group by `goals`.`id`
-	order by `goals`.`due_date`;
+	order by IFNULL(`goals`.`due_date`,  '3000-01-01' );
 
 -- -----------------------------------------------------
 -- View `wkf_task`.`v_users_balance`
