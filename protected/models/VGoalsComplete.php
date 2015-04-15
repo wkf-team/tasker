@@ -71,6 +71,13 @@ class VGoalsComplete extends CActiveRecord
 			'closed' => 'Closed',
 		);
 	}
+	
+	public function encodeDate($date)
+	{
+		if ($date == null || $date == "") return $date;
+		$dt = new DateTime($date);
+		return CHtml::encode($dt->format("d.m.Y"));
+	}
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.

@@ -502,7 +502,8 @@ CREATE  OR REPLACE VIEW `v_goals_complete` AS
         `goals`.`id` AS `id`,
         `goals`.`subject` AS `subject`,
         count(`tasks`.`id`) AS `total`,
-        sum(if((`tasks`.`status_id` >= 6), 1, 0)) AS `closed`
+        sum(if((`tasks`.`status_id` >= 6), 1, 0)) AS `closed`,
+        `goals`.`due_date` AS `due_date`
     from
         (`ticket` `goals`
         left join `ticket` `tasks` ON ((`tasks`.`parent_ticket_id` = `goals`.`id`)))

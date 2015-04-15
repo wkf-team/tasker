@@ -50,6 +50,7 @@
 class Ticket extends CActiveRecord
 {
 	public static $orderString = "status_id DESC, if(due_date is null, CURDATE() + 365, due_date), priority_id DESC";
+	public $asearch;
 	/*
 	public static $orderString = "if(due_date < CURDATE(),
 							1000 + 10*(CURDATE() - due_date) + priority_id,
@@ -138,7 +139,7 @@ class Ticket extends CActiveRecord
 		$result = Ticket::model()->findAll(array(
 			'condition'=>'(subject LIKE :qstr OR description LIKE :qstr) AND p.user_id = :uid',
 			'join'=>'INNER JOIN user_has_project AS p ON p.project_id = t.project_id',
-			'params'=>array(':qstr'=>$text, ':uid'=>Yii::app()->user->id)
+			'params'=>array(':qstr'=>"%".$text."%", ':uid'=>Yii::app()->user->id)
 		));
 		if (count($result) == 1) return $result[0];
 		else return $result;
@@ -196,7 +197,7 @@ class Ticket extends CActiveRecord
 			array('id', 'safe', 'on' => 'plan'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, subject, description, create_date, estimate_start_date, due_date, end_date, estimate_time, worked_time, priority_id, status_id, resolution_id, ticket_type_id, author_user_id, owner_user_id, tester_user_id, responsible_user_id, parent_ticket_id, iteration_id, project_id, initial_version, resolved_version', 'safe', 'on'=>'search'),
+			array('id, subject, description, create_date, estimate_start_date, due_date, end_date, estimate_time, worked_time, priority_id, status_id, resolution_id, ticket_type_id, author_user_id, owner_user_id, tester_user_id, responsible_user_id, parent_ticket_id, iteration_id, project_id, initial_version, resolved_version, asearch', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -257,6 +258,7 @@ class Ticket extends CActiveRecord
 			'project_id' => 'Проект',
 			'initial_version' => 'Обнаружено в версии',
 			'resolved_version' => 'Исправлено в версии',
+			'asearch' => 'Условие WHERE',
 		);
 	}
 	
@@ -369,6 +371,8 @@ class Ticket extends CActiveRecord
 		$criteria->compare('project_id',$this->project_id);
 		$criteria->compare('initial_version',$this->initial_version,true);
 		$criteria->compare('resolved_version',$this->resolved_version,true);
+		$this->asearch = str_replace(';', '\;', $this->asearch);
+		$criteria->addCondition($this->asearch);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

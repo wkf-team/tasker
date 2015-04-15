@@ -3,14 +3,6 @@
 /* @var $model Ticket */
 /* @var $form CActiveForm */
 ?>
-<style>
-div.wide, div.wide a {
-	color:black;
-}
-div.wide a:hover {
-	color:#56B304;
-}
-</style>
 <div class="wide form">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
@@ -132,7 +124,7 @@ div.wide a:hover {
 	</div>
 
 	<div class="row buttons">
-		<?php echo CHtml::submitButton('Search'); ?>
+		<?php echo CHtml::submitButton('Поиск'); ?>
 	</div>
 
 <?php $this->endWidget(); ?>
