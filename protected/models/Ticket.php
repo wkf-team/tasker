@@ -371,9 +371,10 @@ class Ticket extends CActiveRecord
 		$criteria->compare('project_id',$this->project_id);
 		$criteria->compare('initial_version',$this->initial_version,true);
 		$criteria->compare('resolved_version',$this->resolved_version,true);
-		$this->asearch = str_replace(';', '\;', $this->asearch);
-		$criteria->addCondition($this->asearch);
-
+		if ($this->asearch > '') {
+			$this->asearch = str_replace(';', '\;', $this->asearch);
+			$criteria->addCondition($this->asearch);
+		}
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
