@@ -73,7 +73,7 @@
 	<div class="clear"></div>
 	<?php $this->widget("TW_TaskViewExtender"); ?>
 	<div id="footer">
-		Developed by <a href="http://wkf.bit.ru/">WKF Team</a>.<br/>
+		Developed by <a href="http://wkfteam.ru/">WKF Team</a>.<br/>
 		Available on <a href="https://github.com/wkf-team/tasker">GitHub</a> under MIT license<br/>
 		<?php echo Yii::powered(); ?>
 	</div><!-- footer -->
