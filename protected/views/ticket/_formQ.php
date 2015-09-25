@@ -53,6 +53,12 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->labelEx($model,'tester_user_id'); ?>
+		<?php echo $form->dropDownList($model,'tester_user_id', CHTML::listData(User::model()->findAll(), 'id', 'name'), array('empty' => '-- Не выбрано --')); ?>
+		<?php echo $form->error($model,'tester_user_id'); ?>
+	</div>
+
+	<div class="row">
 		<?php
 		echo CHtml::label("Предшественники", "blocked_by"); 
 		echo CHtml::textField("blocked_by", $model->GetBlockedBy_ValueString());

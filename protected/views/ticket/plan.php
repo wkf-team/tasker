@@ -159,6 +159,7 @@ $(function () {
 		dialog.find("#Ticket_priority_id").val(data.priority_id);
 		dialog.find("#Ticket_estimate_time").val(data.estimate_time);
 		dialog.find("#Ticket_owner_user_id").val(data.owner_user_id);
+		dialog.find("#Ticket_tester_user_id").val(data.tester_user_id);
 		dialog.find("#Ticket_ticket_type_id").val(data.ticket_type_id);
 		dialog.find("#Ticket_parent_ticket_id").val(data.parent_ticket_id);
 		dialog.find("#blocked_by").val(data.blocked_by);
@@ -186,6 +187,7 @@ $(function () {
 		dialog.find("#Ticket_priority_id").val(newTicketData.priority_id);
 		dialog.find("#Ticket_estimate_time").val(null);
 		dialog.find("#Ticket_owner_user_id").val(newTicketData.owner_user_id);
+		dialog.find("#Ticket_tester_user_id").val(null);
 		dialog.find("#Ticket_ticket_type_id").val(isTask ? 2 : 1);
 		dialog.find("#Ticket_parent_ticket_id").val(parent_ticket_id);
 		dialog.find("#blocked_by").val(null);
