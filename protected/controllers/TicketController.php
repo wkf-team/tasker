@@ -32,7 +32,7 @@ class TicketController extends Controller
 				'users'=>array('@'),
 			),
 			array('allow',  // allow by project control
-				'actions'=>array('view','update'),
+				'actions'=>array('view','update','selectProject'),
 				'expression'=>'User::CheckLevel(10) && UserHasProject::HasUserAccess($model->project_id, Yii::app()->user->id)',
 			),
 			array('allow', // allow for participants
@@ -344,6 +344,37 @@ class TicketController extends Controller
 			Sendmail::mailMakeWFTicket($model, isset($comment) ? $comment->text : null, $addUserNotification, $removeUserNotification);
 		}
 		$this->redirect(array('view','id'=>$model->id));
+	}
+	
+	public function actionSelectProject($id)
+	{
+		$model=$this->loadModel($id);
+
+		// Uncomment the following line if AJAX validation is needed
+		//$this->performAjaxValidation($model);
+
+		if(isset($_POST['Ticket']))
+		{
+			$prevProj = $model->project_id;
+			$model->attributes=$_POST['Ticket'];
+			if ($prevProj != $model->project_id)
+			{
+				$model->parent_ticket_id = null;
+				if($model->save())
+				{
+					Sendmail::mailChangeTicket($model, isset($comment) ? $comment->text : null, $addUserNotification, $removeUserNotification);
+					$this->redirect(array('view','id'=>$model->id));
+				}
+			}
+			else
+			{
+				$this->redirect(array('view','id'=>$model->id));
+			}
+		}
+
+		$this->render('selectProject',array(
+			'model'=>$model,
+		));
 	}
 
 	/**

@@ -10,6 +10,7 @@ $this->breadcrumbs=array(
 $this->menu=array(
 	array('label'=>'Список задач', 'url'=>array('index')),
 	array('label'=>'Создать', 'url'=>array('create')),
+	array('label'=>'Перенести', 'url'=>array('selectProject', 'id'=>$model->id)),
 	array('label'=>'Отложить на 3 дня', 'url'=>array('postpone', 'id'=>$model->id)),
 	array('label'=>'Изменить', 'url'=>array('update', 'id'=>$model->id)),
 	array('label'=>'Удалить', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Вы уверены, что хотите удалить задачу?')),
