@@ -11,8 +11,8 @@
  * @property string $estimate_start_date
  * @property string $due_date
  * @property string $end_date
- * @property integer $estimate_time
- * @property integer $worked_time
+ * @property double $estimate_time
+ * @property double $worked_time
  * @property integer $priority_id
  * @property integer $status_id
  * @property integer $resolution_id
@@ -189,7 +189,8 @@ class Ticket extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('subject, priority_id, status_id, resolution_id, ticket_type_id, owner_user_id, responsible_user_id', 'required'),
-			array('estimate_time, worked_time, priority_id, status_id, resolution_id, ticket_type_id, author_user_id, owner_user_id, tester_user_id, responsible_user_id, parent_ticket_id, iteration_id, project_id', 'numerical', 'integerOnly'=>true),
+			array('priority_id, status_id, resolution_id, ticket_type_id, author_user_id, owner_user_id, tester_user_id, responsible_user_id, parent_ticket_id, iteration_id, project_id', 'numerical', 'integerOnly'=>true),
+			array('estimate_time, worked_time', 'numerical'),
 			array('subject', 'length', 'max'=>255),
 			array('description', 'length', 'max'=>10000),
 			array('initial_version, resolved_version', 'length', 'max'=>25),
