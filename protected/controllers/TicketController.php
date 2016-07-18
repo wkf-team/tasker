@@ -33,7 +33,7 @@ class TicketController extends Controller
 			),
 			array('allow',  // allow by project control
 				'actions'=>array('view','update','selectProject'),
-				'expression'=>'User::CheckLevel(10) && UserHasProject::HasUserAccess($model->project_id, Yii::app()->user->id)',
+				'expression'=>'User::CheckLevel(10) && UserHasProject::HasUserAccess('.$this->loadModel($_GET['id'])->project_id.', Yii::app()->user->id)',
 			),
 			array('allow', // allow for participants
 				'actions'=>array('create','admin','plan','AjaxEdit','makeWF','postpone'),
@@ -252,6 +252,7 @@ class TicketController extends Controller
 			$prevOwner = $model->owner_user_id;
 			$prevAll = CJSON::encode($model);
 		} else {
+			$prevAll = "";
 			$model=Ticket::create();
 			unset($_POST['Ticket']['id']);
 		}

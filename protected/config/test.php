@@ -21,7 +21,7 @@ return CMap::mergeArray(
 				'class'=>'system.test.CDbFixtureManager',
 			),
 			'db'=>array(
-				'connectionString' => 'mysql:host=localhost;dbname=wkf_task',
+				'connectionString' => 'mysql:host=127.0.0.1;dbname=wkf_task',
 				'emulatePrepare' => true,
 				'username' => 'root',
 				'password' => '',
