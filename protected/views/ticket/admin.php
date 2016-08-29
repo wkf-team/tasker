@@ -8,7 +8,6 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'Список задач', 'url'=>array('index')),
 	array('label'=>'Создать', 'url'=>array('create')),
 );
 

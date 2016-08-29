@@ -4,7 +4,7 @@
 
 $this->breadcrumbs=array(
 	'Задачи'=>array('index'),
-	$model->id=>array('view','id'=>$model->id),
+	$model->subject=>array('view','id'=>$model->id),
 	'Изменить',
 );
 

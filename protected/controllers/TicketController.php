@@ -33,7 +33,7 @@ class TicketController extends Controller
 			),
 			array('allow',  // allow by project control
 				'actions'=>array('view','update','selectProject'),
-				'expression'=>'User::CheckLevel(10) && UserHasProject::HasUserAccess('.$this->loadModel($_GET['id'])->project_id.', Yii::app()->user->id)',
+				'expression'=>'User::CheckLevel(10)',// && UserHasProject::HasUserAccess('.$this->loadModel($_GET['id'])->project_id.', Yii::app()->user->id)',
 			),
 			array('allow', // allow for participants
 				'actions'=>array('create','admin','plan','AjaxEdit','makeWF','postpone'),
@@ -288,25 +288,18 @@ class TicketController extends Controller
 		$filter_new = 0;
 		$this->layout='//layouts/column1';
 		
-		$model=Ticket::create();
-		
 		$dataProvider=new CActiveDataProvider('Ticket', array(
 			'criteria'=>array(
-				// открытые цели, незакрытые задач
-				'condition'=>'status_id < 6 AND p.user_id = :uid AND p.is_selected = 1'.
-					//(ticket_type_id = 1 OR parent_ticket_id IS NOT NULL)'.
-					($filter_new ? " AND create_date > :cd'".date("Y-m-d", time() - 2*24*60*60)."'" : ""),
+				// открытые топ-левел задачи
+				'condition'=>
+					'status_id < 6 AND p.user_id = :uid AND p.is_selected = 1 '.
+					'AND (parent_ticket_id IS NULL)',
 				'join'=>'INNER JOIN user_has_project AS p ON p.project_id = t.project_id',
 				'params'=>array(':uid'=>Yii::app()->user->id),
-				// сортировка по целям
-				'order'=>'if (ticket_type_id = 1, 100 * id, parent_ticket_id * 100 + 1), due_date',
-				//'with'=>array('author'),
 			),'pagination'=>false,
 		));
 		$this->render('plan',array(
 			'dataProvider'=>$dataProvider,
-			'filter_new' => $filter_new,
-			'model' => $model
 		));
 	}
 	

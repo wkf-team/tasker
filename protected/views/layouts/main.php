@@ -30,9 +30,9 @@
 
 	<div id="header" style="position: relative;">
 		<div style="position:relative; top:5px; left:40%;">
-			<?php $this->widget('RW_GoalsComplete'); ?>
+			<?php $this->widget('RW_GoalsComplete', ['current_project'=>true]); ?>
 		</div>
-		<div id="logo" style="position:absolute; top:0px;"><?php echo CHtml::encode(Yii::app()->name)." - ".Project::GetSelected()->name; ?></div>
+		<div id="logo" style="position:absolute; top:0px;"><?php echo CHtml::encode(Yii::app()->name)." - "; $this->widget('PW_ProjectHeader'); ?></div>
 		<div style="position: absolute; top: 10px; right:10px;">
 			<?php
 			$this->widget('RW_ReportsPreview');
@@ -46,20 +46,29 @@
 	</div><!-- header -->
 
 	<div id="mainmenu">
-		<?php $this->widget('zii.widgets.CMenu',array(
-			'items'=>array(
-				array('label'=>'Главная', 'url'=>array('/site/index')),
-				array('label'=>'Задачи', 'url'=>array('/ticket/index')),
-				array('label'=>'Планирование', 'url'=>array('/ticket/plan')),
-				array('label'=>'Отчеты', 'url'=>array('/site/page', 'view'=>'report')),
-				array('label'=>'Пользователи', 'url'=>array('/user/index')),
-				array('label'=>'Проекты', 'url'=>array('/project/index')),
-				array('label'=>'Мой профиль', 'url'=>array('/user/ViewProfile')),
-				array('label'=>'Логин', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
-				array('label'=>'Выход ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest),
-				array('label'=>'О проекте', 'url'=>array('/site/page', 'view'=>'about')),
-			),
-		)); ?>
+		<span id="rightmenu" class="right top">
+			<?php $this->widget('zii.widgets.CMenu',array(
+				'items'=>array(
+					array('label'=>'Пользователи', 'url'=>array('/user/index'), 'visible'=>User::CheckLevel(30)),
+					array('label'=>'Проекты', 'url'=>array('/project/index'), 'visible'=>User::CheckLevel(20)),
+					array('label'=>'О системе', 'url'=>array('/site/page', 'view'=>'about')),
+					array('label'=>'Мой профиль', 'url'=>array('/user/ViewProfile')),
+					array('label'=>'Логин', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
+					array('label'=>'Выход ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest),
+				),
+			)); ?>
+		</span>
+		<span id="leftmenu" class="">
+			<?php $this->widget('zii.widgets.CMenu',array(
+				'items'=>array(
+					array('label'=>'Главная', 'url'=>array('/site/index')),
+					array('label'=>'Структура работ по проекту', 'url'=>array('/ticket/plan')),
+					array('label'=>'Поиск задач', 'url'=>array('/ticket/admin')),
+					array('label'=>'Итерации', 'url'=>array('/iteration/index')),
+					array('label'=>'Отчеты', 'url'=>array('/site/page', 'view'=>'report')),
+				),
+			)); ?>
+		</span>
 	</div><!-- mainmenu -->
 	<?php if(isset($this->breadcrumbs)):?>
 		<?php $this->widget('zii.widgets.CBreadcrumbs', array(

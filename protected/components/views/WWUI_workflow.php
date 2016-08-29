@@ -22,7 +22,7 @@ foreach ($actions as $action) {
 	<div class="row">
 		<?php
 		echo $form->labelEx($model,'resolution_id', array('class'=>'wfc_resolution'));
-		echo $form->dropDownList($model,'resolution_id', CHTML::listData(Resolution::model()->findAll('id > 1'), 'id', 'name'), array('class'=>'wfc_resolution'));
+		echo $form->dropDownList($model,'resolution_id', CHTML::listData(Resolution::model()->findAll(), 'id', 'name'), array('class'=>'wfc_resolution'));
 		echo $form->error($model,'resolution_id');
 		echo $form->label($model,'worked_time', array('class'=>'wfc_resolution'));
 		echo $form->textField($model, 'worked_time', array('class'=>'wfc_resolution'));

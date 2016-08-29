@@ -83,10 +83,8 @@ class Ticket extends CActiveRecord
 		$ticket = new Ticket($scenario);
 		$ticket->status_id = 1;
 		$ticket->ticket_type_id = 2;
-		$ticket->resolution_id = 1;
 		$ticket->priority_id = 2;
 		$ticket->author_user_id = Yii::app()->user->id;
-		$ticket->tester_user_id = Yii::app()->user->id;
 		// default is coordinator
 		$user = User::model()->findByAttributes(array('usergroup_id'=>3));
 		$user = $user ? $user->id : $ticket->author_user_id;
@@ -188,7 +186,7 @@ class Ticket extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('subject, priority_id, status_id, resolution_id, ticket_type_id, owner_user_id, responsible_user_id', 'required'),
+			array('subject, priority_id, status_id, ticket_type_id, owner_user_id, responsible_user_id', 'required'),
 			array('priority_id, status_id, resolution_id, ticket_type_id, author_user_id, owner_user_id, tester_user_id, responsible_user_id, parent_ticket_id, iteration_id, project_id', 'numerical', 'integerOnly'=>true),
 			array('estimate_time, worked_time', 'numerical'),
 			array('subject', 'length', 'max'=>255),
@@ -372,10 +370,13 @@ class Ticket extends CActiveRecord
 		$criteria->compare('project_id',$this->project_id);
 		$criteria->compare('initial_version',$this->initial_version,true);
 		$criteria->compare('resolved_version',$this->resolved_version,true);
+		$criteria->addCondition('p.user_id = :uid');
 		if ($this->asearch > '') {
 			$this->asearch = str_replace(';', '\;', $this->asearch);
 			$criteria->addCondition($this->asearch);
 		}
+		$criteria->join = 'INNER JOIN user_has_project AS p ON p.project_id = t.project_id';
+		$criteria->params = array(':uid'=>Yii::app()->user->id);
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));

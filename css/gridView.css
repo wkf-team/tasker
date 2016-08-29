@@ -60,12 +60,12 @@
 
 .grid-view table.items tr.even
 {
-	background: #588B27;
+	background: #EEEEEE;
 }
 
 .grid-view table.items tr.odd
 {
-	background: #3C7902;
+	background: #DDDDDD;
 }
 
 .grid-view table.items tr.selected

@@ -85,20 +85,6 @@
 		<?php echo $form->dropDownList($model,'priority_id', CHTML::listData(Priority::model()->findAll(), 'id', 'name')); ?>
 		<?php echo $form->error($model,'priority_id'); ?>
 	</div>
-<?php /*
-	<div class="row updateOnly">
-		<?php echo $form->labelEx($model,'status_id'); ?>
-		<?php echo $form->dropDownList($model,'status_id', CHTML::listData(Status::model()->findAll(), 'id', 'name')); ?>
-		<?php echo $form->error($model,'status_id'); ?>
-	</div>
-
-	<div class="row updateOnly">
-		<?php echo $form->labelEx($model,'resolution_id'); ?>
-		<?php echo $form->dropDownList($model,'resolution_id', CHTML::listData(Resolution::model()->findAll(), 'id', 'name')); ?>
-		<?php echo $form->error($model,'resolution_id'); ?>
-	</div>
-*/
-	?>
 	
 	<div class="row">
 		<?php echo $form->labelEx($model,'owner_user_id'); ?>
@@ -121,8 +107,14 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'parent_ticket_id'); ?>
-		<?php echo $form->dropDownList($model,'parent_ticket_id', CHTML::listData(Ticket::model()->findAll('ticket_type_id = 1 AND status_id < 6 AND project_id = '.$model->project_id), 'id', 'subject'), array('empty' => '-- Пусто --')); ?>
+		<?php echo $form->dropDownList($model,'parent_ticket_id', CHTML::listData(Ticket::model()->findAll('ticket_type_id <> 4 AND status_id < 6 AND project_id = '.$model->project_id), 'id', 'subject'), array('empty' => '-- Пусто --')); ?>
 		<?php echo $form->error($model,'parent_ticket_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'iteration_id'); ?>
+		<?php echo $form->dropDownList($model,'iteration_id', CHTML::listData(Iteration::model()->findAll('status_id < 7 AND project_id = '.$model->project_id), 'id', 'due_date'), array('empty' => '-- Не запланирован --')); ?>
+		<?php echo $form->error($model,'iteration_id'); ?>
 	</div>
 	
 	<?php if (!$model->isNewRecord) { ?>

@@ -4,7 +4,7 @@
 
 $this->breadcrumbs=array(
 	'Задачи'=>array('index'),
-	$model->id,
+	$model->subject,
 );
 
 $this->menu=array(
@@ -59,6 +59,10 @@ $this->widget('zii.widgets.CDetailView', array(
 		'authorUser.name:text:'.CHtml::activeLabel($model, "author_user_id"),
 		'testerUser.name:text:'.CHtml::activeLabel($model, "tester_user_id"),
 		'responsibleUser.name:text:'.CHtml::activeLabel($model, "responsible_user_id"),
+		array(
+			'label' => CHtml::activeLabel($model, "iteration_id"),
+			'value' => $model->iteration ? $model->iteration->getLabel() : null
+		),
 		array(
 			'label' => CHtml::activeLabel($model, "create_date"),
 			'value' => $model->encodeDate($model->create_date)
