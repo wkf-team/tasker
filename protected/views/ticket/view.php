@@ -3,12 +3,11 @@
 /* @var $model Ticket */
 
 $this->breadcrumbs=array(
-	'Задачи'=>array('index'),
+	'Задачи'=>array('admin'),
 	$model->subject,
 );
 
 $this->menu=array(
-	array('label'=>'Список задач', 'url'=>array('index')),
 	array('label'=>'Создать', 'url'=>array('create')),
 	array('label'=>'Перенести', 'url'=>array('selectProject', 'id'=>$model->id)),
 	array('label'=>'Отложить на 3 дня', 'url'=>array('postpone', 'id'=>$model->id)),

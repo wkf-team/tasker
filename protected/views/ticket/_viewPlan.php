@@ -1,6 +1,9 @@
 <?php
 /* @var $this TicketController */
 /* @var $data Ticket */
+
+if ($filterForBacklog && $data->ticket_type_id > 2 && $data->parent_ticket_id != null) ;
+else {
 ?>
 
 <tr class="plan-ticket-row">
@@ -14,9 +17,28 @@
 				"if (!confirm('Удалить задачу?')) event.preventDefault();
 				else setTimeout(function () {location.reload();}, 100);"));
 		?>
-		<?php if ($data->ticket_type_id != 4) {?>
+		<? if ($data->ticket_type_id != 4) {?>
 			<button class="btnAdd">Add</button>
-		<?php } ?>
+		<? } ?>
+		<?php
+		if ($filterForBacklog) {
+			if ($data->iteration_id == $iteration_id) {
+				echo CHtml::ajaxLink("Исключить из итерации",
+				["ticket/setIteration", 'id'=>$data->id, 'iteration_id'=>-1], [
+					'success'=>'location.reload()'
+				],[
+					'class'=>'btnRemoveFromIteration',
+				]);
+			} else {
+				echo CHtml::ajaxLink("Включить в итерацию",
+				["ticket/setIteration", 'id'=>$data->id, 'iteration_id'=>$iteration_id], [
+					'success'=>'location.reload()'
+				],[
+					'class'=>'btnAddToIteration',
+				]);
+			}
+		}
+		?>
 	</td>
 	<td>
 		<!-- Offset -->
@@ -45,7 +67,7 @@
 		?>" style="display:inline-block;"></span>
 		<!-- id and subject -->
 		<?
-		echo CHtml::link(CHtml::encode($data->id.". ".$data->subject), array('view', 'id'=>$data->id));
+		echo CHtml::link(CHtml::encode($data->id.". ".$data->subject), array('ticket/view', 'id'=>$data->id));
 		$data->includeBlockedBy = true;
 		echo CHtml::hiddenField("data", CJSON::encode($data));
 		?>
@@ -69,5 +91,7 @@
 	'itemView'=>'application.views.ticket._viewPlan',
 	'emptyText'=>'',
 	'summaryText'=>'',
-	'viewData'=>['offset'=>$offset + 1]
+	'viewData'=>['offset'=>$offset + 1, 'filterForBacklog'=>$filterForBacklog, 'iteration_id'=>$iteration_id]
 )); ?>
+
+<? }// end if filterForBacklog ?>

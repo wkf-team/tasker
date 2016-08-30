@@ -3,16 +3,15 @@
 /* @var $model Iteration */
 
 $this->breadcrumbs=array(
-	'Iterations'=>array('index'),
+	'Бэклог'=>array('index'),
 	$model->getLabel()=>array('view','id'=>$model->id),
 	'Update',
 );
 
 $this->menu=array(
-	array('label'=>'List Iteration', 'url'=>array('index')),
+	array('label'=>'Бэклог', 'url'=>array('index')),
 	array('label'=>'Create Iteration', 'url'=>array('create')),
 	array('label'=>'View Iteration', 'url'=>array('view', 'id'=>$model->id)),
-	array('label'=>'Manage Iteration', 'url'=>array('admin')),
 );
 ?>
 

@@ -15,13 +15,21 @@
 	'dataProvider'=>$dataProvider,
 	'itemView'=>'application.views.ticket._viewPlan',
 	'summaryText'=>'',
-	'viewData'=>['offset'=>0]
+	'viewData'=>[
+		'offset'=>0,
+		'filterForBacklog'=>$filterForBacklog,
+		'iteration_id'=>$iteration_id,
+	]
 )); ?>
 
 </table>
 <div id="editQ">
 	<?php $this->render('application.views.ticket._formQ', array('model' => $model));?>
 </div>
+<? if ($showFooterButtons) { ?>
+<button id="btnAddEpic" class="btnAddEpic">New Epic</button>
+<button id="btnAddStory">New Single UserStory</button>
+<? } ?>
 
 <script>
 
@@ -57,6 +65,18 @@ $(function () {
       },
       text: true
     }).click(OpenNewDialog);
+	$(".btnAddToIteration").button({
+      icons: {
+        primary: "ui-icon-arrowreturnthick-1-n"
+      },
+      text: false
+    });
+	$(".btnRemoveFromIteration").button({
+      icons: {
+        primary: "ui-icon-arrowreturnthick-1-s"
+      },
+      text: false
+    });
 	
 	// DIALOGS
 	$("#editQ").dialog({

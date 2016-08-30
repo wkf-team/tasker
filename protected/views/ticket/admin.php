@@ -3,8 +3,7 @@
 /* @var $model Ticket */
 
 $this->breadcrumbs=array(
-	'Задачи'=>array('index'),
-	'Поиск',
+	'Поиск задач',
 );
 
 $this->menu=array(

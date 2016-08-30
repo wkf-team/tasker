@@ -40,7 +40,7 @@
 	<div class="row">
 		<?php echo $form->labelEx($model,'status_id'); ?>
 		<?php echo $form->dropDownList($model,'status_id', CHTML::listData(
-			Status::model()->findAll('id IN (1,4,7)'), 'id', 'name'
+			Status::model()->findAll('id IN (1,4,8,9,10)'), 'id', 'name'
 		)); ?>
 		<?php echo $form->error($model,'status_id'); ?>
 	</div>

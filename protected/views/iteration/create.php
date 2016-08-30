@@ -3,13 +3,12 @@
 /* @var $model Iteration */
 
 $this->breadcrumbs=array(
-	'Iterations'=>array('index'),
+	'Бэклог'=>array('index'),
 	'Create',
 );
 
 $this->menu=array(
-	array('label'=>'List Iteration', 'url'=>array('index')),
-	array('label'=>'Manage Iteration', 'url'=>array('admin')),
+	array('label'=>'Бэклог', 'url'=>array('index')),
 );
 ?>
 

@@ -17,6 +17,15 @@
 		));
 		$this->endWidget();
 	?>
+	<?php
+	if (isset($this->historyItemsProvider)) {
+		echo "<h3>История</h3>";
+		$this->widget('zii.widgets.CListView', [
+			'dataProvider'=>$this->historyItemsProvider,
+			'itemView'=>$this->historyItemsView,
+		]);
+	}
+	?>
 	</div><!-- sidebar -->
 </div>
 <?php $this->endContent(); ?>

@@ -25,6 +25,14 @@ function setColors() {
 	$("td:contains(На тестировании)").css("color","orange");
 	$("td:contains(Отложен)").css("color","orange");
 	$("td:contains(Переоткрыт)").css("color","red");
+	
+	$("td:contains(Закрыт частично)").css("color","orange");
+	$("td:contains(Выполнен)").css("color","green");
+	$("td:contains(Не выполнен)").css("color","red");
+	$("span:contains(Закрыт частично)").css("color","orange");
+	$("span:contains(Выполнен)").css("color","green");
+	$("span:contains(Не выполнен)").css("color","red");
+	
 	$("td:contains(Блокер)").css("color","red");
 	$("td:contains(Высокий)").css("color","red");
 	$("td:contains(Средний)").css("color","orange");

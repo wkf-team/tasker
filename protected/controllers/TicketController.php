@@ -36,7 +36,7 @@ class TicketController extends Controller
 				'expression'=>'User::CheckLevel(10)',// && UserHasProject::HasUserAccess('.$this->loadModel($_GET['id'])->project_id.', Yii::app()->user->id)',
 			),
 			array('allow', // allow for participants
-				'actions'=>array('create','admin','plan','AjaxEdit','makeWF','postpone'),
+				'actions'=>array('create','admin','plan','AjaxEdit','makeWF','postpone','setIteration'),
 				'expression'=>'User::CheckLevel(10)',
 			),
 			array('allow', // allow coordinator
@@ -288,19 +288,7 @@ class TicketController extends Controller
 		$filter_new = 0;
 		$this->layout='//layouts/column1';
 		
-		$dataProvider=new CActiveDataProvider('Ticket', array(
-			'criteria'=>array(
-				// открытые топ-левел задачи
-				'condition'=>
-					'status_id < 6 AND p.user_id = :uid AND p.is_selected = 1 '.
-					'AND (parent_ticket_id IS NULL)',
-				'join'=>'INNER JOIN user_has_project AS p ON p.project_id = t.project_id',
-				'params'=>array(':uid'=>Yii::app()->user->id),
-			),'pagination'=>false,
-		));
-		$this->render('plan',array(
-			'dataProvider'=>$dataProvider,
-		));
+		$this->render('plan');
 	}
 	
 	public function actionMakeWF($id, $action)
@@ -338,6 +326,13 @@ class TicketController extends Controller
 			Sendmail::mailMakeWFTicket($model, isset($comment) ? $comment->text : null, $addUserNotification, $removeUserNotification);
 		}
 		$this->redirect(array('view','id'=>$model->id));
+	}
+	public function actionSetIteration($id, $iteration_id)
+	{
+		$model=$this->loadModel($id);
+		if ($iteration_id == -1) $model->iteration_id = null;
+		else $model->iteration_id = (int)$iteration_id;
+		$model->save();
 	}
 	
 	public function actionSelectProject($id)

@@ -3,18 +3,26 @@
 /* @var $dataProvider CActiveDataProvider */
 
 $this->breadcrumbs=array(
-	'Iterations',
+	'Бэклог',
 );
 
 $this->menu=array(
 	array('label'=>'Create Iteration', 'url'=>array('create')),
-	array('label'=>'Manage Iteration', 'url'=>array('admin')),
 );
 ?>
 
-<h1>Iterations</h1>
-
-<?php $this->widget('zii.widgets.CListView', array(
-	'dataProvider'=>$dataProvider,
-	'itemView'=>'_view',
-)); ?>
+<h1>Текущая итерация</h1>
+<?php
+if ($model) {
+	echo $model->getLabel();
+	$this->renderPartial('_viewWithTickets', ['model'=>$model]);
+}
+?>
+<h1>Бэклог</h1>
+<?php
+$this->widget('TW_TicketHList', [
+	'filterForBacklog'=>true,
+	'showFooterButtons'=>true,
+	'iteration_id'=>$model->id,
+]);
+?>

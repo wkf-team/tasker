@@ -38,8 +38,17 @@
 			$this->widget('RW_ReportsPreview');
 			echo CHtml::beginForm(array('ticket/QuickSearch'), 'GET', array('style'=>'display:inline;'));
 			echo CHtml::textField('text');
+			echo CHtml::tag('span', [
+				'class'=>'ui-icon ui-icon-search',
+				'style'=>'display:inline-block'
+			]).CHtml::tag('/span');
 			echo CHtml::linkButton('Поиск');
 			echo CHtml::endForm();
+			echo CHtml::tag('span', [
+				'class'=>'ui-icon ui-icon-plus',
+				'style'=>'display:inline-block'
+			]).CHtml::tag('/span');
+			echo CHtml::link('Добавить', ['ticket/create']);
 			?>
 		</div><br/>
 		<?php  ?>
@@ -62,9 +71,9 @@
 			<?php $this->widget('zii.widgets.CMenu',array(
 				'items'=>array(
 					array('label'=>'Главная', 'url'=>array('/site/index')),
+					array('label'=>'Бэклог', 'url'=>array('/iteration/index')),
 					array('label'=>'Структура работ по проекту', 'url'=>array('/ticket/plan')),
 					array('label'=>'Поиск задач', 'url'=>array('/ticket/admin')),
-					array('label'=>'Итерации', 'url'=>array('/iteration/index')),
 					array('label'=>'Отчеты', 'url'=>array('/site/page', 'view'=>'report')),
 				),
 			)); ?>

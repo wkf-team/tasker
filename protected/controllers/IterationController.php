@@ -7,6 +7,8 @@ class IterationController extends Controller
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
 	public $layout='//layouts/column2';
+	public $historyItemsProvider;
+	public $historyItemsView;
 
 	/**
 	 * @return array action filters
@@ -114,7 +116,7 @@ class IterationController extends Controller
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('index'));
 	}
 
 	/**
@@ -122,9 +124,17 @@ class IterationController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Iteration');
+		$model = Iteration::model()->find([
+			'condition'=>'project_id = '.Project::GetSelected()->id.' AND status_id < 6',
+			'order'=>'due_date ASC'
+		]);
+		$this->historyItemsProvider = new CActiveDataProvider('Iteration', ['criteria'=>[
+			'condition'=>'project_id = '.Project::GetSelected()->id,
+			'order'=>'due_date DESC',
+		]]);
+		$this->historyItemsView = "application.views.iteration._view";
 		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
+			'model'=>$model,
 		));
 	}
 

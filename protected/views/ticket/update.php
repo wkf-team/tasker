@@ -3,13 +3,12 @@
 /* @var $model Ticket */
 
 $this->breadcrumbs=array(
-	'Задачи'=>array('index'),
+	'Задачи'=>array('admin'),
 	$model->subject=>array('view','id'=>$model->id),
 	'Изменить',
 );
 
 $this->menu=array(
-	array('label'=>'Список задач', 'url'=>array('index')),
 	array('label'=>'Создать', 'url'=>array('create')),
 	array('label'=>'Просмотреть', 'url'=>array('view', 'id'=>$model->id)),
 	array('label'=>'Поиск', 'url'=>array('admin')),
