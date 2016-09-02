@@ -1,11 +1,9 @@
 <?php
-global $yii_path;
-include_once ($yii_path."zii/widgets/CPortlet.php");
 
-class TW_InnerTaskList extends CPortlet {
+class TW_InnerTaskList extends CWidget {
 	public $ticket_id;
 	
-    public function renderContent() {
+    public function run() {
 		$dataProvider = new CActiveDataProvider('Ticket', array('criteria'=>array(
 						// открытые цели, незакрытые задач
 						'condition'=>'parent_ticket_id = :tid',
@@ -15,7 +13,7 @@ class TW_InnerTaskList extends CPortlet {
 					'pagination' => array('pageSize'=>30)));
 		if ($dataProvider->totalItemCount > 0) {
 			$this->render('TWUI_ticketList', array(
-				'dataProvider'=>$dataProvider
+				'dataProvider'=>$dataProvider,
 			));
 		}
     }

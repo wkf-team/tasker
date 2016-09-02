@@ -4,7 +4,7 @@ Step between two states of ticket
 Allowed states:
 1. Open
 2. Reopen
-3. On hold
+3. Blocked
 4. In work
 5. On test
 6. Done
@@ -69,7 +69,7 @@ class WorkflowStep extends CModel
 			{
 				case 'test' : return new WorkflowStep(4, 5, 'test', 'test', 10, 'resolution comment');
 				case 'done' : return new WorkflowStep(4, 6, 'done', 'done', 10, 'resolution comment');
-				case 'hold' : return new WorkflowStep(4, 3, 'hold', 'hold', 8, '');
+				case 'blocked' : return new WorkflowStep(4, 3, 'blocked', 'blocked', 8, '');
 				case 'close' : return new WorkflowStep(4, 7, 'close', 'close', 0, 'resolution comment');
 			}
 			break;
@@ -104,7 +104,7 @@ class WorkflowStep extends CModel
 			case 3: $steps = array(WorkflowStep::GetAction(3, 'start'), WorkflowStep::GetAction(3, 'withdraw'),
 									WorkflowStep::GetAction(3, 'close')); break;
 			case 4: $steps = array(WorkflowStep::GetAction(4, 'test'), WorkflowStep::GetAction(4, 'done'), 
-									WorkflowStep::GetAction(4, 'hold'),	WorkflowStep::GetAction(4, 'close')); break;
+									WorkflowStep::GetAction(4, 'blocked'),	WorkflowStep::GetAction(4, 'close')); break;
 			case 5:	$steps = array(WorkflowStep::GetAction(5, 'pass'), WorkflowStep::GetAction(5, 'fail'),
 									WorkflowStep::GetAction(5, 'close')); break;
 			case 6: $steps = array(WorkflowStep::GetAction(6, 'reopen'), WorkflowStep::GetAction(6, 'close')); break;
@@ -132,7 +132,7 @@ class WorkflowStep extends CModel
 			$ticket->status_id = $this->state_to;
 			switch ($this->step_name) {
 				case 'start' :
-				$ticket->owner_user_id = Yii::app()->user->id;
+				//$ticket->owner_user_id = Yii::app()->user->id;
 				break;
 				case 'test' :
 				$ticket->owner_user_id = $ticket->tester_user_id;
@@ -144,14 +144,14 @@ class WorkflowStep extends CModel
 				case 'fail' :
 				$ticket->owner_user_id = $ticket->responsible_user_id;
 				$ticket->end_date = null;
-				$ticket->resolution_id = 1;
+				$ticket->resolution_id = null;
 				break;
 				case 'done' : 
 				$ticket->end_date = date("Y-m-d");
 				break;
 				case 'reopen' : 
 				$ticket->end_date = null;
-				$ticket->resolution_id = 1;
+				$ticket->resolution_id = null;
 				break;
 				case 'close' : 
 				if(!$ticket->end_date) $ticket->end_date = date("Y-m-d");

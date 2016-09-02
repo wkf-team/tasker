@@ -1,11 +1,9 @@
 <?php
-global $yii_path;
-include_once ($yii_path."zii/widgets/CPortlet.php");
 
-class CW_CommentList extends CPortlet {
+class CW_CommentList extends CWidget {
 	public $ticket_id;
 	
-    public function renderContent() {
+    public function run() {
 		$this->render('CWUI_commentList',array(
 			'dataProvider'=>new CActiveDataProvider('Comment', array('criteria'=>array(
 				'condition'=>'ticket_id = :tid',

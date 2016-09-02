@@ -2,13 +2,10 @@
 <tr>
 	<th></th>
 	<th style="width:400px;"><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('subject'));?></th>
-	<th><?php 
-	//echo CHtml::encode($dataProvider->model->getAttributeLabel('due_date'));
-	echo CHtml::encode($dataProvider->model->getAttributeLabel('owner_user_id'));?></th>
-	<th class="filter_balance_only"><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('estimate_start_date'));?></th>
-	<th class="filter_balance_only"><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('due_date'));?></th>
-	<th class="filter_balance_only"><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('estimate_time'));?></th>
-	<th class="filter_balance_only">Пред.</th>
+	<th><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('owner_user_id'));?></th>
+	<th><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('status_id'));?></th>
+	<th>Оценка (ч / SP)</th>
+	<th>Пред.</th>
 </tr>
 	
 <?php $this->widget('zii.widgets.CListView', array(
@@ -19,6 +16,7 @@
 		'offset'=>0,
 		'filterForBacklog'=>$filterForBacklog,
 		'iteration_id'=>$iteration_id,
+		'noChildren'=>$noChildren,
 	]
 )); ?>
 
@@ -113,6 +111,7 @@ $(function () {
 		dialog.find("#Ticket_due_date").val(data.due_date);
 		dialog.find("#Ticket_priority_id").val(data.priority_id);
 		dialog.find("#Ticket_estimate_time").val(data.estimate_time);
+		dialog.find("#Ticket_story_points").val(data.story_points);
 		dialog.find("#Ticket_owner_user_id").val(data.owner_user_id);
 		dialog.find("#Ticket_tester_user_id").val(data.tester_user_id);
 		dialog.find("#Ticket_ticket_type_id").val(data.ticket_type_id);
@@ -154,6 +153,7 @@ $(function () {
 		dialog.find("#Ticket_due_date").val(null);
 		dialog.find("#Ticket_priority_id").val(newTicketData.priority_id);
 		dialog.find("#Ticket_estimate_time").val(null);
+		dialog.find("#Ticket_story_points").val(null);
 		dialog.find("#Ticket_owner_user_id").val(newTicketData.owner_user_id);
 		dialog.find("#Ticket_tester_user_id").val(null);
 		dialog.find("#Ticket_ticket_type_id").val(new_type_id);

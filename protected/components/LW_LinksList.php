@@ -1,11 +1,9 @@
 <?php
-global $yii_path;
-include_once ($yii_path."zii/widgets/CPortlet.php");
 
-class LW_LinksList extends CPortlet {
+class LW_LinksList extends CWidget {
 	public $ticket_id;
 	
-    public function renderContent() {
+    public function run() {
 		$fromProvider = new CActiveDataProvider('Relation', array('criteria'=>array(
 			'condition'=>'ticket_from_id = :tid',
 			'params'=>array(':tid'=>$this->ticket_id),

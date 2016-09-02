@@ -1,11 +1,9 @@
 <?php
-global $yii_path;
-include_once ($yii_path."zii/widgets/CPortlet.php");
 
-class AW_AttList extends CPortlet {
+class AW_AttList extends CWidget {
 	public $ticket_id;
 	
-    public function renderContent() {
+    public function run() {
 		$this->render('AWUI_attList',array(
 			'dataProvider'=>new CActiveDataProvider('Attachment', array('criteria'=>array(
 				'condition'=>'ticket_id = :tid',

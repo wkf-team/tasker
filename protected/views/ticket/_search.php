@@ -58,6 +58,11 @@
 		<?php echo $form->label($model,'worked_time'); ?>
 		<?php echo $form->textField($model,'worked_time'); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->label($model,'story_points'); ?>
+		<?php echo $form->textField($model,'story_points'); ?>
+	</div>
 
 	<div class="row">
 		<?php echo $form->label($model,'priority_id'); ?>

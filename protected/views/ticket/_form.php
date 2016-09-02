@@ -79,6 +79,12 @@
 		<?php echo $form->textField($model,'worked_time'); ?>
 		<?php echo $form->error($model,'worked_time'); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'story_points'); ?>
+		<?php echo $form->textField($model,'story_points'); ?>
+		<?php echo $form->error($model,'story_points'); ?>
+	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'priority_id'); ?>

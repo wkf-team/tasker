@@ -19,9 +19,77 @@
  * @property TicketHistory[] $ticketHistories
  */
 class Iteration extends CActiveRecord
-{
+{	
 	public function getLabel() {
 		return "Sprint ".$this->number.", due to ".$this->encodeDate($this->due_date);
+	}
+	
+	public function start() {
+		for ($i = 0; $i < count($this->tickets); $i++) $this->startTicket($this->tickets[$i]);
+		$this->status_id = 4;
+		return $this->save();
+	}
+	
+	//if blocked - set to onhold
+	//else set to in progress
+	private function startTicket($ticket) {
+		if ($ticket->status_id == 1) $ticket->status_id = $ticket->is_blocked() ? 3 : 4;
+		$ticket->save();
+		for ($i = 0; $i < count($ticket->tickets); $i++) $this->startTicket($ticket->tickets[$i]);
+	}
+	
+	public function rollup() {
+		$next_id = 0;
+		//if not last - find next
+		if ($this->project->iterations[count($this->project->iterations)-1]->id != $this->id) {
+			for ($i = count($this->project->iterations)-1; $this->project->iterations[$i]->id != $this->id; $i--);
+			$next_id = $this->project->iterations[$i+1]->id;
+		} else { //or create new
+			$new = new Iteration();
+			$new->start_date = $this->due_date;
+			$new->due_date = date("Y-m-d", strtotime($this->due_date) + strtotime($this->due_date) - strtotime($this->start_date));
+			$new->project_id = $this->project_id;
+			$new->number = $this->number + 1;
+			$new->status_id = 1;
+			if (!$new->save()) {
+				$this->addError('id', "New iteration is not created: ".CJSON::encode($new->errors));
+				return false;
+			}
+			$next_id = $new->id;
+		}
+		//all unresolved tickets move to the next
+		$hasUnresolved = false;
+		$hasResolved = false;
+		for ($i = 0; $i < count($this->tickets); $i++) {
+			if ($this->tickets[$i]->resolution_id != null) {
+				$hasResolved = true;
+			}
+			if ($this->tickets[$i]->resolution_id == null) {
+				$hasUnresolved = true;
+				$this->tickets[$i]->iteration_id = $next_id;
+				if (!$this->tickets[$i]->save()) {
+					$this->addError('tickets', 'ticket_'.$this->tickets[$i]->id.CJSON::encode($this->tickets[$i]->errors));
+					return false;
+				}
+			}
+		}
+		// close this
+		$this->status_id = $hasUnresolved ? ($hasResolved ? 9 : 8) : 10;
+		return $this->save();
+	}
+	
+	public function getTotalSP() {
+		$r = new CDbCriteria([
+			'select'=>'sum(story_points)',
+			'condition'=>'iteration_id='.$this->id
+		]);
+		//echo CJSON::encode($r);
+		//die();
+		
+		return Ticket::model()->find([
+			'select'=>'sum(story_points) as story_points',
+			'condition'=>'iteration_id='.$this->id
+		])->story_points;
 	}
 	
 	public function encodeDate($date)

@@ -39,6 +39,12 @@
 		echo $form->textField($model,'estimate_time'); ?>
 		<?php echo $form->error($model,'estimate_time'); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'story_points'); ?>
+		<?php echo $form->textField($model,'story_points'); ?>
+		<?php echo $form->error($model,'story_points'); ?>
+	</div>
 
 	<div class="row filter_balance_only">
 		<?php echo $form->labelEx($model,'priority_id'); ?>

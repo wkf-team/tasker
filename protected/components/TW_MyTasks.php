@@ -22,6 +22,7 @@ class TW_MyTasks extends CWidget {
 		));
 		$this->render('TWUI_ticketList',array(
 			'dataProvider'=>$dataProvider,
+			'noChildren'=>true,
 		));
     }
  

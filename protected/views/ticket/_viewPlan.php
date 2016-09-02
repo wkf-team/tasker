@@ -23,7 +23,7 @@ else {
 		<?php
 		if ($filterForBacklog) {
 			if ($data->iteration_id == $iteration_id) {
-				echo CHtml::ajaxLink("Исключить из итерации",
+				echo CHtml::ajaxLink("Исключить из текущей итерации",
 				["ticket/setIteration", 'id'=>$data->id, 'iteration_id'=>-1], [
 					'success'=>'location.reload()'
 				],[
@@ -77,12 +77,20 @@ else {
 		//else
 		echo $data->ownerUser ? CHtml::encode($data->ownerUser->name) : "Not set";
 	?></td>
-	<td class="filter_balance_only"><?php echo $data->encodeDate($data->estimate_start_date); ?></td>
-	<td class="filter_balance_only"><?php echo $data->encodeDate($data->due_date); ?></td>
-	<td class="filter_balance_only"><?php echo CHtml::encode($data->estimate_time); ?></td>
+	<td><?php echo CHtml::encode($data->status->name); ?></td>
+	<td><?php
+		if ($data->ticket_type_id == 2) {
+			if ($data->story_points > 0) echo CHtml::encode($data->story_points)." SP";
+		} else {
+			if ($data->estimate_time > 0) echo CHtml::encode($data->estimate_time)." ч";
+		}
+		?>
+	</td>
 	<td><?php echo $data->GetBlockedBy_HtmlString(); ?></td>
 </tr>
-<?php $this->widget('zii.widgets.CListView', array(
+<?php 
+if (!$noChildren) {
+$this->widget('zii.widgets.CListView', array(
 	'dataProvider'=>new CActiveDataProvider('Ticket', [
 		'criteria'=>[
 			'condition'=>'parent_ticket_id = '.$data->id
@@ -92,6 +100,8 @@ else {
 	'emptyText'=>'',
 	'summaryText'=>'',
 	'viewData'=>['offset'=>$offset + 1, 'filterForBacklog'=>$filterForBacklog, 'iteration_id'=>$iteration_id]
-)); ?>
+));
+}
+?>
 
 <? }// end if filterForBacklog ?>

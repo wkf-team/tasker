@@ -23,7 +23,7 @@ function setColors() {
 	$("td:contains(Закрыт)").css("color","green");
 	$("td:contains(В работе)").css("color","orange");
 	$("td:contains(На тестировании)").css("color","orange");
-	$("td:contains(Отложен)").css("color","orange");
+	$("td:contains(Блокирован)").css("color","red");
 	$("td:contains(Переоткрыт)").css("color","red");
 	
 	$("td:contains(Закрыт частично)").css("color","orange");

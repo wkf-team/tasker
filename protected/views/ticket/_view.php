@@ -4,13 +4,21 @@
 ?>
 <tr>
 
-	<td><?php echo CHtml::link(CHtml::encode($data->id), array('ticket/view', 'id'=>$data->id)); ?>
-	</td>
 
-	<td><?php echo CHtml::encode($data->ticketType->name); ?>
-	</td>
-
-	<td><?php echo CHtml::link(CHtml::encode($data->subject), array('ticket/view', 'id'=>$data->id)); ?>
+	<td>
+		<!-- Type icon -->
+		<span class="ui-icon <?
+			switch ($data->ticket_type_id) {
+				case 1: echo "ui-icon-flag"; break;
+				case 2: echo "ui-icon-note"; break;
+				case 3: echo "ui-icon-bullet"; break;
+				case 4: echo "ui-icon-notice"; break;
+			}
+		?>" style="display:inline-block;"></span>
+		<!-- id and subject -->
+		<?
+		echo CHtml::link(CHtml::encode($data->id.". ".$data->subject), array('ticket/view', 'id'=>$data->id));
+		?>
 	</td>
 
 	<td><?php echo CHtml::encode($data->ownerUser->name); ?>

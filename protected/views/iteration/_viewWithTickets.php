@@ -7,6 +7,10 @@ $this->widget('zii.widgets.CDetailView', array(
 			'label'=>CHtml::activeLabel($model, "start_date"),
 			'value'=>$model->EncodeDate($model->start_date),
 		],
+		[
+			'label'=>CHtml::activeLabel($model, "story_points"),
+			'value'=>$model->getTotalSP(),
+		],
 		'status.name:text:'.CHtml::activeLabel($model, "status_id"),
 	),
 ));

@@ -13,6 +13,7 @@
  * @property string $end_date
  * @property double $estimate_time
  * @property double $worked_time
+ * @property integer $story_points
  * @property integer $priority_id
  * @property integer $status_id
  * @property integer $resolution_id
@@ -30,8 +31,8 @@
  * The followings are the available model relations:
  * @property Attachment[] $attachments
  * @property Comment[] $comments
- * @property Relation[] $relations
- * @property Relation[] $relations1
+ * @property Relation[] $reTicketsFrom
+ * @property Relation[] $relTicketsTo
  * @property SpentTime[] $spentTimes
  * @property SubTicket[] $subTickets
  * @property Priority $priority
@@ -68,6 +69,12 @@ class Ticket extends CActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+	
+	public function is_blocked() {
+		for ($i = 0; $i < count($this->relTicketsTo); $i++)
+			if ($this->relTicketsTo[$i]->relation_type_id == 1) return true;
+		return false;
 	}
 	
 	protected function beforeSave()
@@ -113,7 +120,6 @@ class Ticket extends CActiveRecord
 				break;
 			default: break;
 		}
-		Yii::log("The ticket $this->id was posponed by user " . Yii::app()->user->id, "info", "app.model.ticket");
 		$this->save();
 	}
 	
@@ -187,7 +193,7 @@ class Ticket extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('subject, priority_id, status_id, ticket_type_id, owner_user_id, responsible_user_id', 'required'),
-			array('priority_id, status_id, resolution_id, ticket_type_id, author_user_id, owner_user_id, tester_user_id, responsible_user_id, parent_ticket_id, iteration_id, project_id', 'numerical', 'integerOnly'=>true),
+			array('priority_id, status_id, story_points, resolution_id, ticket_type_id, author_user_id, owner_user_id, tester_user_id, responsible_user_id, parent_ticket_id, iteration_id, project_id', 'numerical', 'integerOnly'=>true),
 			array('estimate_time, worked_time', 'numerical'),
 			array('subject', 'length', 'max'=>255),
 			array('description', 'length', 'max'=>10000),
@@ -244,6 +250,7 @@ class Ticket extends CActiveRecord
 			'end_date' => 'Дата закрытия',
 			'estimate_time' => 'Оценка времени (ч)',
 			'worked_time' => 'Затраченное время (ч)',
+			'story_points' => 'Story points',
 			'priority_id' => 'Приоритет',
 			'status_id' => 'Статус',
 			'resolution_id' => 'Резолюция',
@@ -357,6 +364,7 @@ class Ticket extends CActiveRecord
 		$criteria->compare('end_date',$this->end_date,true);
 		$criteria->compare('estimate_time',$this->estimate_time);
 		$criteria->compare('worked_time',$this->worked_time);
+		$criteria->compare('story_points',$this->story_points);
 		$criteria->compare('priority_id',$this->priority_id);
 		$criteria->compare('status_id',$this->status_id);
 		$criteria->compare('resolution_id',$this->resolution_id);
@@ -370,13 +378,12 @@ class Ticket extends CActiveRecord
 		$criteria->compare('project_id',$this->project_id);
 		$criteria->compare('initial_version',$this->initial_version,true);
 		$criteria->compare('resolved_version',$this->resolved_version,true);
-		$criteria->addCondition('p.user_id = :uid');
+		$criteria->addCondition('p.user_id = '.Yii::app()->user->id);
 		if ($this->asearch > '') {
 			$this->asearch = str_replace(';', '\;', $this->asearch);
 			$criteria->addCondition($this->asearch);
 		}
 		$criteria->join = 'INNER JOIN user_has_project AS p ON p.project_id = t.project_id';
-		$criteria->params = array(':uid'=>Yii::app()->user->id);
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));

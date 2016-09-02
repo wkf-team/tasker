@@ -29,22 +29,38 @@ class IterationController extends Controller
 	public function accessRules()
 	{
 		return array(
-			array('allow',  // allow all users to perform 'index' and 'view' actions
+			array('allow',  // allow authenticated user 
 				'actions'=>array('index','view'),
-				'users'=>array('*'),
-			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
 				'users'=>array('@'),
 			),
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
-				'users'=>array('admin'),
+			array('allow', // allow participants
+				'actions'=>array('create','update'),
+				'expression'=>'User::CheckLevel(10)',
+			),
+			array('allow', // allow coordinator
+				'actions'=>array('admin','delete','start','rollup'),
+				'expression'=>'User::CheckLevel(20)',
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
 			),
 		);
+	}
+	
+	public function actionStart($id)
+	{
+		if ($this->loadModel($id)->start())
+			$this->redirect(array('index'));
+	}
+	
+	public function actionRollup($id)
+	{
+		$model = $this->loadModel($id);
+		
+		if ($model->rollup())
+			$this->redirect(array('index'));
+		else
+			echo CJSON::encode($model->errors);
 	}
 
 	/**
@@ -53,6 +69,7 @@ class IterationController extends Controller
 	 */
 	public function actionView($id)
 	{
+		$this->SetHistory();
 		$this->render('view',array(
 			'model'=>$this->loadModel($id),
 		));
@@ -124,15 +141,13 @@ class IterationController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$model = Iteration::model()->find([
-			'condition'=>'project_id = '.Project::GetSelected()->id.' AND status_id < 6',
-			'order'=>'due_date ASC'
-		]);
-		$this->historyItemsProvider = new CActiveDataProvider('Iteration', ['criteria'=>[
-			'condition'=>'project_id = '.Project::GetSelected()->id,
-			'order'=>'due_date DESC',
-		]]);
-		$this->historyItemsView = "application.views.iteration._view";
+		if (Project::GetSelected()) {
+			$model = Iteration::model()->find([
+				'condition'=>'project_id = '.Project::GetSelected()->id.' AND status_id < 6',
+				'order'=>'due_date ASC'
+			]);
+			$this->SetHistory();
+		}
 		$this->render('index',array(
 			'model'=>$model,
 		));
@@ -151,6 +166,16 @@ class IterationController extends Controller
 		$this->render('admin',array(
 			'model'=>$model,
 		));
+	}
+	
+	private function SetHistory() {
+		if (Project::GetSelected()) {
+			$this->historyItemsProvider = new CActiveDataProvider('Iteration', ['criteria'=>[
+				'condition'=>'project_id = '.Project::GetSelected()->id,
+				'order'=>'due_date DESC',
+			]]);
+			$this->historyItemsView = "application.views.iteration._view";
+		}
 	}
 
 	/**

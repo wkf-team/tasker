@@ -4,6 +4,7 @@ class TW_TicketHList extends CWidget {
 	public $filterForBacklog;
 	public $showFooterButtons;
 	public $iteration_id;
+	public $noChildren;
 	
 	public function init() {
 		if (!$this->dataProvider) {
@@ -29,6 +30,7 @@ class TW_TicketHList extends CWidget {
 			'filterForBacklog'=>$this->filterForBacklog,
 			'showFooterButtons'=>$this->showFooterButtons,
 			'iteration_id'=>$this->iteration_id,
+			'noChildren'=>$this->noChildren,
 		));
     }
  
