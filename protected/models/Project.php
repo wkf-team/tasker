@@ -28,10 +28,11 @@ class Project extends CActiveRecord
 		));
 		if ($selected) return $selected;
 		$user = User::model()->findByPk(Yii::app()->user->id);
-		if (count($user->projects) > 0) {
+		if ($user && count($user->projects) > 0) {
 			$user->projects[0]->SetSelected();
 			return $user->projects[0];
 		}
+		return null;
 	}
 	
 	public function SetDefaultRights()

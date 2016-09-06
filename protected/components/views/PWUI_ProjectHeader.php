@@ -1,3 +1,4 @@
+<? if (Project::GetSelected()) { ?>
 <span class="project-view">
 	<?= Project::GetSelected()->name; ?>
 	<span onclick="start_edit();" class="ui-icon ui-icon-pencil" style="display:inline-block;"></span>
@@ -29,3 +30,4 @@
 		$(".project-edit").hide();
 	}
 </script>
+<? } ?>
