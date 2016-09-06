@@ -7,6 +7,9 @@ class TW_TicketHList extends CWidget {
 	public $noChildren;
 	
 	public function init() {
+		if (!isset($this->filterForBacklog)) $this->filterForBacklog = false;
+		if (!isset($this->showFooterButtons)) $this->showFooterButtons = false;
+		if (!isset($this->noChildren)) $this->noChildren = false;
 		if (!$this->dataProvider) {
 			$this->dataProvider=new CActiveDataProvider('Ticket', array(
 				'criteria'=>array(

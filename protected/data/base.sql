@@ -5,9 +5,6 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema mydb
--- -----------------------------------------------------
--- -----------------------------------------------------
 -- Schema wkf_task
 -- -----------------------------------------------------
 
@@ -129,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `wkf_task`.`iteration` (
   CONSTRAINT `fk_iteration_project1`
     FOREIGN KEY (`project_id`)
     REFERENCES `wkf_task`.`project` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_iteration_status1`
     FOREIGN KEY (`status_id`)
@@ -153,6 +150,7 @@ CREATE TABLE IF NOT EXISTS `wkf_task`.`ticket` (
   `end_date` DATE NULL DEFAULT NULL,
   `estimate_time` FLOAT NULL DEFAULT NULL,
   `worked_time` FLOAT NULL DEFAULT NULL,
+  `story_points` INT NULL,
   `priority_id` INT(11) NOT NULL,
   `status_id` INT(11) NOT NULL,
   `resolution_id` INT(11) NULL,
@@ -226,12 +224,12 @@ CREATE TABLE IF NOT EXISTS `wkf_task`.`ticket` (
   CONSTRAINT `fk_ticket_iteration1`
     FOREIGN KEY (`iteration_id`)
     REFERENCES `wkf_task`.`iteration` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE SET NULL
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_ticket_project1`
     FOREIGN KEY (`project_id`)
     REFERENCES `wkf_task`.`project` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -578,11 +576,14 @@ START TRANSACTION;
 USE `wkf_task`;
 INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (1, 'Открыт');
 INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (2, 'Переоткрыт');
-INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (3, 'Отложен');
+INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (3, 'Блокирован');
 INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (4, 'В работе');
 INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (5, 'На тестировании');
 INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (6, 'Решен');
 INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (7, 'Закрыт');
+INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (8, 'Не выполнен');
+INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (9, 'Закрыт частично');
+INSERT INTO `wkf_task`.`status` (`id`, `name`) VALUES (10, 'Выполнен');
 
 COMMIT;
 

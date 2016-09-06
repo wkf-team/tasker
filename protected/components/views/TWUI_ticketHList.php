@@ -7,7 +7,7 @@
 	<th><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('owner_user_id'));?></th>
 	<th>Оценка (ч / SP)</th>
 </tr>
-	
+
 <?php $this->widget('zii.widgets.CListView', array(
 	'dataProvider'=>$dataProvider,
 	'itemView'=>'application.views.ticket._viewPlan',

@@ -66,7 +66,7 @@ class Iteration extends CActiveRecord
 			}
 			if ($this->tickets[$i]->resolution_id == null) {
 				$hasUnresolved = true;
-				$this->tickets[$i]->iteration_id = $next_id;
+				@$this->tickets[$i]->iteration_id = $next_id;
 				if (!$this->tickets[$i]->save()) {
 					$this->addError('tickets', 'ticket_'.$this->tickets[$i]->id.CJSON::encode($this->tickets[$i]->errors));
 					return false;

@@ -45,6 +45,6 @@ $this->menu=array(
 $this->widget('TW_TicketHList', [
 	'filterForBacklog'=>true,
 	'showFooterButtons'=>true,
-	'iteration_id'=>$model->id,
+	'iteration_id'=>$model ? $model->id : null,
 ]);
 ?>

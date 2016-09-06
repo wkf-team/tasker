@@ -85,7 +85,7 @@ else {
 	</td>
 </tr>
 <?php 
-if (!$noChildren) {
+if (!isset($noChildren) || !$noChildren) {
 $this->widget('zii.widgets.CListView', array(
 	'dataProvider'=>new CActiveDataProvider('Ticket', [
 		'criteria'=>[

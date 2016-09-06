@@ -108,7 +108,7 @@ $('.asearch-form form').submit(function(){
 		),
 		array(
 			'name' => 'resolution_id',
-			'value' => '$data->resolution->name',
+			'value' => '$data->resolution ? $data->resolution->name : null',
 			'filter'=>CHTML::listData(Resolution::model()->findAll(), 'id', 'name'),
 			'type' => 'text'
 		),
