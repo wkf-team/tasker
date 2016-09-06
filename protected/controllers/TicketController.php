@@ -31,13 +31,13 @@ class TicketController extends Controller
 				'actions'=>array('index','usersTasks','epicTasks','QuickSearch','admin'),
 				'users'=>array('@'),
 			),
-			array('allow',  // allow by project control
-				'actions'=>array('view','update','selectProject'),
-				'expression'=>'User::CheckLevel(10)',// && UserHasProject::HasUserAccess('.$this->loadModel($_GET['id'])->project_id.', Yii::app()->user->id)',
-			),
 			array('allow', // allow for participants
 				'actions'=>array('create','admin','plan','AjaxEdit','makeWF','postpone','setIteration'),
 				'expression'=>'User::CheckLevel(10)',
+			),
+			array('allow',  // allow by project control
+				'actions'=>array('view','update','selectProject'),
+				'expression'=>'User::CheckLevel(10) && ('.(isset($_GET['id']) ? UserHasProject::HasUserAccess($this->loadModel($_GET['id'])->project_id, Yii::app()->user->id) : true).')',
 			),
 			array('allow', // allow coordinator
 				'actions'=>array('delete'),

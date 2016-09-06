@@ -30,15 +30,15 @@ class IterationController extends Controller
 	{
 		return array(
 			array('allow',  // allow authenticated user 
-				'actions'=>array('index','view'),
+				'actions'=>array('view'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow participants
-				'actions'=>array('create','update'),
+				'actions'=>array('index'),
 				'expression'=>'User::CheckLevel(10)',
 			),
 			array('allow', // allow coordinator
-				'actions'=>array('admin','delete','start','rollup'),
+				'actions'=>array('admin','create','update','delete','start','rollup'),
 				'expression'=>'User::CheckLevel(20)',
 			),
 			array('deny',  // deny all users

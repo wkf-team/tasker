@@ -3,7 +3,7 @@
 /* @var $model Ticket */
 
 $this->breadcrumbs=array(
-	'Задачи'=>array('admin'),
+	'Бэклог'=>array('iteration/index'),
 	'Создать',
 );
 

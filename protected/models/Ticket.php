@@ -92,11 +92,8 @@ class Ticket extends CActiveRecord
 		$ticket->ticket_type_id = 2;
 		$ticket->priority_id = 2;
 		$ticket->author_user_id = Yii::app()->user->id;
-		// default is coordinator
-		$user = User::model()->findByAttributes(array('usergroup_id'=>3));
-		$user = $user ? $user->id : $ticket->author_user_id;
-		$ticket->owner_user_id = $user;
-		$ticket->responsible_user_id = $user;
+		$ticket->owner_user_id = Yii::app()->user->id;
+		$ticket->responsible_user_id = Yii::app()->user->id;
 		$ticket->project_id = Project::GetSelected()->id;
 		return $ticket;
 	}
@@ -296,13 +293,25 @@ class Ticket extends CActiveRecord
 	private function GetBlockedBy($withHtml)
 	{
 		$relText = "";
+		$noticeText = "";
 		foreach($this->relTicketsTo as $relation) {
 			if ($relation->relation_type_id == 1) {
 				if ($withHtml) $relText .= CHtml::link(CHtml::encode($relation->ticket_from_id), array('view', 'id'=>$relation->ticket_from_id)).", ";
 				else $relText .= $relation->ticket_from_id.", ";
+				$noticeText .= $relation->ticketFrom->subject."\n";
 			}
 		}
-		if ($relText != "") $relText = substr($relText, 0, strlen($relText) - 2);
+		if ($relText != "")
+		{
+			$relText = substr($relText, 0, strlen($relText) - 2);
+			if ($withHtml) {
+				$relText .= " ".CHtml::tag("span", [
+					'class'=>'ui-icon ui-icon-info',
+					'title'=>$noticeText,
+					'style'=>'display:inline-block',
+				]);
+			}
+		}
 		return $relText;
 	}
 	
@@ -375,7 +384,7 @@ class Ticket extends CActiveRecord
 		$criteria->compare('responsible_user_id',$this->responsible_user_id);
 		$criteria->compare('parent_ticket_id',$this->parent_ticket_id);
 		$criteria->compare('iteration_id',$this->iteration_id);
-		$criteria->compare('project_id',$this->project_id);
+		$criteria->compare('t.project_id',$this->project_id);
 		$criteria->compare('initial_version',$this->initial_version,true);
 		$criteria->compare('resolved_version',$this->resolved_version,true);
 		$criteria->addCondition('p.user_id = '.Yii::app()->user->id);

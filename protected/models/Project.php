@@ -21,11 +21,17 @@ class Project extends CActiveRecord
 {
 	public static function GetSelected()
 	{
-		return Project::model()->find(array(
+		$selected = Project::model()->find(array(
 			'condition'=>'is_selected=1 AND u.user_id=:uid',
 			'join'=>'INNER JOIN user_has_project AS u ON u.project_id = t.id',
 			'params'=>array(':uid'=>Yii::app()->user->id),
 		));
+		if ($selected) return $selected;
+		$user = User::model()->findByPk(Yii::app()->user->id);
+		if (count($user->projects) > 0) {
+			$user->projects[0]->SetSelected();
+			return $user->projects[0];
+		}
 	}
 	
 	public function SetDefaultRights()

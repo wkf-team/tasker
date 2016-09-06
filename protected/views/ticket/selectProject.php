@@ -4,7 +4,7 @@
 /* @var $form CActiveForm */
 
 $this->breadcrumbs=array(
-	'Задачи'=>array('admin'),
+	'Бэклог'=>array('iteration/index'),
 	$model->id=>array('view','id'=>$model->id),
 	'Перенести',
 );

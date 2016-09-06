@@ -32,7 +32,8 @@
 		<div style="position:relative; top:5px; left:40%;">
 			<?php $this->widget('RW_GoalsComplete', ['current_project'=>true]); ?>
 		</div>
-		<div id="logo" style="position:absolute; top:0px;"><?php echo CHtml::encode(Yii::app()->name)." - "; $this->widget('PW_ProjectHeader'); ?></div>
+		<div id="logo" style="position:absolute; top:0px;" class="span-12">
+		<?php echo CHtml::encode(Yii::app()->name)." - "; $this->widget('PW_ProjectHeader'); ?></div>
 		<div style="position: absolute; top: 10px; right:10px;">
 			<?php
 			$this->widget('RW_ReportsPreview');

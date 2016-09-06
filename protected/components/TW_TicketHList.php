@@ -19,6 +19,7 @@ class TW_TicketHList extends CWidget {
 				),'pagination'=>false,
 			));
 		}
+		$this->dataProvider->pagination = false;
 	}
 	
     public function run() {

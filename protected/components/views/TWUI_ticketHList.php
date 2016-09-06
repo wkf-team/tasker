@@ -2,10 +2,10 @@
 <tr>
 	<th></th>
 	<th style="width:400px;"><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('subject'));?></th>
-	<th><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('owner_user_id'));?></th>
 	<th><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('status_id'));?></th>
-	<th>Оценка (ч / SP)</th>
 	<th>Пред.</th>
+	<th><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('owner_user_id'));?></th>
+	<th>Оценка (ч / SP)</th>
 </tr>
 	
 <?php $this->widget('zii.widgets.CListView', array(

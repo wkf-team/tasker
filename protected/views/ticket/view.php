@@ -3,7 +3,7 @@
 /* @var $model Ticket */
 
 $this->breadcrumbs=array(
-	'Задачи'=>array('admin'),
+	'Бэклог'=>array('iteration/index'),
 	$model->subject,
 );
 
@@ -135,6 +135,9 @@ echo "<br/><br/><b>Описание</b><br/>".$model->description;
 <style>
 .ui-tabs {
 	padding:0.1em!important;
+}
+#tabs-0 a {
+	color:blue!important;
 }
 #tabs {
 	background : white;

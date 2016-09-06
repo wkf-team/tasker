@@ -15,5 +15,6 @@ $this->menu=array(
 <h1>Список задач</h1>
 
 <?php $this->widget('TW_TicketList', array(
-	'dataProvider'=>$dataProvider
+	'dataProvider'=>$dataProvider,
+	'noChildren'=>true,
 )); ?>

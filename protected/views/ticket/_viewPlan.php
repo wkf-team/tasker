@@ -72,12 +72,9 @@ else {
 		echo CHtml::hiddenField("data", CJSON::encode($data));
 		?>
 	</td>
-	<td><?php 
-		//if ($data->ticket_type_id == 1)	echo CHtml::encode($data->due_date);
-		//else
-		echo $data->ownerUser ? CHtml::encode($data->ownerUser->name) : "Not set";
-	?></td>
 	<td><?php echo CHtml::encode($data->status->name); ?></td>
+	<td><?php echo $data->GetBlockedBy_HtmlString(); ?></td>
+	<td><?= $data->ownerUser ? CHtml::encode($data->ownerUser->name) : "Not set"; ?></td>
 	<td><?php
 		if ($data->ticket_type_id == 2) {
 			if ($data->story_points > 0) echo CHtml::encode($data->story_points)." SP";
@@ -86,15 +83,15 @@ else {
 		}
 		?>
 	</td>
-	<td><?php echo $data->GetBlockedBy_HtmlString(); ?></td>
 </tr>
 <?php 
 if (!$noChildren) {
 $this->widget('zii.widgets.CListView', array(
 	'dataProvider'=>new CActiveDataProvider('Ticket', [
 		'criteria'=>[
-			'condition'=>'parent_ticket_id = '.$data->id
+			'condition'=>'parent_ticket_id = '.$data->id.' AND status_id <> 7'
 		],
+		'pagination'=>false,
 	]),
 	'itemView'=>'application.views.ticket._viewPlan',
 	'emptyText'=>'',
