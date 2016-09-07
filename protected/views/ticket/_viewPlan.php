@@ -5,7 +5,9 @@
 if ($filterForBacklog && $data->ticket_type_id > 2 && $data->parent_ticket_id != null) ;
 else {
 ?>
-
+<? if ($data->ticket_type_id <= 2) { ?>
+	<tr><td colspan='6'><span style='border-top:1px dotted; display:flex;'></span></td></tr>
+<? } ?>
 <tr class="plan-ticket-row">
 	<td>
 		<button class="btnQEdit">Quick edit</button>

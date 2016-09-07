@@ -162,7 +162,7 @@ function TicketType_OnChange() {
 
 var initialVersionDefault;
 function setInitialVersionVisibility () {
-	if($("#Ticket_ticket_type_id").val() != 3) $("#Ticket_initial_version").val("").closest(".row").hide();
+	if($("#Ticket_ticket_type_id").val() != 4) $("#Ticket_initial_version").val("").closest(".row").hide();
 	else $("#Ticket_initial_version").val(initialVersionDefault).closest(".row").show();
 }
 
