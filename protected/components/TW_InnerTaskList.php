@@ -14,6 +14,7 @@ class TW_InnerTaskList extends CWidget {
 		if ($dataProvider->totalItemCount > 0) {
 			$this->render('TWUI_ticketList', array(
 				'dataProvider'=>$dataProvider,
+				'noChildren'=>false,
 			));
 		}
     }
