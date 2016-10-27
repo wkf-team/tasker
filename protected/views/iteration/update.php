@@ -3,13 +3,13 @@
 /* @var $model Iteration */
 
 $this->breadcrumbs=array(
-	'Бэклог'=>array('index'),
+	'Итерации'=>array('index'),
 	$model->getLabel()=>array('view','id'=>$model->id),
 	'Update',
 );
 
 $this->menu=array(
-	array('label'=>'Бэклог', 'url'=>array('index')),
+	array('label'=>'Текущая', 'url'=>array('index')),
 	array('label'=>'Create Iteration', 'url'=>array('create')),
 	array('label'=>'View Iteration', 'url'=>array('view', 'id'=>$model->id)),
 );

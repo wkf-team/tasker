@@ -3,8 +3,14 @@
 /* @var $model Ticket */
 
 $this->breadcrumbs=array(
-	'Структура работ',
+	'Бэклог',
 );
 ?>
-<h1>Структура работ</h1>
-<? $this->widget('TW_TicketHList', ['showFooterButtons'=>true]) ?>
+<h1>Бэклог</h1>
+<?php
+$this->widget('TW_TicketHList', [
+	'filterForBacklog'=>true,
+	'showFooterButtons'=>true,
+	'iteration_id'=>$iteration_id,
+]);
+?>

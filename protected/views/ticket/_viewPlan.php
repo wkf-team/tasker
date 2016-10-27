@@ -2,13 +2,21 @@
 /* @var $this TicketController */
 /* @var $data Ticket */
 
+$expanded_class = "";
+$t = $data;
+$i = 0;
+while($t->parent_ticket_id != null) {
+	$expanded_class .= "ticket-".$t->parent_ticket_id."-expanded ";
+	$t = $t->parentTicket;
+}
+
 if ($filterForBacklog && $data->ticket_type_id > 2 && $data->parent_ticket_id != null) ;
 else {
 ?>
-<? if ($data->ticket_type_id <= 2) { ?>
-	<tr><td colspan='6'><span style='border-top:1px dotted; display:flex;'></span></td></tr>
+<? if ($data->ticket_type_id <= 2 || $data->parent_ticket_id == null) { ?>
+	<tr><td colspan='7'><span style='border-top:1px dotted; display:flex;'></span></td></tr>
 <? } ?>
-<tr class="plan-ticket-row">
+<tr class="plan-ticket-row <?=$expanded_class?>">
 	<td>
 		<button class="btnQEdit">Quick edit</button>
 		<?php
@@ -19,28 +27,28 @@ else {
 				"if (!confirm('Удалить задачу?')) event.preventDefault();
 				else setTimeout(function () {location.reload();}, 100);"));
 		?>
-		<? if ($data->ticket_type_id != 4) {?>
-			<button class="btnAdd">Add</button>
-		<? } ?>
 		<?php
 		if ($filterForBacklog) {
 			if ($data->iteration_id == $iteration_id) {
 				echo CHtml::ajaxLink("Исключить из текущей итерации",
 				["ticket/setIteration", 'id'=>$data->id, 'iteration_id'=>-1], [
-					'success'=>'location.reload()'
+					'success'=>'setTimeout(function () {location.reload(); }, 100)'
 				],[
 					'class'=>'btnRemoveFromIteration',
 				]);
 			} else {
 				echo CHtml::ajaxLink("Включить в итерацию",
 				["ticket/setIteration", 'id'=>$data->id, 'iteration_id'=>$iteration_id], [
-					'success'=>'location.reload()'
+					'success'=>'setTimeout(function () {location.reload(); }, 100)'
 				],[
 					'class'=>'btnAddToIteration',
 				]);
 			}
 		}
 		?>
+		<? if ($data->ticket_type_id < ($filterForBacklog == true ? 2 : 4)) {?>
+			<button class="btnAdd">Add</button>
+		<? } ?>
 	</td>
 	<td>
 		<!-- Offset -->
@@ -64,7 +72,7 @@ else {
 				case 1: echo "ui-icon-flag"; break;
 				case 2: echo "ui-icon-note"; break;
 				case 3: echo "ui-icon-bullet"; break;
-				case 4: echo "ui-icon-notice"; break;
+				case 4: echo "ui-icon-red ui-icon-notice"; break;
 			}
 		?>" style="display:inline-block;"></span>
 		<!-- id and subject -->
@@ -73,6 +81,11 @@ else {
 		$data->includeBlockedBy = true;
 		echo CHtml::hiddenField("data", CJSON::encode($data));
 		?>
+		<!-- show / hide children -->
+		<? if ((!isset($noChildren) || !$noChildren) && count($data->tickets) > 0) { ?>
+			<span class="ui-icon ui-icon-triangle-1-s ticket-<?=$data->id?>-expanded" style="display:inline-block;" onclick="collapse(<?=$data->id?>);"></span>
+			<span class="ui-icon ui-icon-triangle-1-e ticket-<?=$data->id?>-collapsed ticket-collapsed" style="display:inline-block;" onclick="expand(<?=$data->id?>);"></span>
+		<? } ?>
 	</td>
 	<td><?php echo CHtml::encode($data->status->name); ?></td>
 	<td><?php echo $data->GetBlockedBy_HtmlString(); ?></td>
@@ -85,6 +98,7 @@ else {
 		}
 		?>
 	</td>
+	<td><?php echo CHtml::encode($data->priority->name); ?></td>
 </tr>
 <?php 
 if (!isset($noChildren) || !$noChildren) {
@@ -102,5 +116,4 @@ $this->widget('zii.widgets.CListView', array(
 ));
 }
 ?>
-
 <? }// end if filterForBacklog ?>

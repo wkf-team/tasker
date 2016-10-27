@@ -7,6 +7,13 @@ body
 	background: #EEEEEE;
 	font-family : "Helvetica";
 }
+.ui-icon-red {
+	background-image: url(custom/images/ui-icons_cd0a0a_256x240.png)!important;
+}
+.ui-icon-black {
+	background-image: url(custom/images/ui-icons_202020_256x240.png)!important;
+}
+
 .task-inner-lists {
 	background : #FFF;
 }

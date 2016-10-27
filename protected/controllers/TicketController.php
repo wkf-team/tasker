@@ -285,10 +285,16 @@ class TicketController extends Controller
 	 */
 	public function actionPlan()
 	{
-		$filter_new = 0;
-		$this->layout='//layouts/column1';
-		
-		$this->render('plan');
+		$this->layout='//layouts/column1';	
+		$iteration_id = null;
+		if (Project::GetSelected()) {
+			$iteration_id = Iteration::model()->find([
+				'condition'=>'project_id = '.Project::GetSelected()->id.' AND status_id < 6',
+				'order'=>'due_date ASC'
+			]);
+			$iteration_id = $iteration_id == null ? null : $iteration_id->id;
+		}		
+		$this->render('plan', ['iteration_id'=>$iteration_id]);
 	}
 	
 	public function actionMakeWF($id, $action)
@@ -332,7 +338,7 @@ class TicketController extends Controller
 		$model=$this->loadModel($id);
 		if ($iteration_id == -1) $model->iteration_id = null;
 		else $model->iteration_id = (int)$iteration_id;
-		$model->save();
+		if ($model->save())	echo "ok";
 	}
 	
 	public function actionSelectProject($id)

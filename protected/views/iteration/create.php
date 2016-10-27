@@ -3,12 +3,12 @@
 /* @var $model Iteration */
 
 $this->breadcrumbs=array(
-	'Бэклог'=>array('index'),
+	'Итерации'=>array('index'),
 	'Create',
 );
 
 $this->menu=array(
-	array('label'=>'Бэклог', 'url'=>array('index')),
+	array('label'=>'Текущая', 'url'=>array('index')),
 );
 ?>
 

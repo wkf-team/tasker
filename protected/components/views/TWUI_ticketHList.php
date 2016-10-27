@@ -1,3 +1,4 @@
+<script src="js/tinymce/tinymce.min.js"></script>
 <table>
 <tr>
 	<th></th>
@@ -6,6 +7,7 @@
 	<th>Пред.</th>
 	<th><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('owner_user_id'));?></th>
 	<th>Оценка (ч / SP)</th>
+	<th><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('priority_id'));?></th>
 </tr>
 
 <?php $this->widget('zii.widgets.CListView', array(
@@ -65,13 +67,25 @@ $(function () {
     }).click(OpenNewDialog);
 	$(".btnAddToIteration").button({
       icons: {
-        primary: "ui-icon-arrowreturnthick-1-n"
+        primary: "ui-icon-pin-w"
       },
       text: false
     });
 	$(".btnRemoveFromIteration").button({
       icons: {
-        primary: "ui-icon-arrowreturnthick-1-s"
+        primary: "ui-icon-check"
+      },
+      text: false
+    });
+	$(".btnMorePriority").button({
+      icons: {
+        primary: "ui-icon-arrow-1-n"
+      },
+      text: false
+    });
+	$(".btnLessPriority").button({
+      icons: {
+        primary: "ui-icon-arrow-1-s"
       },
       text: false
     });
@@ -80,9 +94,10 @@ $(function () {
 	$("#editQ").dialog({
 		autoOpen	: false,
 		modal		: true,
+		width		: 900,
 		buttons		: {
 			OK		: SubmitActiveForm,
-			Cancel	: function () {$("#editQ").dialog("close");}
+			Cancel	: CancelForm,
 		}
 	});
 	$('#editQ').keypress(function(e) {
@@ -90,6 +105,11 @@ $(function () {
 			  SubmitActiveForm(null);
 		}
 	});
+	
+	function CancelForm() {
+		tinymce.remove();
+		$("#editQ").dialog("close");
+	}
 	
 	function OpenEditDialog(ev) {
 		$(".errorSummary").html("").hide();
@@ -119,6 +139,17 @@ $(function () {
 		dialog.find("#blocked_by").val(data.blocked_by);
 		// open
 		dialog.dialog("open");
+		
+		tinymce.init({
+			selector:'textarea.editor',
+			plugins : 'link',
+			menubar:false,
+			language : 'ru',
+			statusbar: true,
+			resize: true,
+			toolbar:'styleselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link | removeformat',
+			removeformat_selector : 'b,strong,em,i,span,ins,ul,li,ol'
+		});
 	}
 	
 	function OpenNewDialog(ev) {
@@ -161,9 +192,21 @@ $(function () {
 		dialog.find("#blocked_by").val(null);
 		// open
 		dialog.dialog("open");
+		
+		tinymce.init({
+			selector:'textarea.editor',
+			plugins : 'link',
+			menubar:false,
+			language : 'ru',
+			statusbar: true,
+			resize: true,
+			toolbar:'styleselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link | removeformat',
+			removeformat_selector : 'b,strong,em,i,span,ins,ul,li,ol'
+		});
 	}
 	
 	function SubmitActiveForm(ev) {
+		tinyMCE.triggerSave();
 		var activeForm = $("#editQ").find("form");
 		$.post(activeForm.get(0).action, activeForm.serialize(), EditTicketResponse);
 	}
@@ -179,7 +222,23 @@ $(function () {
 	
 	newTicketData.priority_id = $("#editQ").find("#Ticket_priority_id").val();
 	newTicketData.owner_user_id = $("#editQ").find("#Ticket_owner_user_id").val();
+	
+	$(".ticket-collapsed").hide();
+
 });
 
 var newTicketData = {};
+
+function collapse(id)
+{
+	$(".ticket-"+id+"-collapsed").show();
+	$(".ticket-"+id+"-expanded").hide();
+}
+
+function expand(id)
+{
+	$(".ticket-"+id+"-collapsed").hide();
+	$(".ticket-"+id+"-expanded").show();
+}
+
 </script>

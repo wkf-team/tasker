@@ -3,7 +3,7 @@
 /* @var $dataProvider CActiveDataProvider */
 
 $this->breadcrumbs=array(
-	'Бэклог',
+	'Текущая итерация',
 );
 
 $this->menu=array(
@@ -40,11 +40,3 @@ $this->menu=array(
 	</div>
 </div>
 <? } ?>
-<h1>Бэклог</h1>
-<?php
-$this->widget('TW_TicketHList', [
-	'filterForBacklog'=>true,
-	'showFooterButtons'=>true,
-	'iteration_id'=>$model ? $model->id : null,
-]);
-?>
