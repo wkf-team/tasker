@@ -50,7 +50,7 @@
  */
 class Ticket extends CActiveRecord
 {
-	public static $orderString = "status_id DESC, if(due_date is null, CURDATE() + 365, due_date), priority_id DESC";
+	public static $orderString = "status_id DESC, order_num";
 	public $asearch;
 	/*
 	public static $orderString = "if(due_date < CURDATE(),
@@ -95,6 +95,7 @@ class Ticket extends CActiveRecord
 		$ticket->owner_user_id = Yii::app()->user->id;
 		$ticket->responsible_user_id = Yii::app()->user->id;
 		$ticket->project_id = Project::GetSelected()->id;
+		$ticket->order_num = Ticket::model()->find(['select'=>'IFNULL(max(order_num),0) as order_num'])->order_num;
 		return $ticket;
 	}
 	

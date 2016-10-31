@@ -19,6 +19,7 @@ class TW_TicketHList extends CWidget {
 						'AND (parent_ticket_id IS NULL)',
 					'join'=>'INNER JOIN user_has_project AS p ON p.project_id = t.project_id',
 					'params'=>array(':uid'=>Yii::app()->user->id),
+					'order'=>'order_num',
 				),'pagination'=>false,
 			));
 		}

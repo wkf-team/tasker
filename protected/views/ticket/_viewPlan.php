@@ -2,6 +2,7 @@
 /* @var $this TicketController */
 /* @var $data Ticket */
 
+if (!isset($noChildren)) $noChildren = false;
 $expanded_class = "";
 $t = $data;
 $i = 0;
@@ -13,12 +14,12 @@ while($t->parent_ticket_id != null) {
 if ($filterForBacklog && $data->ticket_type_id > 2 && $data->parent_ticket_id != null) ;
 else {
 ?>
-<? if ($data->ticket_type_id <= 2 || $data->parent_ticket_id == null) { ?>
+<? if (!$noChildren && ($data->ticket_type_id <= 2 || $data->parent_ticket_id == null)) { ?>
 	<tr><td colspan='7'><span style='border-top:1px dotted; display:flex;'></span></td></tr>
 <? } ?>
 <tr class="plan-ticket-row <?=$expanded_class?>">
 	<td>
-		<button class="btnQEdit">Quick edit</button>
+		<a href="#" class="btnQEdit">Quick edit</a>
 		<?php
 		echo CHtml::ajaxLink("Delete", array("ticket/delete", "id" => $data->id), 
 			array("type" => "POST"), 
@@ -28,6 +29,20 @@ else {
 				else setTimeout(function () {location.reload();}, 100);"));
 		?>
 		<?php
+		if (!$noChildren) {
+			echo CHtml::ajaxLink("Более приоритетно",
+			["ticket/setPriority", 'id'=>$data->id, 'move'=>'up'], [
+				'success'=>'setTimeout(function () {location.reload(); }, 100)'
+			],[
+				'class'=>'btnMorePriority',
+			])."\n";
+			echo CHtml::ajaxLink("Менее приоритетно",
+			["ticket/setPriority", 'id'=>$data->id, 'move'=>'down'], [
+				'success'=>'setTimeout(function () {location.reload(); }, 100)'
+			],[
+				'class'=>'btnLessPriority',
+			])."\n";
+		}
 		if ($filterForBacklog) {
 			if ($data->iteration_id == $iteration_id) {
 				echo CHtml::ajaxLink("Исключить из текущей итерации",
@@ -47,7 +62,7 @@ else {
 		}
 		?>
 		<? if ($data->ticket_type_id < ($filterForBacklog == true ? 2 : 4)) {?>
-			<button class="btnAdd">Add</button>
+			<a href="#" class="btnAdd">Add</a>
 		<? } ?>
 	</td>
 	<td>
@@ -101,11 +116,12 @@ else {
 	<td><?php echo CHtml::encode($data->priority->name); ?></td>
 </tr>
 <?php 
-if (!isset($noChildren) || !$noChildren) {
+if (!$noChildren) {
 $this->widget('zii.widgets.CListView', array(
 	'dataProvider'=>new CActiveDataProvider('Ticket', [
 		'criteria'=>[
-			'condition'=>'parent_ticket_id = '.$data->id.' AND status_id <> 7'
+			'condition'=>'parent_ticket_id = '.$data->id.' AND status_id <> 7',
+			'order'=>'order_num',
 		],
 		'pagination'=>false,
 	]),

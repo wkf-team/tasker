@@ -32,7 +32,7 @@ class TicketController extends Controller
 				'users'=>array('@'),
 			),
 			array('allow', // allow for participants
-				'actions'=>array('create','admin','plan','AjaxEdit','makeWF','postpone','setIteration'),
+				'actions'=>array('create','admin','plan','AjaxEdit','makeWF','postpone','setIteration','setPriority'),
 				'expression'=>'User::CheckLevel(10)',
 			),
 			array('allow',  // allow by project control
@@ -339,6 +339,43 @@ class TicketController extends Controller
 		if ($iteration_id == -1) $model->iteration_id = null;
 		else $model->iteration_id = (int)$iteration_id;
 		if ($model->save())	echo "ok";
+	}
+	
+	public function actionSetPriority($id, $move)
+	{
+		$cTicket = $this->loadModel($id);
+		// look for the same parent
+		$parent = $cTicket->parent_ticket_id ? 'parent_ticket_id = '.$cTicket->parent_ticket_id : 'parent_ticket_id IS NULL';
+		// if move=up get previous number
+		if ($move == "up") {
+			$compare = "<";
+			$order = "DESC";
+		} else {
+			// otherwise get next
+			$compare = ">";
+			$order = "ASC";			
+		}
+		//execute search
+		$oTicket = Ticket::model()->find([
+			'condition'=>$parent.' AND project_id = '.$cTicket->project_id.' AND order_num '.$compare.' '.$cTicket->order_num,
+			'order'=>'order_num '.$order,
+			'limit'=>1
+		]);
+		// not found? exit
+		if ($oTicket == null) return;
+		// swap items
+		$tmp = $oTicket->order_num;
+		$oTicket->order_num = $cTicket->order_num;
+		$cTicket->order_num = $tmp;
+		if(!$oTicket->save()) {
+			var_dump($oTicket->errors);
+			die();
+		}
+		if (!$cTicket->save()) {
+			var_dump($cTicket->errors);
+			die();
+		}
+		echo "ok";
 	}
 	
 	public function actionSelectProject($id)

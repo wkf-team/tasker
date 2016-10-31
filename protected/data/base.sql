@@ -164,6 +164,7 @@ CREATE TABLE IF NOT EXISTS `wkf_task`.`ticket` (
   `project_id` INT(11) NOT NULL,
   `initial_version` VARCHAR(25) NULL,
   `resolved_version` VARCHAR(25) NULL,
+  `order_num` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_ticket_refPriority_idx` (`priority_id` ASC),
   INDEX `fk_ticket_refStatus1_idx` (`status_id` ASC),
