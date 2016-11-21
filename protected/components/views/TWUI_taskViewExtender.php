@@ -35,6 +35,7 @@ function setColors() {
 	
 	$("td:contains(Блокер)").css("color","red");
 	$("td:contains(Высокий)").css("color","red");
-	$("td:contains(Средний)").css("color","orange");
+	//$("td:contains(Средний)").css("color","orange");
+	$("td:contains(Низкий)").css("color","gray");
 }
 </script>

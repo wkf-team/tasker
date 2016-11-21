@@ -103,6 +103,7 @@ else {
 		<? } ?>
 	</td>
 	<td><?php echo CHtml::encode($data->status->name); ?></td>
+	<td><?php echo CHtml::encode($data->priority->name); ?></td>
 	<td><?php echo $data->GetBlockedBy_HtmlString(); ?></td>
 	<td><?= $data->ownerUser ? CHtml::encode($data->ownerUser->name) : "Not set"; ?></td>
 	<td><?php
@@ -113,7 +114,6 @@ else {
 		}
 		?>
 	</td>
-	<td><?php echo CHtml::encode($data->priority->name); ?></td>
 </tr>
 <?php 
 if (!$noChildren) {

@@ -297,7 +297,7 @@ class Ticket extends CActiveRecord
 		$noticeText = "";
 		foreach($this->relTicketsTo as $relation) {
 			if ($relation->relation_type_id == 1) {
-				if ($withHtml) $relText .= CHtml::link(CHtml::encode($relation->ticket_from_id), array('view', 'id'=>$relation->ticket_from_id)).", ";
+				if ($withHtml) $relText .= CHtml::link(CHtml::encode($relation->ticket_from_id), array('ticket/view', 'id'=>$relation->ticket_from_id)).", ";
 				else $relText .= $relation->ticket_from_id.", ";
 				$noticeText .= $relation->ticketFrom->subject."\n";
 			}
