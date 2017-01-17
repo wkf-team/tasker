@@ -24,6 +24,7 @@ $this->menu=array(
 	'attributes'=>array(
 		'id',
 		'name',
+		'is_active:boolean',
 		'mail',
 		'work_time_per_week',
 		'usergroup.name:text:'.CHtml::activeLabel($model, "usergroup_id"),

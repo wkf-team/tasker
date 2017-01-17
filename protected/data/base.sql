@@ -77,6 +77,7 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE IF NOT EXISTS `wkf_task`.`user` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
+  `is_active` BOOLEAN NOT NULL default 1,
   `mail` VARCHAR(255) NULL DEFAULT NULL,
   `password` VARCHAR(255) NULL DEFAULT NULL,
   `work_time_per_week` INT(11) NULL DEFAULT NULL,

@@ -6,6 +6,7 @@
  * The followings are the available columns in table 'user':
  * @property integer $id
  * @property string $name
+ * @property integer $is_active
  * @property string $mail
  * @property string $password
  * @property integer $work_time_per_week
@@ -65,7 +66,7 @@ class User extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('name, usergroup_id, notification_enabled, digest_enabled', 'required'),
-			array('work_time_per_week, usergroup_id, notification_enabled, digest_enabled', 'numerical', 'integerOnly'=>true),
+			array('work_time_per_week, usergroup_id, notification_enabled, digest_enabled, is_active', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>45),
 			array('mail', 'length', 'max'=>255),
 			// The following rule is used by search().
@@ -114,6 +115,7 @@ class User extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'name' => 'Имя',
+			'is_active' => 'Активен',
 			'mail' => 'Почта',
 			'password' => 'Пароль',
 			'work_time_per_week' => 'Рабочих часов в неделю',
@@ -136,6 +138,7 @@ class User extends CActiveRecord
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('name',$this->name,true);
+		$criteria->compare('is_active',$this->is_active);
 		$criteria->compare('mail',$this->mail,true);
 		$criteria->compare('password',$this->password,true);
 		$criteria->compare('work_time_per_week',$this->work_time_per_week);

@@ -10,6 +10,10 @@
 	(<?php echo CHtml::encode($data->usergroup->name); ?>)
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('is_active')); ?>:</b>
+	<?php echo $data->is_active == 1 ? "yes" : "no"; ?>
+	<br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('mail')); ?>:</b>
 	<?php echo CHtml::encode($data->mail); ?>
 	<br />

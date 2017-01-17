@@ -54,13 +54,13 @@
 
 	<div class="row span-6">
 		<?php echo $form->labelEx($model,'owner_user_id'); ?>
-		<?php echo $form->dropDownList($model,'owner_user_id', CHTML::listData(User::model()->findAll(), 'id', 'name')); ?>
+		<?php echo $form->dropDownList($model,'owner_user_id', CHTML::listData(User::model()->findAllByAttributes(['is_active'=>1]), 'id', 'name')); ?>
 		<?php echo $form->error($model,'owner_user_id'); ?>
 	</div>
 
 	<div class="row span-6">
 		<?php echo $form->labelEx($model,'tester_user_id'); ?>
-		<?php echo $form->dropDownList($model,'tester_user_id', CHTML::listData(User::model()->findAll(), 'id', 'name'), array('empty' => '-- Не выбрано --')); ?>
+		<?php echo $form->dropDownList($model,'tester_user_id', CHTML::listData(User::model()->findAllByAttributes(['is_active'=>1]), 'id', 'name'), array('empty' => '-- Не выбрано --')); ?>
 		<?php echo $form->error($model,'tester_user_id'); ?>
 	</div>
 

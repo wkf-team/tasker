@@ -22,6 +22,12 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->label($model,'is_active'); ?>
+		<?php echo $form->checkBox($model,'is_active'); ?>
+		<?php echo $form->error($model,'is_active'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->labelEx($model,'mail'); ?>
 		<?php echo $form->emailField($model,'mail',array('size'=>60,'maxlength'=>255)); ?>
 		<?php echo $form->error($model,'mail'); ?>
