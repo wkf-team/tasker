@@ -131,6 +131,7 @@ class ProjectController extends Controller
 			'criteria'=>array(
 				'condition'=>'u.user_id = :uid',
 				'join'=>'INNER JOIN user_has_project AS u ON u.project_id = t.id',
+				'order'=>'is_active DESC, start_date DESC',
 				'params'=>array(':uid'=>Yii::app()->user->id),
 			),
 		));

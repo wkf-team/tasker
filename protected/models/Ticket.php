@@ -50,17 +50,17 @@
  */
 class Ticket extends CActiveRecord
 {
-	public static $orderString = "status_id DESC, order_num";
+	//public static $orderString = "status_id DESC, order_num";
 	public $asearch;
-	/*
-	public static $orderString = "if(due_date < CURDATE(),
+	
+	public static $orderString = "status_id DESC, if(due_date < CURDATE(),
 							1000 + 10*(CURDATE() - due_date) + priority_id,
 							if(due_date = CURDATE(), 100 + priority_id,
 							if(due_date is null, 90 + priority_id,
 							if (due_date - CURDATE() = 1, 80 + priority_id,
 							10*priority_id
 						)))) DESC, due_date";
-						*/
+						
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
