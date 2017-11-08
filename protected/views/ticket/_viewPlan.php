@@ -29,7 +29,7 @@ else {
 				else setTimeout(function () {location.reload();}, 100);"));
 		?>
 		<?php
-		if (!$noChildren) {
+		/*if (!$noChildren) {
 			echo CHtml::ajaxLink("Более приоритетно",
 			["ticket/setPriority", 'id'=>$data->id, 'move'=>'up'], [
 				'success'=>'setTimeout(function () {location.reload(); }, 100)'
@@ -42,7 +42,7 @@ else {
 			],[
 				'class'=>'btnLessPriority',
 			])."\n";
-		}
+		}*/
 		if ($filterForBacklog) {
 			if ($data->iteration_id == $iteration_id) {
 				echo CHtml::ajaxLink("Исключить из текущей итерации",
@@ -121,7 +121,7 @@ $this->widget('zii.widgets.CListView', array(
 	'dataProvider'=>new CActiveDataProvider('Ticket', [
 		'criteria'=>[
 			'condition'=>'parent_ticket_id = '.$data->id.' AND status_id <> 7',
-			'order'=>'order_num',
+			'order'=>Ticket::$orderString,
 		],
 		'pagination'=>false,
 	]),
