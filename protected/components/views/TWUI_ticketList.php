@@ -5,6 +5,7 @@
 	?> results.</div>
 	<?php $this->widget('TW_TicketHList', array(
 		'dataProvider'=>$dataProvider,
-		'noChildren'=>$noChildren
+		'noChildren'=>$noChildren,
+		'allChildren'=>$allChildren,
 	)); ?>
 </div>

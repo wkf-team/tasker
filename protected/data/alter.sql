@@ -5,7 +5,15 @@ VIEW `v_goals_complete` AS
         `goals`.`id` AS `id`,
         `goals`.`subject` AS `subject`,
         `goals`.`project_id` AS `project_id`,
-        COUNT(`tasks`.`id`) AS `total`,
+        (COUNT(DISTINCT `tasks`.`id`) + 
+		COUNT(DISTINCT `tasks1`.`id`) + 
+		COUNT(DISTINCT `tasks2`.`id`) + 
+		COUNT(DISTINCT `tasks3`.`id`) + 
+		COUNT(DISTINCT `tasks4`.`id`) + 
+		COUNT(DISTINCT `tasks5`.`id`) + 
+		COUNT(DISTINCT `tasks6`.`id`) + 
+		COUNT(DISTINCT `tasks7`.`id`)
+		) AS `total`,
         (SUM(IF((`tasks`.`status_id` >= 6), 1, 0)) + 
         SUM(IF((`tasks1`.`status_id` >= 6), 1, 0)) +
         SUM(IF((`tasks2`.`status_id` >= 6), 1, 0)) +

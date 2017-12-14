@@ -120,7 +120,7 @@ if (!$noChildren) {
 $this->widget('zii.widgets.CListView', array(
 	'dataProvider'=>new CActiveDataProvider('Ticket', [
 		'criteria'=>[
-			'condition'=>'parent_ticket_id = '.$data->id.' AND status_id <> 7',
+			'condition'=>'parent_ticket_id = '.$data->id.($allChildren ? '' : ' AND status_id <> 7'),
 			'order'=>Ticket::$orderString,
 		],
 		'pagination'=>false,
@@ -128,7 +128,7 @@ $this->widget('zii.widgets.CListView', array(
 	'itemView'=>'application.views.ticket._viewPlan',
 	'emptyText'=>'',
 	'summaryText'=>'',
-	'viewData'=>['offset'=>$offset + 1, 'filterForBacklog'=>$filterForBacklog, 'iteration_id'=>$iteration_id]
+	'viewData'=>['offset'=>$offset + 1, 'filterForBacklog'=>$filterForBacklog, 'iteration_id'=>$iteration_id,'allChildren'=>$allChildren]
 ));
 }
 ?>

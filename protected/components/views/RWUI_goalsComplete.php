@@ -4,9 +4,9 @@
     foreach($this->goals as $goal) {
         echo CHtml::link($goal->subject, array('ticket/view', 'id'=>$goal->id));
 		if ($goal->total > 0) {
-			echo ": " . (int)($goal->closed / $goal->total * 100) . "% (" . $goal->closed . " из ";
-			echo CHtml::link($goal->total, array('ticket/EpicTasks', 'id'=>$goal->id)). ")";
-			echo $goal->due_date ? " до ".$goal->encodeDate($goal->due_date) : "";
+			echo ": " . (int)($goal->closed / $goal->total * 100) . "% (";
+			echo CHtml::link($goal->closed. " из " . $goal->total, array('ticket/EpicTasks', 'id'=>$goal->id));
+			echo ")" . ($goal->due_date ? " до ".$goal->encodeDate($goal->due_date) : "");
 		}
 		echo "<br/>";
     }

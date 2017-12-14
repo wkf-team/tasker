@@ -19,6 +19,7 @@
 		'filterForBacklog'=>$filterForBacklog,
 		'iteration_id'=>$iteration_id,
 		'noChildren'=>$noChildren,
+		'allChildren'=>$allChildren,
 	]
 )); ?>
 

@@ -5,7 +5,9 @@ class RW_GoalsComplete extends CWidget {
 	public $current_project;
  
     public function run() {
-		$this->current_project = Project::GetSelected()->id;
+		$p = Project::GetSelected();
+		if (!$p) return;
+		$this->current_project = $p->id;
 		$this->goals = VGoalsComplete::model()->findAll(array(
 			'condition'=>'project_id = :pid',
 			'params'=>array(':pid'=>$this->current_project),

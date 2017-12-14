@@ -217,6 +217,7 @@ class TicketController extends Controller
 		));
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
+			'noChildren'=>true,
 		));
 	}
 
@@ -238,6 +239,7 @@ class TicketController extends Controller
 		));
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
+			'noChildren'=>false,
 		));
 	}
 	

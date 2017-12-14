@@ -16,5 +16,6 @@ $this->menu=array(
 
 <?php $this->widget('TW_TicketList', array(
 	'dataProvider'=>$dataProvider,
-	'noChildren'=>true,
+	'noChildren'=>$noChildren,
+	'allChildren'=>false,
 )); ?>

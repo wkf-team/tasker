@@ -5,11 +5,13 @@ class TW_TicketHList extends CWidget {
 	public $showFooterButtons;
 	public $iteration_id;
 	public $noChildren;
+	public $allChildren;
 	
 	public function init() {
 		if (!isset($this->filterForBacklog)) $this->filterForBacklog = false;
 		if (!isset($this->showFooterButtons)) $this->showFooterButtons = false;
 		if (!isset($this->noChildren)) $this->noChildren = false;
+		if (!isset($this->allChildren)) $this->allChildren = false;
 		if (!$this->dataProvider) {
 			$this->dataProvider=new CActiveDataProvider('Ticket', array(
 				'criteria'=>array(
@@ -36,6 +38,7 @@ class TW_TicketHList extends CWidget {
 			'showFooterButtons'=>$this->showFooterButtons,
 			'iteration_id'=>$this->iteration_id,
 			'noChildren'=>$this->noChildren,
+			'allChildren'=>$this->allChildren,
 		));
     }
  
