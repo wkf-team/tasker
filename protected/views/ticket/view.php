@@ -28,7 +28,20 @@ pre {
 }
 </style>
 
-<?php $this->widget('WW_Workflow', array('model'=>$model)); ?>
+<div>
+    <span class="span-auto" style="width:70%;">
+        <?php $this->widget('WW_Workflow', array('model'=>$model)); ?>
+    </span>
+    <span class="span-side last" style="width:30%;">
+        <?php $this->widget('zii.widgets.CDetailView', array(
+                'data'=>$model,
+                'cssFile' => 'css/grid.css',
+                'attributes'=>array(
+                    'priority.name:text:'.CHtml::activeLabel($model, "priority_id"),
+                    'status.name:text:'.CHtml::activeLabel($model, "status_id")
+        ))); ?>
+    </span>
+</div>
 
 <?php
 echo "<br/><br/><b>Описание</b><br/>".$model->description;
@@ -43,56 +56,76 @@ echo "<br/><br/><b>Описание</b><br/>".$model->description;
 		<li id="link-tabs-3"><a href="#tabs-3">Связи</a></li>
 		<li id="link-tabs-4"><a href="#tabs-4">Подзадачи</a></li>
 	</ul>
-	<div id="tabs-0">
-	<?php
-	
-	$this->widget('zii.widgets.CDetailView', array(
-		'data'=>$model,
-		'cssFile' => 'css/grid.css',
-		'attributes'=>array(
-			'ownerUser.name:text:'.CHtml::activeLabel($model, "owner_user_id"),
-			array(
-				'label' => CHtml::activeLabel($model, "estimate_start_date"),
-				'value' => $model->encodeDate($model->estimate_start_date)
-			),
-			array(
-				'label' => CHtml::activeLabel($model, "due_date"),
-				'value' => $model->encodeDate($model->due_date)
-			),
-			'priority.name:text:'.CHtml::activeLabel($model, "priority_id"),
-			'status.name:text:'.CHtml::activeLabel($model, "status_id"),
-			'resolution.name:text:'.CHtml::activeLabel($model, "resolution_id"),
-			array(
-				'label' => CHtml::activeLabel($model, "end_date"),
-				'value' => $model->encodeDate($model->end_date)
-			),
-			'estimate_time',
-			'worked_time',
-			'story_points',
-			'authorUser.name:text:'.CHtml::activeLabel($model, "author_user_id"),
-			'testerUser.name:text:'.CHtml::activeLabel($model, "tester_user_id"),
-			'responsibleUser.name:text:'.CHtml::activeLabel($model, "responsible_user_id"),
-			array(
-				'label' => CHtml::activeLabel($model, "iteration_id"),
-				'value' => $model->iteration ? $model->iteration->getLabel() : null
-			),
-			array(
-				'label' => CHtml::activeLabel($model, "create_date"),
-				'value' => $model->encodeDate($model->create_date)
-			),
-			array(
-				'label' => CHtml::activeLabel($model, "parent_ticket_id"),
-				'type' => 'html',
-				'value' => 
-					$model->parent_ticket_id ? 
-						CHtml::link("#".$model->parent_ticket_id.". ".$model->parentTicket->subject, array('ticket/view', 'id'=>$model->parent_ticket_id)) 
-						: null
-			),
-			'initial_version',
-			'resolved_version',
-		),
-	)); 
-	?>
+	<div id="tabs-0" style="color: black;">
+        <span class="span-auto" style="width:49%; margin-right:1%;">
+            <span class="h2">Пользователи</span>
+            <?php
+
+            $this->widget('zii.widgets.CDetailView', array(
+                'data'=>$model,
+                'cssFile' => 'css/grid.css',
+                'attributes'=>array(
+                    'ownerUser.name:text:'.CHtml::activeLabel($model, "owner_user_id"),
+                    'authorUser.name:text:'.CHtml::activeLabel($model, "author_user_id"),
+                    'testerUser.name:text:'.CHtml::activeLabel($model, "tester_user_id"),
+                    'responsibleUser.name:text:'.CHtml::activeLabel($model, "responsible_user_id"),
+                ),
+            )); 
+            ?>
+        </span>
+        <span class="span-side last" style="width:50%;">
+            <span class="h2">Даты</span>
+            <?php
+
+            $this->widget('zii.widgets.CDetailView', array(
+                'data'=>$model,
+                'cssFile' => 'css/grid.css',
+                'attributes'=>array(
+                    array(
+                        'label' => CHtml::activeLabel($model, "create_date"),
+                        'value' => $model->encodeDate($model->create_date)
+                    ),
+                    array(
+                        'label' => CHtml::activeLabel($model, "estimate_start_date"),
+                        'value' => $model->encodeDate($model->estimate_start_date)
+                    ),
+                    array(
+                        'label' => CHtml::activeLabel($model, "due_date"),
+                        'value' => $model->encodeDate($model->due_date)
+                    ),
+                    array(
+                        'label' => CHtml::activeLabel($model, "iteration_id"),
+                        'value' => $model->iteration ? $model->iteration->getLabel() : null
+                    ),
+                ),
+            )); 
+            ?>
+        </span>
+            <span class="span-auto last"> <br/><span class="h2">Общие</span></span>
+        <?php
+
+        $this->widget('zii.widgets.CDetailView', array(
+            'data'=>$model,
+            'cssFile' => 'css/grid.css',
+            'attributes'=>array(
+                array(
+                    'label' => CHtml::activeLabel($model, "parent_ticket_id"),
+                    'type' => 'html',
+                    'value' => 
+                        $model->parent_ticket_id ? 
+                            CHtml::link("#".$model->parent_ticket_id.". ".$model->parentTicket->subject, array('ticket/view', 'id'=>$model->parent_ticket_id)) 
+                            : null
+                ),
+                'initial_version',
+                'resolved_version',
+                'resolution.name:text:'.CHtml::activeLabel($model, "resolution_id"),
+                'story_points',
+                'estimate_time',
+                'worked_time',
+            ),
+        )); 
+        ?>
+        
 	</div>
 	<div id="tabs-1">
 	<?php $this->widget('CW_CommentList', array('ticket_id'=>$model->id)); ?>
