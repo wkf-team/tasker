@@ -7,6 +7,8 @@ $this->breadcrumbs=array(
 	$model->subject,
 );
 
+$this->pageTitle = $model->subject." - ".Yii::app()->name;
+
 $this->menu=array(
 	array('label'=>'Создать', 'url'=>array('create')),
 	array('label'=>'Перенести', 'url'=>array('selectProject', 'id'=>$model->id)),
