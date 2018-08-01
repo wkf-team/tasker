@@ -17,7 +17,7 @@
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/custom/jquery-ui-1.10.4.custom.css" />
 	<?php
 		Yii::app()->getClientScript()->registerCoreScript('jquery');
-		//Yii::app()->getClientScript()->registerCoreScript('jquery-ui');
+		Yii::app()->getClientScript()->registerCoreScript('jquery-ui');
 	?>
 
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
