@@ -1,8 +1,8 @@
 <script src="js/tinymce/tinymce.min.js"></script>
 <table>
 <tr>
-	<th></th>
-	<th style="width:400px;"><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('subject'));?></th>
+	<th style="width: 75px;"></th>
+	<th><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('subject'));?></th>
 	<th><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('status_id'));?></th>
 	<th><?php echo CHtml::encode($dataProvider->model->getAttributeLabel('priority_id'));?></th>
 	<th>Пред.</th>
@@ -108,7 +108,7 @@ $(function () {
 	});
 	
 	function CancelForm() {
-		tinymce.remove();
+		if ("tinymce" in window) tinymce.remove();
 		$("#editQ").dialog("close");
 	}
 	
@@ -141,7 +141,7 @@ $(function () {
 		// open
 		dialog.dialog("open");
 		
-		tinymce.init({
+		if ("tinymce" in window) tinymce.init({
 			selector:'textarea.editor',
 			plugins : 'link',
 			menubar:false,
@@ -194,7 +194,7 @@ $(function () {
 		// open
 		dialog.dialog("open");
 		
-		tinymce.init({
+		if ("tinymce" in window) tinymce.init({
 			selector:'textarea.editor',
 			plugins : 'link',
 			menubar:false,
@@ -207,7 +207,7 @@ $(function () {
 	}
 	
 	function SubmitActiveForm(ev) {
-		tinyMCE.triggerSave();
+		if ("tinymce" in window) tinyMCE.triggerSave();
 		var activeForm = $("#editQ").find("form");
 		$.post(activeForm.get(0).action, activeForm.serialize(), EditTicketResponse);
 	}

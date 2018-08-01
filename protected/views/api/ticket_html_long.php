@@ -1,4 +1,4 @@
 <?php
 	$this->renderPartial("display_status", ['model'=>$model]);
-	echo CHtml::link($model->subject, ['ticket/view', 'id'=>$model->id]);
+	echo CHtml::link($model->id . ". " . $model->subject, $this->createAbsoluteUrl('ticket/view', ['id'=>$model->id]));
 ?>

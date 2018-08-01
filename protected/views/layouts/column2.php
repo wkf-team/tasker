@@ -1,4 +1,4 @@
-﻿<?php /* @var $this Controller */ ?>
+<?php /* @var $this Controller */ ?>
 <?php $this->beginContent('//layouts/main'); ?>
 <div class="span-auto"><!-- span-19 -->
 	<div id="content">

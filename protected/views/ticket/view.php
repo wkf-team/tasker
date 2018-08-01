@@ -7,19 +7,16 @@ $this->breadcrumbs=array(
 	$model->subject,
 );
 
-$this->pageTitle = $model->subject." - ".Yii::app()->name;
+$this->pageTitle = $model->id. ". " . $model->subject." - ".Yii::app()->name;
 
 $this->menu=array(
-	array('label'=>'Создать', 'url'=>array('create')),
 	array('label'=>'Перенести', 'url'=>array('selectProject', 'id'=>$model->id)),
 	array('label'=>'Отложить на 3 дня', 'url'=>array('postpone', 'id'=>$model->id)),
-	array('label'=>'Изменить', 'url'=>array('update', 'id'=>$model->id)),
 	array('label'=>'Удалить', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Вы уверены, что хотите удалить задачу?')),
-	array('label'=>'Поиск', 'url'=>array('admin')),
 );
 ?>
 
-<h1> #<?php echo $model->ticketType->name . "-" . $model->id. ". ".$model->subject; ?></h1>
+<h1> #<?php echo $model->id. ". ".$model->subject; ?></h1>
 <style>
 pre {
  white-space: pre-wrap;       /* css-3 */
@@ -28,125 +25,103 @@ pre {
  white-space: -o-pre-wrap;    /* Opera 7 */
  word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
+.ticket-details table {
+    margin:5px;
+    width: calc(100% - 10px);
+}
+.ticket-tabs {
+    padding:5px;
+    width: calc(100% - 10px);
+}
 </style>
 
 <div>
-    <span class="span-auto" style="width:70%;">
-        <?php $this->widget('WW_Workflow', array('model'=>$model)); ?>
-    </span>
-    <span class="span-side last" style="width:30%;">
-        <?php $this->widget('zii.widgets.CDetailView', array(
+    <?php $this->widget('WW_Workflow', array('model'=>$model)); ?> | 
+    <?php echo CHtml::link("edit",['update', 'id'=>$model->id],['class'=>'wf_action',]); ?> |
+    <?php echo CHtml::link("more...","",['class'=>'wf_action','onclick'=>'return ShowHideMenu();',]); ?>
+</div>
+
+<div>
+    <div class="span-auto" style="width:70%;">
+        <div class="span-auto">
+            <br/>
+            <h2>Детали</h2>
+        </div>
+        <div class="span-auto ticket-details" style="width:50%;">
+            <?php
+            $this->widget('zii.widgets.CDetailView', array(
                 'data'=>$model,
                 'cssFile' => 'css/grid.css',
                 'attributes'=>array(
+                    'ticketType.name:text:'.CHtml::activeLabel($model, "ticket_type_id"),
                     'priority.name:text:'.CHtml::activeLabel($model, "priority_id"),
-                    'status.name:text:'.CHtml::activeLabel($model, "status_id")
-        ))); ?>
-    </span>
-</div>
-
-<?php
-echo "<br/><br/><b>Описание</b><br/>".$model->description;
-?>
-<br />
-
-<div id="tabs">
-	<ul>
-		<li id="link-tabs-0"><a href="#tabs-0">Детали</a></li>
-		<li id="link-tabs-1"><a href="#tabs-1">Комментарии</a></li>
-		<li id="link-tabs-2"><a href="#tabs-2">Файлы</a></li>
-		<li id="link-tabs-3"><a href="#tabs-3">Связи</a></li>
-		<li id="link-tabs-4"><a href="#tabs-4">Подзадачи</a></li>
-	</ul>
-	<div id="tabs-0" style="color: black;">
-        <span class="span-auto" style="width:49%; margin-right:1%;">
-            <span class="h2">Пользователи</span>
-            <?php
-
-            $this->widget('zii.widgets.CDetailView', array(
-                'data'=>$model,
-                'cssFile' => 'css/grid.css',
-                'attributes'=>array(
-                    'ownerUser.name:text:'.CHtml::activeLabel($model, "owner_user_id"),
-                    'authorUser.name:text:'.CHtml::activeLabel($model, "author_user_id"),
-                    'testerUser.name:text:'.CHtml::activeLabel($model, "tester_user_id"),
-                    'responsibleUser.name:text:'.CHtml::activeLabel($model, "responsible_user_id"),
-                ),
-            )); 
-            ?>
-        </span>
-        <span class="span-side last" style="width:50%;">
-            <span class="h2">Даты</span>
-            <?php
-
-            $this->widget('zii.widgets.CDetailView', array(
-                'data'=>$model,
-                'cssFile' => 'css/grid.css',
-                'attributes'=>array(
+                    'initial_version',
                     array(
-                        'label' => CHtml::activeLabel($model, "create_date"),
-                        'value' => $model->encodeDate($model->create_date)
-                    ),
-                    array(
-                        'label' => CHtml::activeLabel($model, "estimate_start_date"),
-                        'value' => $model->encodeDate($model->estimate_start_date)
-                    ),
-                    array(
-                        'label' => CHtml::activeLabel($model, "due_date"),
-                        'value' => $model->encodeDate($model->due_date)
-                    ),
-                    array(
-                        'label' => CHtml::activeLabel($model, "iteration_id"),
-                        'value' => $model->iteration ? $model->iteration->getLabel() : null
+                        'label' => CHtml::activeLabel($model, "parent_ticket_id"),
+                        'type' => 'html',
+                        'value' => 
+                            $model->parent_ticket_id ? 
+                                CHtml::link("#".$model->parent_ticket_id.". ".$model->parentTicket->subject, array('ticket/view', 'id'=>$model->parent_ticket_id)) 
+                                : null
                     ),
                 ),
             )); 
             ?>
-        </span>
-            <span class="span-auto last"> <br/><span class="h2">Общие</span></span>
-        <?php
-
-        $this->widget('zii.widgets.CDetailView', array(
-            'data'=>$model,
-            'cssFile' => 'css/grid.css',
-            'attributes'=>array(
-                array(
-                    'label' => CHtml::activeLabel($model, "parent_ticket_id"),
-                    'type' => 'html',
-                    'value' => 
-                        $model->parent_ticket_id ? 
-                            CHtml::link("#".$model->parent_ticket_id.". ".$model->parentTicket->subject, array('ticket/view', 'id'=>$model->parent_ticket_id)) 
-                            : null
+        </div>
+        <div class="span-side last ticket-details" style="width:50%;">
+            <?php
+            $this->widget('zii.widgets.CDetailView', array(
+                'data'=>$model,
+                'cssFile' => 'css/grid.css',
+                'attributes'=>array(
+                    'status.name:text:'.CHtml::activeLabel($model, "status_id"),
+                    'resolution.name:text:'.CHtml::activeLabel($model, "resolution_id"),
+                    'resolved_version',
                 ),
-                'initial_version',
-                'resolved_version',
-                'resolution.name:text:'.CHtml::activeLabel($model, "resolution_id"),
-                'story_points',
-                'estimate_time',
-                'worked_time',
-            ),
-        )); 
-        ?>
-        
-	</div>
-	<div id="tabs-1">
-	<?php $this->widget('CW_CommentList', array('ticket_id'=>$model->id)); ?>
-	</div>
-	<div id="tabs-2">
-	<?php $this->widget('AW_AttList', array('ticket_id'=>$model->id)); ?>
-	</div>
-	<div id="tabs-3">
-	<?php $this->widget('LW_LinksList', array('ticket_id'=>$model->id)); ?>
-	</div>
-	<div id="tabs-4">
-	<?php $this->widget('TW_InnerTaskList', array('ticket_id'=>$model->id)); ?>
-	</div>
+            )); 
+            ?>
+        </div>
+        <div class="span-auto">
+            <br/><br/><h2>Описание</h2><br/>
+            <?php
+            echo $model->description;
+            ?>
+        </div>
+        <div class="span-auto ticket-tabs">
+            <div id="tabs">
+                <ul>
+                    <li id="link-tabs-0"><a href="#tabs-0">Комментарии</a></li>
+                    <li id="link-tabs-1"><a href="#tabs-1">Файлы</a></li>
+                    <li id="link-tabs-2"><a href="#tabs-2">Связи</a></li>
+                    <li id="link-tabs-3"><a href="#tabs-3">Подзадачи</a></li>
+                </ul>
+                <div id="tabs-0" style="color: black;">
+                <?php $this->widget('CW_CommentList', array('ticket_id'=>$model->id)); ?>
+                </div>
+                <div id="tabs-1">
+                <?php $this->widget('AW_AttList', array('ticket_id'=>$model->id)); ?>
+                </div>
+                <div id="tabs-2">
+                <?php $this->widget('LW_LinksList', array('ticket_id'=>$model->id)); ?>
+                </div>
+                <div id="tabs-3">
+                <?php $this->widget('TW_InnerTaskList', array('ticket_id'=>$model->id)); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="span-side last" style="width:30%;">
+        <br/>
+        <?= $this->renderPartial('_view_users', ['model'=>$model]) ?>
+        <?= $this->renderPartial('_view_dates', ['model'=>$model]) ?>
+    </div>
 </div>
+
 <script language="javascript">
 	function updateLink(num, hide) {
 		var link = $("#link-tabs-"+num+" a");
 		var summary = $("#tabs-"+num+" .summary");
-		if (num == 4) {
+		if (num == 3) {
 			summary = $(".summary_custome");
 		}
 		var count = 0;
@@ -154,16 +129,17 @@ echo "<br/><br/><b>Описание</b><br/>".$model->description;
 		if (summary.length == 2) count = parseInt(new RegExp("of ([0-9]+)").exec($(summary[0]).html())[1]) + parseInt(new RegExp("of ([0-9]+)").exec($(summary[1]).html())[1]);
 		if (count == 0 && hide) link.hide();
 		link.html(link.html() + " (" + count + ")");
-		if (num == 4) {
+		if (num == 3) {
 			summary.hide();
 		}
 	}
 
 	$(function(){
+		updateLink(0, false);
 		updateLink(1, false);
 		updateLink(2, false);
 		updateLink(3, false);
-		updateLink(4, false);
+        //updateLink(4, false);
 		$( "#tabs" ).tabs();
 	});
 </script>

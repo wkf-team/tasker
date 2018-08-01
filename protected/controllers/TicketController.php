@@ -77,6 +77,7 @@ class TicketController extends Controller
 	 */
 	public function actionView($id)
 	{
+        $this->layout = 'menu-overlay';
 		$model = $this->loadModel($id);
 		$model->project->SetSelected();
 		$this->render('view',array(
