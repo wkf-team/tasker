@@ -18,10 +18,6 @@ $this->widget('zii.widgets.CDetailView', array(
             'label' => CHtml::activeLabel($model, "due_date"),
             'value' => $model->encodeDate($model->due_date)
         ),
-        array(
-            'label' => CHtml::activeLabel($model, "iteration_id"),
-            'value' => $model->iteration ? $model->iteration->getLabel() : null
-        ),
     ),
 )); 
 ?>

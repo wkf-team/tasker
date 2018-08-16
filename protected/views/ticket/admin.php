@@ -92,8 +92,8 @@ $('.asearch-form form').submit(function(){
 			'filter'=>CHTML::listData(User::model()->findAll(), 'id', 'name'),
 			'type' => 'text'
 		),
-		'due_date',
 		'end_date',
+        'resolved_version',
 		array(
 			'name' => 'priority_id',
 			'value' => '$data->priority->name',

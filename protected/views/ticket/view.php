@@ -77,6 +77,10 @@ pre {
                     'status.name:text:'.CHtml::activeLabel($model, "status_id"),
                     'resolution.name:text:'.CHtml::activeLabel($model, "resolution_id"),
                     'resolved_version',
+                    array(
+                        'label' => CHtml::activeLabel($model, "iteration_id"),
+                        'value' => $model->iteration ? $model->iteration->getLabel() : null
+                    ),
                 ),
             )); 
             ?>
