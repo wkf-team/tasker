@@ -18,6 +18,10 @@ $this->widget('zii.widgets.CDetailView', array(
             'label' => CHtml::activeLabel($model, "due_date"),
             'value' => $model->encodeDate($model->due_date)
         ),
+        array(
+            'label' => CHtml::activeLabel($model, "end_date"),
+            'value' => $model->encodeDate($model->end_date)
+        ),
     ),
 )); 
 ?>
