@@ -1,5 +1,5 @@
 <?php
-
+$_SERVER['HTTPS']='on';
 // change the following paths if necessary
 $yii_path = dirname(__FILE__).'/../yii/framework/';
 $yii=$yii_path.'yii.php';
