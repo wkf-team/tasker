@@ -309,7 +309,7 @@ class TicketController extends Controller
 		{
 			$model->resolution_id = (int)$_POST['Ticket']['resolution_id'];
 			$model->worked_time = (int)$_POST['Ticket']['worked_time'];
-			if (WorkflowStep::IsActionWithResolution($action)) $model->resolved_version = $_POST['Ticket']['resolved_version'];
+			if (WorkflowStep::IsActionWithResolution($action) && $_POST['for_deployment']) $model->resolved_version = $_POST['Ticket']['resolved_version'];
 		}
 		$user_id = Yii::app()->user->id;
 		$prevOwner = $model->owner_user_id;

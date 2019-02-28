@@ -30,6 +30,8 @@ foreach ($actions as $action) {
 		$model->resolved_version = $model->project->next_version;
 		echo $form->label($model,'resolved_version', array('class'=>'wfc_resolution'));
 		echo $form->textField($model, 'resolved_version', array('class'=>'wfc_resolution'));
+        echo "<label class='wfc_resolution'>Ожидает деплоймента?</label>";
+        echo "<input class='wfc_resolution' type=checkbox name=for_deployment></input>";
 		$model->resolved_version = $back_resolved;
 		$comment = new Comment();
 		echo $form->label($comment,'text', array('class'=>'wfc_comment'));
