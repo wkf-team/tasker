@@ -528,7 +528,31 @@ CREATE TABLE IF NOT EXISTS `v_users_balance` (`owner_user_id` INT, `user_name` I
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `v_goals_complete`;
 
-CREATE  OR REPLACE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `v_goals_complete` AS select `goals`.`id` AS `id`,`goals`.`subject` AS `subject`,count(`tasks`.`id`) AS `total`,sum(if((`tasks`.`status_id` >= 6),1,0)) AS `closed`,`goals`.`due_date` AS `due_date` from (`ticket` `goals` left join `ticket` `tasks` on((`tasks`.`parent_ticket_id` = `goals`.`id`))) where (((`goals`.`status_id` < 6) or ((`goals`.`status_id` = 6) and (`goals`.`end_date` >= (now() - interval 14 day)))) and (`goals`.`ticket_type_id` = 1)) group by `goals`.`id` order by ifnull(`goals`.`due_date`,'3000-01-01');
+CREATE 
+     OR REPLACE 
+VIEW `v_goals_complete` AS
+     SELECT 
+        `goals`.`id` AS `id`,
+        `goals`.`subject` AS `subject`,
+        `goals`.`project_id` AS `project_id`,
+        (COUNT(DISTINCT `tasks`.`id`)
+		) AS `total`,
+        (SUM(IF((`tasks`.`status_id` >= 6), 1, 0))
+        )AS `closed`,
+        `goals`.`due_date` AS `due_date`
+    FROM
+        (`ticket` `goals`
+        LEFT JOIN `ticket` `tasks` ON ((`tasks`.`parent_ticket_id` = `goals`.`id`))
+        
+        )
+    WHERE
+        (((`goals`.`status_id` < 6)
+            OR ((`goals`.`status_id` = 6)
+            AND (`goals`.`end_date` >= (NOW() - INTERVAL 14 DAY))))
+            AND (`goals`.`ticket_type_id` = 1))
+    GROUP BY `goals`.`id`
+    ORDER BY IFNULL(`goals`.`due_date`, '3000-01-01');
+
 
 -- -----------------------------------------------------
 -- View `v_terms_break`

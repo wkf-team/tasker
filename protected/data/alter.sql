@@ -5,35 +5,14 @@ VIEW `v_goals_complete` AS
         `goals`.`id` AS `id`,
         `goals`.`subject` AS `subject`,
         `goals`.`project_id` AS `project_id`,
-        (COUNT(DISTINCT `tasks`.`id`) + 
-		COUNT(DISTINCT `tasks1`.`id`) + 
-		COUNT(DISTINCT `tasks2`.`id`) + 
-		COUNT(DISTINCT `tasks3`.`id`) + 
-		COUNT(DISTINCT `tasks4`.`id`) + 
-		COUNT(DISTINCT `tasks5`.`id`) + 
-		COUNT(DISTINCT `tasks6`.`id`) + 
-		COUNT(DISTINCT `tasks7`.`id`)
+        (COUNT(DISTINCT `tasks`.`id`)
 		) AS `total`,
-        (SUM(IF((`tasks`.`status_id` >= 6), 1, 0)) + 
-        SUM(IF((`tasks1`.`status_id` >= 6), 1, 0)) +
-        SUM(IF((`tasks2`.`status_id` >= 6), 1, 0)) +
-        SUM(IF((`tasks3`.`status_id` >= 6), 1, 0)) +
-        SUM(IF((`tasks4`.`status_id` >= 6), 1, 0)) +
-        SUM(IF((`tasks5`.`status_id` >= 6), 1, 0)) +
-        SUM(IF((`tasks6`.`status_id` >= 6), 1, 0)) +
-        SUM(IF((`tasks7`.`status_id` >= 6), 1, 0))
+        (SUM(IF((`tasks`.`status_id` >= 6), 1, 0))
         )AS `closed`,
         `goals`.`due_date` AS `due_date`
     FROM
         (`ticket` `goals`
         LEFT JOIN `ticket` `tasks` ON ((`tasks`.`parent_ticket_id` = `goals`.`id`))
-        LEFT JOIN `ticket` `tasks1` ON ((`tasks1`.`parent_ticket_id` = `tasks`.`id`))
-        LEFT JOIN `ticket` `tasks2` ON ((`tasks2`.`parent_ticket_id` = `tasks1`.`id`))
-        LEFT JOIN `ticket` `tasks3` ON ((`tasks3`.`parent_ticket_id` = `tasks2`.`id`))
-        LEFT JOIN `ticket` `tasks4` ON ((`tasks4`.`parent_ticket_id` = `tasks3`.`id`))
-        LEFT JOIN `ticket` `tasks5` ON ((`tasks5`.`parent_ticket_id` = `tasks4`.`id`))
-        LEFT JOIN `ticket` `tasks6` ON ((`tasks6`.`parent_ticket_id` = `tasks5`.`id`))
-        LEFT JOIN `ticket` `tasks7` ON ((`tasks7`.`parent_ticket_id` = `tasks6`.`id`))
         
         )
     WHERE
