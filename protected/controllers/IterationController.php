@@ -34,7 +34,7 @@ class IterationController extends Controller
 				'users'=>array('@'),
 			),
 			array('allow', // allow participants
-				'actions'=>array('index'),
+				'actions'=>array('index', 'bau'),
 				'expression'=>'User::CheckLevel(10)',
 			),
 			array('allow', // allow coordinator
@@ -152,6 +152,21 @@ class IterationController extends Controller
 			'model'=>$model,
 		));
 	}
+    
+    public function actionBau()
+    {
+        if (Project::GetSelected()) {
+			$model = Iteration::model()->find([
+				'condition'=>'project_id = '.Project::GetSelected()->id.' AND status_id < 6 AND number = 0',
+				'order'=>'due_date ASC'
+			]);
+			$this->SetHistory();
+		}
+		$this->render('index',array(
+			'model'=>$model,
+            'title' => 'БКО'
+		));
+    }
 
 	/**
 	 * Manages all models.

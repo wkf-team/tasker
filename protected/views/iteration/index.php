@@ -1,9 +1,14 @@
 <?php
 /* @var $this IterationController */
 /* @var $dataProvider CActiveDataProvider */
+/* @var $title string */
+
+if (!isset($title)) {
+    $title = 'Текущая итерация';
+}
 
 $this->breadcrumbs=array(
-	'Текущая итерация',
+	$title,
 );
 
 $this->menu=array(
@@ -11,7 +16,7 @@ $this->menu=array(
 );
 ?>
 
-<h1>Текущая итерация</h1>
+<h1><?=$title ?></h1>
 <?php if ($model) { ?>
 <div>
 	<div class="row">

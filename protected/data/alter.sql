@@ -7,8 +7,11 @@ VIEW `v_goals_complete` AS
         `goals`.`project_id` AS `project_id`,
         (COUNT(DISTINCT `tasks`.`id`)
 		) AS `total`,
+        (SUM(IF((`tasks`.`status_id` IN (4,5)), 1, 0))
+        )AS `progress`,
         (SUM(IF((`tasks`.`status_id` >= 6), 1, 0))
         )AS `closed`,
+        `goals`.`estimate_start_date` AS `start_date`,
         `goals`.`due_date` AS `due_date`
     FROM
         (`ticket` `goals`

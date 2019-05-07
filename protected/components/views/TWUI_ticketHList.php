@@ -33,6 +33,10 @@
 <? } ?>
 
 <script>
+var dialog_scroll;
+function restoreScroll() {
+    setTimeout(function () { console.log(window.scrollY); window.scrollTo(0, dialog_scroll); console.log(window.scrollY); }, 100);
+}
 
 $(function () {
 	// BUTTONS
@@ -113,6 +117,7 @@ $(function () {
 	}
 	
 	function OpenEditDialog(ev) {
+        dialog_scroll = window.scrollY;
 		$(".errorSummary").html("").hide();
 		// get data
 		eval("var data = " + $(ev.target).closest("tr").find("#data").val());
@@ -140,7 +145,7 @@ $(function () {
 		dialog.find("#blocked_by").val(data.blocked_by);
 		// open
 		dialog.dialog("open");
-		
+        
 		if ("tinymce" in window) tinymce.init({
 			selector:'textarea.editor',
 			plugins : 'link',
@@ -151,9 +156,12 @@ $(function () {
 			toolbar:'styleselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link | removeformat',
 			removeformat_selector : 'b,strong,em,i,span,ins,ul,li,ol'
 		});
+        
+        restoreScroll();
 	}
 	
 	function OpenNewDialog(ev) {
+        dialog_scroll = window.scrollY;
 		$(".errorSummary").html("").hide();
 		// select dialog
 		var isInline = $(ev.target).parent().hasClass("btnAdd");
@@ -204,6 +212,7 @@ $(function () {
 			toolbar:'styleselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link | removeformat',
 			removeformat_selector : 'b,strong,em,i,span,ins,ul,li,ol'
 		});
+        restoreScroll();
 	}
 	
 	function SubmitActiveForm(ev) {

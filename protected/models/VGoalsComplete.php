@@ -7,7 +7,10 @@
  * @property integer $id
  * @property string $subject
  * @property string $total
+ * @property string $progress
  * @property string $closed
+ * @property string $start_date
+ * @property string $die)date
  */
 class VGoalsComplete extends CActiveRecord
 {

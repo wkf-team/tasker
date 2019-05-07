@@ -72,6 +72,7 @@
 			<?php $this->widget('zii.widgets.CMenu',array(
 				'items'=>array(
 					array('label'=>'Главная', 'url'=>array('/site/index')),
+					array('label'=>'БКО', 'url'=>array('/iteration/bau')),
 					array('label'=>'Итерация', 'url'=>array('/iteration/index')),
 					array('label'=>'Бэклог', 'url'=>array('/ticket/plan')),
 					array('label'=>'Поиск задач', 'url'=>array('/ticket/admin')),
