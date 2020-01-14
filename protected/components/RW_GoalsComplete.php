@@ -9,7 +9,7 @@ class RW_GoalsComplete extends CWidget {
 		if (!$p) return;
 		$this->current_project = $p->id;
 		$this->goals = VGoalsComplete::model()->findAll(array(
-			'condition'=>'project_id = :pid AND status_id = 4',
+			'condition'=>'project_id = :pid',
             'order' => 'due_date',
 			'params'=>array(':pid'=>$this->current_project),
 		));
